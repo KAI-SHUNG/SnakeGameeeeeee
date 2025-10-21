@@ -20,8 +20,6 @@ public:
 	void placeWall(int x, int y);
 	void placeTitle(int x, int y);
 
-	void clearUnit(int x, int y);
-	void clear();
 private:
 	const int UnitX;
 	const int UnitY;

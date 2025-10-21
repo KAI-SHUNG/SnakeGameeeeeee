@@ -222,12 +222,7 @@ void Images::placeTitle(int x, int y)
 	putimage_alpha(x, y, &title);
 }
 
-void Images::clearUnit(int x, int y)
+void clearUnit(int x, int y)
 {
 	clearrectangle(x * UNIT, y * UNIT, (x + 1) * UNIT - 1, (y + 1) * UNIT - 1);
-}
-
-void Images::clear()
-{
-	cleardevice();
 }
