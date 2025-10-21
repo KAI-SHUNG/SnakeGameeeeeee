@@ -1,0 +1,20 @@
+#pragma once
+
+class Music
+{
+public:
+	Music();
+	void menu();
+	void menuStop();
+	void game();
+	void gameStop();
+	void gamePause();
+	void gameResume();
+	void click();
+	void eat();
+	void death();
+	void musicOn();
+	void musicOff();
+	void soundEffectOn();
+	void soundEffectOff();
+};
