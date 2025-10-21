@@ -36,7 +36,6 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "KeyBoard.h"
 #include "Music.h"
 
-
 #define XUNIT 18//X共18单元格
 #define YUNIT 20//Y共20单元格
 #define TICK 120
