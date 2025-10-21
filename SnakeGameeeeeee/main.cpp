@@ -97,23 +97,22 @@ void game(Snake& snake, Apple& apple)
 		snake.snakeHeadNextTick(dir);
 		if (snake.death())
 		{
-			music.death();
 			music.gameStop();
+			music.death();
 			break;
 		}
 		//哪里绝对有问题，好几次蛇突然不动了
 		if (snake.growAndMove(apple.AppleX(), apple.AppleY()))
 		{
+			//生成苹果
 			music.eat();
 			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
-			//生成苹果
 		}
 		image.stage(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength(),
 			apple.AppleX(), apple.AppleY());
-
+		key.flush();
 		clock_t end = clock();
 		Sleep(TICK - (end - start));
-		key.flush();
 	}
 }
 
