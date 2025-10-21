@@ -4,7 +4,8 @@ class Images
 {
 public:
 	Images(int x, int y);
-	void init();
+	void gameInit();
+	void scoreboard();
 	void test();
 	void stage(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength,
 		int appleX, int appleY);

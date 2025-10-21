@@ -51,19 +51,30 @@ KeyBoard key;
 Music music;
 Images image(XUNIT, YUNIT);
 
-void game(Snake& snake, Apple& apple)
+void game()
 {
 	//初始化
+	Snake snake(XUNIT, YUNIT);
+	Apple apple(XUNIT, YUNIT);
 	music.game();
 	music.musicOn();
-	image.init();
+	image.gameInit();
 
 	apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 	while (1)
 	{
-		//哪里绝对有问题，好几次蛇突然不动了
+		//哪里绝对有问题，好几次蛇突然不动了 
+		//莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
+		//给你烧香
+		/* --------------------------------
+						***
+						|||
+						|||
+				    ———————————
+					\		  /
+					 \_______/
+		---------------------------------*/
 		clock_t start = clock();
-		
 		//我真是天才
 		//先定义为上一个dir，有修改就改了，没修改按原来
 		//省去了再写一个读取Dir[0]的函数
@@ -76,23 +87,20 @@ void game(Snake& snake, Apple& apple)
 			do {
 				Sleep(TICK);
 				key.flush();
-				if (key.resume())
-				{
+				if (key.resume()){
 					music.click();
 					break;
 				}
 				//为何只有第一次对，bugbugbug(*_*)(*_*)(*_*)(*_*)
 				//应该是缓冲区的问题
-				if (key.escape())
-				{
+				if (key.escape()){
 					return;
 				}
 			} while (1);
 			music.gameResume();
-			// 中间显示暂停界面，之后需要分支，resume或者exit
+			// 中间显示暂停界面，之后需要分支，resume或者exit ^^^
 			//之后tick-（end-start）让sleep的时间为负数，所以一直停住
 			start = clock();//刷新start即可解决
-			//pause
 		}
 		snake.snakeHeadNextTick(dir);
 		if (snake.death())
@@ -118,9 +126,7 @@ void game(Snake& snake, Apple& apple)
 
 int main()
 {
-	Snake snake(XUNIT, YUNIT);
-	Apple apple(XUNIT, YUNIT);
-	game(snake, apple);
+	game();
 
 	Sleep(1000);
 	return 0;

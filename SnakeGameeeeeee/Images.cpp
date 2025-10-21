@@ -67,12 +67,17 @@ inline void putimage_alpha(int x, int y, IMAGE* img)
 		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
-void Images::init()
+void Images::gameInit()
 {
 	initgraph((TAB + UnitX) * UNIT * RATIO, UnitY * UNIT * RATIO);
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
 	cleardevice();
+}
+
+void Images::scoreboard()
+{
+
 }
 
 void Images::test()
