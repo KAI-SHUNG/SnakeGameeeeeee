@@ -12,18 +12,18 @@ class道具（加速减速，闪现，技能键，护盾……
 
 */
 
-/*
-实现功能：
-1.最右端传送（简单）^^^
-2.！！！蛇身蛇头蛇尾，转弯处？画图？？ ^^^
-3.
-4.生成道具，护盾
-5.地图，有不同wall
-6.
-7.计时器，指定时间后道具/果实消失
-8.图形界面，排行榜
 
-*/
+//实现功能：
+//1.最右端传送（简单）^^^
+//2.！！！蛇身蛇头蛇尾，转弯处？画图？？ ^^^
+//3.
+//4.生成道具，护盾
+//5.地图，有不同wall
+//6.
+//7.计时器，指定时间后道具/果实消失
+//8.图形界面，排行榜
+
+
 //分离,解耦合!!
 //如果未来客户要换一个图形库,你的代码怎么复用??
 //game游戏逻辑和images图形分离
@@ -34,7 +34,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //下下下下一步		排行榜、存档
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
-
+#include <easyx.h>
 #include <time.h>
 #include <Windows.h>
 #include "Images.h"
@@ -55,31 +55,42 @@ void game(Snake& snake, Apple& apple)
 {
 	//初始化
 	music.game();
+	music.musicOn();
 	image.init();
 
 	apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 	while (1)
 	{
+		//哪里绝对有问题，好几次蛇突然不动了
 		clock_t start = clock();
+		
 		//我真是天才
 		//先定义为上一个dir，有修改就改了，没修改按原来
 		//省去了再写一个读取Dir[0]的函数
 		char dir = *snake.SnakeDir();
-		if (key.getAndPause(dir))
+		if (key.getAndPause(dir) == 1)
 		{
+			int resume = 0;				
 			music.gamePause();
-			//MSG msg;
-			//
-			//while (GetMessage(&msg, NULL, WM_KEYFIRST, WM_KEYLAST))
-			//{
-			//	TranslateMessage(&msg);
-			//	outtextxy(0, 0, msg.message);
-			//}
-			//
-			// 中间显示暂停界面，之后需要分支，resume或者exit
-
-			Sleep(1000);//不能用sleep，因为之后tick-（end-start）让sleep的时间为负数，所以一直停住
+			music.click();
+			do {
+				Sleep(TICK);
+				key.flush();
+				if (key.resume())
+				{
+					music.click();
+					break;
+				}
+				//为何只有第一次对，bugbugbug(*_*)(*_*)(*_*)(*_*)
+				//应该是缓冲区的问题
+				if (key.escape())
+				{
+					return;
+				}
+			} while (1);
 			music.gameResume();
+			// 中间显示暂停界面，之后需要分支，resume或者exit
+			//之后tick-（end-start）让sleep的时间为负数，所以一直停住
 			start = clock();//刷新start即可解决
 			//pause
 		}
@@ -90,6 +101,7 @@ void game(Snake& snake, Apple& apple)
 			music.gameStop();
 			break;
 		}
+		//哪里绝对有问题，好几次蛇突然不动了
 		if (snake.growAndMove(apple.AppleX(), apple.AppleY()))
 		{
 			music.eat();
@@ -98,11 +110,10 @@ void game(Snake& snake, Apple& apple)
 		}
 		image.stage(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength(),
 			apple.AppleX(), apple.AppleY());
-		//print(snake, apple);
+
 		clock_t end = clock();
-		Sleep(TICK - (end - start));//其实运行时间基本都在1ms，根本用不到，但是如果要的话怎么办？？
-		//刷新start即可
-		//Sleep(TICK);
+		Sleep(TICK - (end - start));
+		key.flush();
 	}
 }
 
