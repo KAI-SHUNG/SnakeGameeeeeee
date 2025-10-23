@@ -17,8 +17,8 @@ void setSnakePosition(int position, int x1, int y1, char dir1)
 }
 
 //构造函数，创建数组，初始化蛇
-Snake::Snake(int x, int y)
-	:UnitX(x), UnitY(y)
+Snake::Snake(int unitX, int unitY)
+	:UnitX(unitX), UnitY(unitY)
 {
 	//因为长度未定，需要动态数组new
 	snakeX = new int[UnitX * UnitY]();

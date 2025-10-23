@@ -9,7 +9,7 @@ private:
 	int molX(int x);
 	int molY(int y);
 public:
-	Snake(int x, int y);						//构造函数，创建数组，初始化蛇
+	Snake(int unitX, int unitY);				//构造函数，创建数组，初始化蛇
 	~Snake();									//析构函数，释放new
 
 	//更新蛇头下一刻坐标

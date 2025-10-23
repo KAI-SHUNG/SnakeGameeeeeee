@@ -31,8 +31,8 @@ IMAGE wall;
 IMAGE title;
 
 //输入地图单元格数x，y
-Images::Images(int x, int y)
-	:UnitX(x), UnitY(y)
+Images::Images(int unitx, int unity)
+	:UnitX(unitx), UnitY(unity)
 {
 
 	loadimage(&apple, _T("./Resource/Images/apple.png"));

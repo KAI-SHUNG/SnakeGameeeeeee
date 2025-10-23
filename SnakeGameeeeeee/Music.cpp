@@ -61,7 +61,7 @@ void Music::death()
 void Music::musicOn()
 {
 	mciSendStringA("setaudio menubgm volume to 500", NULL, 0, NULL);
-	mciSendStringA("setaudio gamebgm volume to 300", NULL, 0, NULL);
+	mciSendStringA("setaudio gamebgm volume to 500", NULL, 0, NULL);
 }
 
 void Music::musicOff()

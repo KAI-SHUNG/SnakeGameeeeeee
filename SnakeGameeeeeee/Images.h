@@ -3,7 +3,7 @@
 class Images
 {
 public:
-	Images(int x, int y);
+	Images(int unitx, int unity);
 	void gameInit();
 	void scoreboard();
 	void test();

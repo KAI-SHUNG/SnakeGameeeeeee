@@ -34,6 +34,9 @@ class道具（加速减速，闪现，技能键，护盾……
 //下下下下一步		排行榜、存档
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
+
+//你要写一个道具类，还是苹果类，金苹果类，加速类……？
+
 #include <easyx.h>
 #include <time.h>
 #include <Windows.h>
@@ -51,7 +54,7 @@ KeyBoard key;
 Music music;
 Images image(XUNIT, YUNIT);
 
-void game()
+void game()//可复用
 {
 	//初始化
 	Snake snake(XUNIT, YUNIT);
@@ -79,48 +82,49 @@ void game()
 		//先定义为上一个dir，有修改就改了，没修改按原来
 		//省去了再写一个读取Dir[0]的函数
 		char dir = *snake.SnakeDir();
-		if (key.getAndPause(dir) == 1)
+		if (key.getAndPause(dir) == 1)//wasd控制 && 暂停
 		{
 			int resume = 0;				
 			music.gamePause();
 			music.click();
+			// 中间显示暂停界面，之后需要分支，resume或者exit
 			do {
-				Sleep(TICK);
-				key.flush();
-				if (key.resume()){
+				Sleep(TICK);//这一句好像很关键，删了不行
+				key.flush();//清空缓冲区，用处不明
+				if (key.resume())
+				{
 					music.click();
-					break;
+					break;//继续游戏
 				}
 				//为何只有第一次对，bugbugbug(*_*)(*_*)(*_*)(*_*)
 				//应该是缓冲区的问题
 				if (key.escape()){
-					return;
+					return;//退出
 				}
 			} while (1);
-			music.gameResume();
-			// 中间显示暂停界面，之后需要分支，resume或者exit ^^^
+			music.gameResume();			
 			//之后tick-（end-start）让sleep的时间为负数，所以一直停住
 			start = clock();//刷新start即可解决
 		}
-		snake.snakeHeadNextTick(dir);
-		if (snake.death())
+		snake.snakeHeadNextTick(dir);//更新蛇头坐标
+		if (snake.death())//死亡判定
 		{
 			music.gameStop();
 			music.death();
 			break;
 		}
-		//哪里绝对有问题，好几次蛇突然不动了
-		if (snake.growAndMove(apple.AppleX(), apple.AppleY()))
+		if (snake.growAndMove(apple.AppleX(), apple.AppleY()))//生长 && 是否吃到苹果
 		{
 			//生成苹果
 			music.eat();
 			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 		}
+		//传入各种坐标，舞台刷新
 		image.stage(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength(),
 			apple.AppleX(), apple.AppleY());
-		key.flush();
+		key.flush();//以防万一还是清空缓冲区
 		clock_t end = clock();
-		Sleep(TICK - (end - start));
+		Sleep(TICK - (end - start));//帧率控制
 	}
 }
 
