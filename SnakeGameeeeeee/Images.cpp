@@ -4,7 +4,7 @@
 
 #define BKCOLOR 0xF0FFF0			//BackgroundColor
 #define UNIT 10						//UNITNIT_SIZE每个单元格10x10像素
-#define TAB 5						//计分板5单元格
+#define TAB 0						//计分板5单元格
 #define RATIO 2.5					//放大比例2.5
 
 IMAGE apple;
@@ -29,6 +29,7 @@ IMAGE soundOn;
 IMAGE soundOff;
 IMAGE wall;
 IMAGE title;
+IMAGE pause;
 
 //输入地图单元格数x，y
 Images::Images(int unitx, int unity)
@@ -57,9 +58,17 @@ Images::Images(int unitx, int unity)
 	loadimage(&soundOff, _T("./Resource/Images/sound_off.png"));
 	loadimage(&wall, _T("./Resource/Images/wall.png"));
 	loadimage(&title, _T("./Resource/Images/title.png"));
+	loadimage(&pause, _T("./Resource/Images/pause.png"));
 }
 
 inline void putimage_alpha(int x, int y, IMAGE* img)
+{
+	int h = img->getheight();
+	int w = img->getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT, y * UNIT, w, h,
+		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+inline void putimage_alpha(double x, double y, IMAGE* img)
 {
 	int h = img->getheight();
 	int w = img->getwidth();
@@ -107,6 +116,7 @@ void Images::test()
 	placeSoundOff(0, 14);
 	placeWall(0, 16);
 	placeTitle(1, 0);
+	placepause(6, 6);
 }
 
 void Images::stage(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength,
@@ -225,6 +235,11 @@ void Images::placeWall(int x, int y)
 void Images::placeTitle(int x, int y)
 {
 	putimage_alpha(x, y, &title);
+}
+
+void Images::placepause(double x, double y)
+{
+	putimage_alpha(x, y, &pause);
 }
 
 void clearUnit(int x, int y)

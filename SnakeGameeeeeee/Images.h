@@ -20,6 +20,7 @@ public:
 	void placeSoundOff(int x, int y);
 	void placeWall(int x, int y);
 	void placeTitle(int x, int y);
+	void placepause(double x, double y);
 
 private:
 	const int UnitX;

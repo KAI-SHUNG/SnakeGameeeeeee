@@ -62,8 +62,8 @@ void game()//可复用
 	music.game();
 	music.musicOn();
 	image.gameInit();
-
 	apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
+	//游戏主体
 	while (1)
 	{
 		//哪里绝对有问题，好几次蛇突然不动了 
@@ -77,51 +77,53 @@ void game()//可复用
 					\		  /
 					 \_______/
 		---------------------------------*/
-		clock_t start = clock();
+		clock_t start = clock();//帧率控制
 		//我真是天才
 		//先定义为上一个dir，有修改就改了，没修改按原来
 		//省去了再写一个读取Dir[0]的函数
 		char dir = *snake.SnakeDir();
-		if (key.getAndPause(dir) == 1)//wasd控制 && 暂停
+		if (key.getAndPause(dir) == 1)//wasd控制 && 暂停 && 退出
 		{
-			int resume = 0;				
+			int resume = 0;
 			music.gamePause();
 			music.click();
 			// 中间显示暂停界面，之后需要分支，resume或者exit
 			do {
 				Sleep(TICK);//这一句好像很关键，删了不行
+				image.placepause(XUNIT / 2 - 2, YUNIT / 2 - 2.5);
 				key.flush();//清空缓冲区，用处不明
 				if (key.resume())
 				{
 					music.click();
 					break;//继续游戏
-				}
-				//为何只有第一次对，bugbugbug(*_*)(*_*)(*_*)(*_*)
-				//应该是缓冲区的问题
-				if (key.escape()){
+				}//（已解决）为何只有第一次对，bugbugbug(*_*)(*_*)(*_*)(*_*)
+				if (key.escape())
+				{
 					return;//退出
+					//...
 				}
 			} while (1);
 			music.gameResume();			
-			//之后tick-（end-start）让sleep的时间为负数，所以一直停住
-			start = clock();//刷新start即可解决
+			//暂停之后tick-（ end - start ）让sleep的时间为负数，所以一直停住，刷新start即可解决
+			start = clock();
 		}
+
 		snake.snakeHeadNextTick(dir);//更新蛇头坐标
 		if (snake.death())//死亡判定
 		{
 			music.gameStop();
 			music.death();
 			break;
+			//...
 		}
 		if (snake.growAndMove(apple.AppleX(), apple.AppleY()))//生长 && 是否吃到苹果
 		{
-			//生成苹果
 			music.eat();
-			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
+			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());//生成苹果
 		}
-		//传入各种坐标，舞台刷新
 		image.stage(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength(),
-			apple.AppleX(), apple.AppleY());
+			apple.AppleX(), apple.AppleY());//传入各种坐标，舞台刷新
+
 		key.flush();//以防万一还是清空缓冲区
 		clock_t end = clock();
 		Sleep(TICK - (end - start));//帧率控制
@@ -131,7 +133,7 @@ void game()//可复用
 int main()
 {
 	game();
-
+		
 	Sleep(1000);
 	return 0;
 }
