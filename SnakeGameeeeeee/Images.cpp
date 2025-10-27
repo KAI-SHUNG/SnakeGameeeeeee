@@ -1,11 +1,14 @@
 #include "Images.h"
 #include <easyx.h>
-#pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必须的库
+#pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
 
-#define BKCOLOR 0xF0FFF0			//BackgroundColor
-#define UNIT 10						//UNITNIT_SIZE每个单元格10x10像素
-#define TAB 0						//计分板5单元格
-#define RATIO 2.5					//放大比例2.5
+#define BKCOLOR 0xF0FFF0			//背景颜色
+#define BOARDCOLOR 0x66B2FF			//计分板颜色
+#define LINECOLOR 0x0066CC			//计分板边框颜色
+#define TEXTCOLOR 0x003366			//字体颜色
+#define UNIT 10						//UNIT_SIZE每个单元格10x10像素
+#define BOARD 8						//计分板单元格数
+#define RATIO 2.5					//放大比例
 
 IMAGE apple;
 IMAGE goldApple;
@@ -61,6 +64,7 @@ Images::Images(int unitx, int unity)
 	loadimage(&pause, _T("./Resource/Images/pause.png"));
 }
 
+//考虑到视觉美观，定义了double重载
 inline void putimage_alpha(int x, int y, IMAGE* img)
 {
 	int h = img->getheight();
@@ -78,52 +82,29 @@ inline void putimage_alpha(double x, double y, IMAGE* img)
 
 void Images::gameInit()
 {
-	initgraph((TAB + UnitX) * UNIT * RATIO, UnitY * UNIT * RATIO);
+	initgraph((BOARD + UnitX) * UNIT * RATIO, UnitY * UNIT * RATIO);
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
 	cleardevice();
+	//计分板样式
+	setfillcolor(BOARDCOLOR);
+	setlinecolor(LINECOLOR);
+	setlinestyle(PS_DASH);
+	//字体样式
+	LOGFONT f;
+	gettextstyle(&f);
+	f.lfHeight = 20;
+	f.lfWeight = FW_BOLD;
+	f.lfItalic = 1;
+	_tcscpy_s(f.lfFaceName, _T("Centuries"));
+	f.lfQuality = PROOF_QUALITY;
+	setbkmode(TRANSPARENT);
+	settextcolor(TEXTCOLOR);
+	settextstyle(&f);
 }
 
-void Images::scoreboard()
+void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength)
 {
-
-}
-
-void Images::test()
-{
-	placeApple(1, 0);
-	placeGoldApple(1, 1);
-	snakeHead(0, 0, 'w');
-	snakeHead(0, 1, 'a');
-	snakeHead(0, 2, 's');
-	snakeHead(0, 3, 'd');
-	snakeBody(0, 4, 'w', 'w');
-	snakeBody(0, 5, 'a', 'a');
-	snakeBody(1, 5, 's', 's');
-	snakeBody(1, 4, 'd', 'd');
-	snakeBody(1, 7, 'w', 'd'); snakeBody(1, 7, 'a', 's');//测试正确性
-	snakeBody(2, 7, 'd', 's'); snakeBody(2, 7, 'w', 'a');//测试正确性
-	snakeBody(1, 8, 'a', 'w'); snakeBody(1, 8, 's', 'd');//测试正确性
-	snakeBody(2, 8, 's', 'a'); snakeBody(2, 8, 'd', 'w');//测试正确性
-	snakeBody(1, 9, ' w', 'w');
-	snakeTail(0, 6, 'w');
-	snakeTail(0, 7, 'a');
-	snakeTail(0, 8, 's');
-	snakeTail(0, 9, 'd');
-	placeButton(0, 10);
-	placeButtonPressed(0, 11);
-	placeSoundOn(0, 12);
-	placeSoundOff(0, 14);
-	placeWall(0, 16);
-	placeTitle(1, 0);
-	placepause(6, 6);
-}
-
-void Images::stage(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength,
-	int appleX, int appleY)
-{
-	BeginBatchDraw();
-	cleardevice();
 	snakeHead(snakeX[0], snakeY[0], snakeDir[0]);
 	for (int i = 1; i < snakeLength - 1; ++i)
 	{
@@ -135,8 +116,6 @@ void Images::stage(const int* snakeX, const int* snakeY, const char* snakeDir, i
 		snakeY[snakeLength - 1],
 		snakeDir[snakeLength - 2]);
 	//注意这里snakeTial读取的应该是length-2的Dir
-	placeApple(appleX, appleY);
-	EndBatchDraw();
 }
 
 void Images::snakeHead(int x, int y, char dir)
@@ -237,12 +216,55 @@ void Images::placeTitle(int x, int y)
 	putimage_alpha(x, y, &title);
 }
 
-void Images::placepause(double x, double y)
+void Images::placePause(double x, double y)
 {
 	putimage_alpha(x, y, &pause);
 }
 
-void clearUnit(int x, int y)
+void Images::placeBoard()
 {
-	clearrectangle(x * UNIT, y * UNIT, (x + 1) * UNIT - 1, (y + 1) * UNIT - 1);
+	TCHAR text1[] = _T("Score:");
+	outtextxy(UnitX * UNIT + 5, 5, text1);
+}
+
+void Images::flushBegin()
+{
+	BeginBatchDraw();
+	cleardevice();
+	fillrectangle(UnitX * UNIT, 0, (BOARD + UnitX) * UNIT, UnitY * UNIT);
+}
+
+void Images::flushEnd()
+{
+	EndBatchDraw();
+}
+
+void Images::test()
+{
+	placeApple(1, 0);
+	placeGoldApple(1, 1);
+	snakeHead(0, 0, 'w');
+	snakeHead(0, 1, 'a');
+	snakeHead(0, 2, 's');
+	snakeHead(0, 3, 'd');
+	snakeBody(0, 4, 'w', 'w');
+	snakeBody(0, 5, 'a', 'a');
+	snakeBody(1, 5, 's', 's');
+	snakeBody(1, 4, 'd', 'd');
+	snakeBody(1, 7, 'w', 'd'); snakeBody(1, 7, 'a', 's');//测试正确性
+	snakeBody(2, 7, 'd', 's'); snakeBody(2, 7, 'w', 'a');//测试正确性
+	snakeBody(1, 8, 'a', 'w'); snakeBody(1, 8, 's', 'd');//测试正确性
+	snakeBody(2, 8, 's', 'a'); snakeBody(2, 8, 'd', 'w');//测试正确性
+	snakeBody(1, 9, ' w', 'w');
+	snakeTail(0, 6, 'w');
+	snakeTail(0, 7, 'a');
+	snakeTail(0, 8, 's');
+	snakeTail(0, 9, 'd');
+	placeButton(0, 10);
+	placeButtonPressed(0, 11);
+	placeSoundOn(0, 12);
+	placeSoundOff(0, 14);
+	placeWall(0, 16);
+	placeTitle(1, 0);
+	placePause(6, 6);
 }

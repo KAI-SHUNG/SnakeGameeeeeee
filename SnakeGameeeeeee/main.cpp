@@ -46,9 +46,9 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "KeyBoard.h"
 #include "Music.h"
 
-#define XUNIT 18//X共18单元格
+#define XUNIT 16//X共16单元格
 #define YUNIT 20//Y共20单元格
-#define TICK 120
+#define TICK 120//帧时长120ms
 
 KeyBoard key;
 Music music;
@@ -90,7 +90,7 @@ void game()//可复用
 			// 中间显示暂停界面，之后需要分支，resume或者exit
 			do {
 				Sleep(TICK);//这一句好像很关键，删了不行
-				image.placepause(XUNIT / 2 - 2, YUNIT / 2 - 2.5);
+				image.placePause(XUNIT / 2 - 2, YUNIT / 2 - 2.5);//显示暂停
 				key.flush();//清空缓冲区，用处不明
 				if (key.resume())
 				{
@@ -121,8 +121,12 @@ void game()//可复用
 			music.eat();
 			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());//生成苹果
 		}
-		image.stage(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength(),
-			apple.AppleX(), apple.AppleY());//传入各种坐标，舞台刷新
+
+		image.flushBegin();
+		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
+		image.placeApple(apple.AppleX(), apple.AppleY());
+		image.placeBoard();
+		image.flushEnd();
 
 		key.flush();//以防万一还是清空缓冲区
 		clock_t end = clock();
