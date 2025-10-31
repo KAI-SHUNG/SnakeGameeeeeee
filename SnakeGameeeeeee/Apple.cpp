@@ -10,10 +10,10 @@ Apple::Apple(int unitx, int unity)
 
 void Apple::createApple(const int* x, const int* y, int length)
 {
-	int check;
+	bool check;
+	srand((unsigned)time(0));
 	do
 	{
-		srand((unsigned)time(0));
 		check = 1;
 		appleX = rand() % UnitX;
 		appleY = rand() % UnitY;

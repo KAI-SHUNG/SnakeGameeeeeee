@@ -16,7 +16,7 @@ public:
 	void placeWall(int x, int y);
 	void placeTitle(int x, int y);
 	void placePause(double x, double y);
-	void placeBoard();
+	void placeBoard(int score);
 
 	void flushBegin();
 	void flushEnd();
@@ -24,7 +24,6 @@ public:
 	void test();
 
 private:
-
 	void snakeHead(int x, int y, char dir);
 	void snakeBody(int x, int y, char dir0, char dir1);
 	void snakeTail(int x, int y, char dir);

@@ -7,7 +7,7 @@
 #define LINECOLOR 0x0066CC			//计分板边框颜色
 #define TEXTCOLOR 0x003366			//字体颜色
 #define UNIT 10						//UNIT_SIZE每个单元格10x10像素
-#define BOARD 8						//计分板单元格数
+#define BOARD 2						//计分板单元格数
 #define RATIO 2.5					//放大比例
 
 IMAGE apple;
@@ -69,20 +69,46 @@ inline void putimage_alpha(int x, int y, IMAGE* img)
 {
 	int h = img->getheight();
 	int w = img->getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT, y * UNIT, w, h,
+	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
 		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 inline void putimage_alpha(double x, double y, IMAGE* img)
 {
 	int h = img->getheight();
 	int w = img->getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT, y * UNIT, w, h,
+	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
 		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+
+LOGFONT textFont;
+LOGFONT numberFont;
+
+void setTextFont()
+{
+	textFont.lfHeight = 15;
+	textFont.lfWeight = FW_BOLD;
+	textFont.lfItalic = 0;
+	textFont.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(textFont.lfFaceName, _T("Centuries"));
+	setbkmode(TRANSPARENT);
+	settextcolor(TEXTCOLOR);
+}
+
+void setNumberFont()
+{
+	numberFont.lfHeight = 30;
+	numberFont.lfWeight = FW_BOLD;
+	numberFont.lfItalic = 0;
+	numberFont.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(numberFont.lfFaceName, _T("Segoe UI Variable Display"));
+	setbkmode(TRANSPARENT);
+	settextcolor(TEXTCOLOR);
+	settextstyle(&numberFont);
 }
 
 void Images::gameInit()
 {
-	initgraph((BOARD + UnitX) * UNIT * RATIO, UnitY * UNIT * RATIO);
+	initgraph(UnitX * UNIT * RATIO, (BOARD + UnitY) * UNIT * RATIO);
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
 	cleardevice();
@@ -91,16 +117,10 @@ void Images::gameInit()
 	setlinecolor(LINECOLOR);
 	setlinestyle(PS_DASH);
 	//字体样式
-	LOGFONT f;
-	gettextstyle(&f);
-	f.lfHeight = 20;
-	f.lfWeight = FW_BOLD;
-	f.lfItalic = 1;
-	_tcscpy_s(f.lfFaceName, _T("Centuries"));
-	f.lfQuality = PROOF_QUALITY;
-	setbkmode(TRANSPARENT);
-	settextcolor(TEXTCOLOR);
-	settextstyle(&f);
+	gettextstyle(&textFont);
+	gettextstyle(&numberFont);
+	setTextFont();
+	setNumberFont();
 }
 
 void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength)
@@ -221,17 +241,24 @@ void Images::placePause(double x, double y)
 	putimage_alpha(x, y, &pause);
 }
 
-void Images::placeBoard()
+void Images::placeBoard(int score)
 {
-	TCHAR text1[] = _T("Score:");
-	outtextxy(UnitX * UNIT + 5, 5, text1);
+	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
+
+	TCHAR textscore[] = _T("Score:");
+	settextstyle(&textFont);
+	outtextxy(5, 3, textscore);
+
+	TCHAR Score[6];
+	_stprintf_s(Score, _T("%d"), score);
+	settextstyle(&numberFont);
+	outtextxy(5.5 * UNIT, -6, Score);
 }
 
 void Images::flushBegin()
 {
 	BeginBatchDraw();
 	cleardevice();
-	fillrectangle(UnitX * UNIT, 0, (BOARD + UnitX) * UNIT, UnitY * UNIT);
 }
 
 void Images::flushEnd()

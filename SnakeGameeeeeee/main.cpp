@@ -64,6 +64,7 @@ void game()//可复用
 	image.gameInit();
 	apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 	//游戏主体
+	int score = 0;
 	while (1)
 	{
 		//哪里绝对有问题，好几次蛇突然不动了 
@@ -118,6 +119,7 @@ void game()//可复用
 		}
 		if (snake.growAndMove(apple.AppleX(), apple.AppleY()))//生长 && 是否吃到苹果
 		{
+			score += 3;
 			music.eat();
 			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());//生成苹果
 		}
@@ -125,7 +127,7 @@ void game()//可复用
 		image.flushBegin();
 		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
 		image.placeApple(apple.AppleX(), apple.AppleY());
-		image.placeBoard();
+		image.placeBoard(score);
 		image.flushEnd();
 
 		key.flush();//以防万一还是清空缓冲区
