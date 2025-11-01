@@ -33,6 +33,38 @@ IMAGE soundOff;
 IMAGE wall;
 IMAGE title;
 IMAGE pause;
+LOGFONT textFont;
+LOGFONT numberFont;
+
+inline void putimage_alpha(int x, int y, IMAGE* img)
+{
+	int h = img->getheight();
+	int w = img->getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
+		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+
+void setTextFont()
+{
+	textFont.lfHeight = 15;
+	textFont.lfWeight = FW_BOLD;
+	textFont.lfItalic = 0;
+	textFont.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(textFont.lfFaceName, _T("Centuries"));
+	setbkmode(TRANSPARENT);
+	settextcolor(TEXTCOLOR);
+}
+void setNumberFont()
+{
+	numberFont.lfHeight = 25;
+	numberFont.lfWeight = FW_BOLD;
+	numberFont.lfItalic = 0;
+	numberFont.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(numberFont.lfFaceName, _T("ROG fonts"));
+	setbkmode(TRANSPARENT);
+	settextcolor(TEXTCOLOR);
+	settextstyle(&numberFont);
+}
 
 //输入地图单元格数x，y
 Images::Images(int unitx, int unity)
@@ -62,48 +94,6 @@ Images::Images(int unitx, int unity)
 	loadimage(&wall, _T("./Resource/Images/wall.png"));
 	loadimage(&title, _T("./Resource/Images/title.png"));
 	loadimage(&pause, _T("./Resource/Images/pause.png"));
-}
-
-//考虑到视觉美观，定义了double重载
-inline void putimage_alpha(int x, int y, IMAGE* img)
-{
-	int h = img->getheight();
-	int w = img->getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
-		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-inline void putimage_alpha(double x, double y, IMAGE* img)
-{
-	int h = img->getheight();
-	int w = img->getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
-		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-
-LOGFONT textFont;
-LOGFONT numberFont;
-
-void setTextFont()
-{
-	textFont.lfHeight = 15;
-	textFont.lfWeight = FW_BOLD;
-	textFont.lfItalic = 0;
-	textFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(textFont.lfFaceName, _T("Centuries"));
-	setbkmode(TRANSPARENT);
-	settextcolor(TEXTCOLOR);
-}
-
-void setNumberFont()
-{
-	numberFont.lfHeight = 30;
-	numberFont.lfWeight = FW_BOLD;
-	numberFont.lfItalic = 0;
-	numberFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(numberFont.lfFaceName, _T("Segoe UI Variable Display"));
-	setbkmode(TRANSPARENT);
-	settextcolor(TEXTCOLOR);
-	settextstyle(&numberFont);
 }
 
 void Images::gameInit()
@@ -241,18 +231,18 @@ void Images::placePause(double x, double y)
 	putimage_alpha(x, y, &pause);
 }
 
-void Images::placeBoard(int score)
+void Images::placeBoard(int point)
 {
 	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
 
-	TCHAR textscore[] = _T("Score:");
+	TCHAR textpoint[] = _T("Points:");
 	settextstyle(&textFont);
-	outtextxy(5, 3, textscore);
+	outtextxy(0.5 * UNIT, 4, textpoint);
 
-	TCHAR Score[6];
-	_stprintf_s(Score, _T("%d"), score);
+	TCHAR Point[6];
+	_stprintf_s(Point, _T("%d"), point);
 	settextstyle(&numberFont);
-	outtextxy(5.5 * UNIT, -6, Score);
+	outtextxy(6 * UNIT, -3, Point);
 }
 
 void Images::flushBegin()

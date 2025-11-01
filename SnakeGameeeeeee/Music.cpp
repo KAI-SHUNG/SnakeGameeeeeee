@@ -9,6 +9,7 @@ Music::Music()
 	mciSendStringA("open ./Resource/Music/game_bgm.mp3 type mpegvideo alias gamebgm", NULL, 0, NULL);
 	mciSendStringA("open ./Resource/Music/click_sound.mp3 type mpegvideo alias click", NULL, 0, NULL);
 	mciSendStringA("open ./Resource/Music/eat_sound.mp3 type mpegvideo alias eat", NULL, 0, NULL);
+	mciSendStringA("open ./Resource/Music/bell_sound.mp3 type mpegvideo alias bell", NULL, 0, NULL);
 	mciSendStringA("open ./Resource/Music/death_sound.mp3 type mpegvideo alias death", NULL, 0, NULL);
 }
 
@@ -42,7 +43,6 @@ void Music::gameResume()
 	mciSendStringA("resume gamebgm", NULL, 0, NULL);
 }
 
-
 void Music::click()
 {
 	mciSendStringA("play click from 0", NULL, 0, NULL);
@@ -51,6 +51,11 @@ void Music::click()
 void Music::eat()
 {
 	mciSendStringA("play eat from 0", NULL, 0, NULL);
+}
+
+void Music::bell()
+{
+	mciSendStringA("play bell from 0", NULL, 0, NULL);
 }
 
 void Music::death()

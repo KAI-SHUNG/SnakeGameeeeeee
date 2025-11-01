@@ -2,16 +2,16 @@
 #include <time.h>
 #include "Apple.h"
 
-Apple::Apple(int unitx, int unity)
-	:UnitX(unitx), UnitY(unity), appleX(0), appleY(0)
-{
 
+Apple::Apple(int unitx, int unity)
+	:UnitX(unitx), UnitY(unity), appleX(-1), appleY(-1),goldAppleX(-1),goldAppleY(-1)
+{
+	srand((unsigned)time(0));
 }
 
 void Apple::createApple(const int* x, const int* y, int length)
 {
 	bool check;
-	srand((unsigned)time(0));
 	do
 	{
 		check = 1;
@@ -28,12 +28,46 @@ void Apple::createApple(const int* x, const int* y, int length)
 	} while (!check);
 }
 
-const int Apple::AppleX()
+void Apple::createGoldApple(const int* x, const int* y, int length)
+{
+	bool check;
+	do
+	{
+		check = 1;
+		goldAppleX = rand() % UnitX;
+		goldAppleY = rand() % UnitY;
+		if (goldAppleX == appleX && goldAppleY == appleY)
+		{
+			check = 0;
+			continue;
+		}
+		for (int i = 0; i < length; ++i)
+		{
+			if (*(x + i) == appleX && *(y + i) == appleY)
+			{
+				check = 0;
+				break;
+			}
+		}
+	} while (!check);
+}
+
+const int Apple::AppleX() const
 {
 	return appleX;
 }
 
-const int Apple::AppleY()
+const int Apple::AppleY() const
 {
 	return appleY;
+}
+
+const int Apple::GoldAppleX() const
+{
+	return goldAppleX;
+}
+
+const int Apple::GoldAppleY() const
+{
+	return goldAppleY;
 }

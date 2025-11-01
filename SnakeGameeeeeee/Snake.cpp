@@ -2,10 +2,10 @@
 
 int* snakeX;		//声明蛇身坐标的指针
 int* snakeY;		//声明蛇身坐标的指针
-char* snakeDir;		//声明蛇身坐标的指针
+char* snakeDir;		//声明蛇身朝向的指针
 int snakeXNext;		//声明蛇头下一刻坐标
 int snakeYNext;		//声明蛇头下一刻坐标
-char snakeDirNext;	//声明蛇头下一刻坐标
+char snakeDirNext;	//声明蛇头下一刻朝向
 int length;
 
 //便于修改蛇身坐标
@@ -28,6 +28,7 @@ Snake::Snake(int unitX, int unitY)
 	setSnakePosition(1, UnitX / 2 - 1, UnitY / 2, 'd');
 	length = 2;
 
+	//测试代码
 	//length = 8;
 	//setSnakePosition(0, 3, 1, 'w');
 	//setSnakePosition(1, 3, 2, 'w');
@@ -61,7 +62,7 @@ int Snake::molY(int y)
 	}
 	return y % UnitY;
 }
-//更新蛇头下一刻坐标
+
 void Snake::snakeHeadNextTick(char dir)
 {
 	switch (dir)
@@ -74,10 +75,10 @@ void Snake::snakeHeadNextTick(char dir)
 	snakeDirNext = dir;
 }
 
-//蛇死亡判定，死亡返回true
 bool Snake::death()
 {
-	for (int i = 0; i < length; ++i)
+	//for (int i = 0; i < length; ++i)//两个版本，length在将要吃蛇尾的时候判定死亡
+	for (int i = 0; i < length - 1; ++i)//length - 1在将要吃到蛇尾时不判定死亡
 	{
 		if (snakeXNext == snakeX[i] && snakeYNext == snakeY[i])
 		{
@@ -87,38 +88,48 @@ bool Snake::death()
 	return false;
 }
 
-//蛇生长与移动，输入苹果坐标，苹果被吃返回true
-bool Snake::growAndMove(int xapple, int yapple)
+bool Snake::eatApple(int xapple, int yapple)
 {
-	int appleeaten = 0;
+	//一个自认为精妙的地方，如果length++，能保证蛇尾坐标给[length]
+	//如果length不变，可以保证蛇尾被舍弃
 	if (snakeXNext == xapple && snakeYNext == yapple)
 	{
 		length++;
-		appleeaten = 1;
+		return true;
 	}
-	//一个自认为精妙的地方，如果length++，能保证蛇尾坐标给[length]
-	//如果length不变，可以保证蛇尾被舍弃
+	return false;
+}
+bool Snake::eatGoldApple(int xapple, int yapple)
+{
+	if (snakeXNext == xapple && snakeYNext == yapple)
+	{
+		return true;
+	}
+	return false;
+}
+
+void Snake::move()
+{
 	for (int i = length - 1; i > 0; --i)
 	{
 		setSnakePosition(i, snakeX[i - 1], snakeY[i - 1], snakeDir[i - 1]);
 	}
 	setSnakePosition(0, snakeXNext, snakeYNext, snakeDirNext);
-	return appleeaten;
 }
 
-const int Snake::SnakeLength()
+const int Snake::SnakeLength() const
 {
 	return length;
 }
-const int* Snake::SnakeX()
+const int* Snake::SnakeX() const
 {
 	return snakeX;
 }
-const int* Snake::SnakeY()
+const int* Snake::SnakeY() const
 {
 	return snakeY;
 }
-const char* Snake::SnakeDir()
+const char* Snake::SnakeDir() const
 {
 	return snakeDir;
 }

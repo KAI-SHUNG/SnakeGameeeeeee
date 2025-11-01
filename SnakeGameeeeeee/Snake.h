@@ -6,8 +6,9 @@ class Snake
 private:
 	int UnitX;
 	int UnitY;
-	int molX(int x);
-	int molY(int y);
+	//让蛇坐标循环，取mol
+	int molX(int x); int molY(int y);
+
 public:
 	Snake(int unitX, int unitY);				//构造函数，创建数组，初始化蛇
 	~Snake();									//析构函数，释放new
@@ -16,15 +17,19 @@ public:
 	void snakeHeadNextTick(char dir);
 	//蛇死亡判定，死亡返回true
 	bool death();
-	//蛇生长与移动，输入苹果坐标，苹果被吃返回true
-	bool growAndMove(int xapple, int yapple);
+	//输入苹果坐标，苹果被吃返回true
+	bool eatApple(int xapple, int yapple);
+	//输入金苹果坐标，金苹果被吃返回true
+	bool eatGoldApple(int xapple, int yapple);
+	//蛇移动
+	void move();
 
 	//读取蛇长的接口
-	const int SnakeLength();
+	const int SnakeLength() const;
 	//读取坐标的接口
-	const int* SnakeX();
+	const int* SnakeX() const;
 	//读取坐标的接口
-	const int* SnakeY();
-	//读取坐标的接口
-	const char* SnakeDir();
+	const int* SnakeY() const;
+	//读取朝向的接口
+	const char* SnakeDir() const;
 };

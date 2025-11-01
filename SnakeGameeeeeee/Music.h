@@ -10,8 +10,10 @@ public:
 	void gameStop();
 	void gamePause();
 	void gameResume();
+
 	void click();
 	void eat();
+	void bell();
 	void death();
 	void musicOn();
 	void musicOff();
