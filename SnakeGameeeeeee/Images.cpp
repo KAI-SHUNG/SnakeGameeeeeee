@@ -61,7 +61,7 @@ void setNumberFont()
 	numberFont.lfWeight = FW_BOLD;
 	numberFont.lfItalic = 0;
 	numberFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(numberFont.lfFaceName, _T("ROG fonts"));
+	_tcscpy_s(numberFont.lfFaceName, _T("ROG Fonts"));
 	setbkmode(TRANSPARENT);
 	settextcolor(TEXTCOLOR);
 	settextstyle(&numberFont);

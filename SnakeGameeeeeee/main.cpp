@@ -30,9 +30,9 @@ class道具（加速减速，闪现，技能键，护盾……
 //下一步				计分板 ^^^
 // 
 //下下下一步			金苹果的加入：^^^
-//						吃六个苹果生成金苹果 ^^^ ，在sweet moment吃到金苹果下一次变为吃三个苹果就生成金苹果
-//							仿照高中诺基亚的逻辑，倒计时6秒，加分递减，sweet moment: 5
-//							加一个进度条，可以倒计时
+//						吃六个苹果生成金苹果 ^^^ ，在sweet moment吃到金苹果下一次变为吃三个苹果就生成金苹果 ^^^
+//							仿照高中诺基亚的逻辑，倒计时6秒，加分递减，sweet moment: 5 ^^^
+//							加一个进度条，可以倒计时 ^^^
 //下下一步			menu界面，鼠标控制的加入，再来一局的重置
 //下下下下一步		排行榜、存档
 //下下下下下一步		声音控制功能
@@ -43,6 +43,7 @@ class道具（加速减速，闪现，技能键，护盾……
 #include <easyx.h>
 #include <time.h>
 #include <Windows.h>
+#include <wingdi.h>
 #include "Images.h"
 #include "Snake.h"
 #include "Apple.h"
@@ -193,6 +194,16 @@ void game()//可复用
 
 int main()
 {
+	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
+	int addFontResult = AddFontResourceExA(ROG_Fonts_Path, FR_PRIVATE, 0);
+	if (addFontResult > 0)
+	{
+		SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+	}
+	else
+	{
+		return -1;
+	}
 	game();
 		
 	Sleep(1000);
