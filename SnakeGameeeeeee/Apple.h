@@ -13,7 +13,7 @@ public:
 	Apple(int unitx, int unity);
 	void createApple(const int* x, const int* y, int length);
 	void createGoldApple(const int* x, const int* y, int length);
-	int counter = 0;
+	int counter;
 
 
 	const int AppleX() const;

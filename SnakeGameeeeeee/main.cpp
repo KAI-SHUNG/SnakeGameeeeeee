@@ -48,10 +48,14 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Apple.h"
 #include "KeyBoard.h"
 #include "Music.h"
+#include "Timer.h"
 
 #define XUNIT 16//X共16单元格
 #define YUNIT 20//Y共20单元格
-#define TICK 100//帧时长120ms
+#define TICK_EASY 250	//帧时长250ms
+#define TICK_NORMAL 150	//帧时长150ms
+#define TICK_HARD 100	//帧时长100ms
+#define TIME_TOTAL 6000	//金苹果存在时间6000ms
 
 KeyBoard key;
 Music music;
@@ -62,6 +66,7 @@ void game()//可复用
 	//初始化
 	Snake snake(XUNIT, YUNIT);
 	Apple apple(XUNIT, YUNIT);
+	Timer timer;
 	music.game();
 	music.musicOn();
 	image.gameInit();
@@ -70,12 +75,13 @@ void game()//可复用
 	apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 	bool appleExist = true;
 	bool goldAppleExist = false;
-	int goldApplePoint = 24;
+	int goldApplePoint = 28;
 	int applePoint = 1;
 	int point = 0;
+	int tick = TICK_HARD;//未来难度选择
 	while (1)
 	{
-		//哪里绝对有问题，好几次蛇突然不动了 
+		//不知道哪里有问题，好几次蛇突然不动了 
 		//莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
 		//给你烧香
 		/* --------------------------------
@@ -86,19 +92,22 @@ void game()//可复用
 					\		  /
 					 \_______/
 		---------------------------------*/
-		clock_t start = clock();//帧率控制
+	//帧率控制
+		timer.frameStart();
+
+	//wasd控制 && 暂停 && 退出
+		char dir = *snake.SnakeDir();
 		//我真是天才
 		//先定义为上一个dir，有修改就改了，没修改按原来
 		//省去了再写一个读取Dir[0]的函数
-		char dir = *snake.SnakeDir();
-		if (key.getAndPause(dir) == 1)//wasd控制 && 暂停 && 退出
+		if (key.getAndPause(dir) == 1)
 		{
 			int resume = 0;
 			music.gamePause();
 			music.click();
 			// 中间显示暂停界面，之后需要分支，resume或者exit
 			do {
-				Sleep(TICK);//这一句好像很关键，删了不行
+				Sleep(TICK_HARD);//这一句好像很关键，删了不行
 				image.placePause(XUNIT / 2 - 2, YUNIT / 2 - 3);//显示暂停
 				key.flush();//清空缓冲区，用处不明
 				if (key.resume())
@@ -113,10 +122,12 @@ void game()//可复用
 				}
 			} while (1);
 			music.gameResume();			
-			//暂停之后tick-（ end - start ）让sleep的时间为负数，所以一直停住，刷新start即可解决
-			start = clock();
+			//暂停之后tick - framtime 让Sleep的时间为负数，所以一直停住，刷新start即可解决
+			timer.frameStart();
 		}
 
+	//蛇的移动 && 吃苹果 && 吃金苹果
+		int goldAppleTime = timer.goldAppleTime();
 		snake.snakeHeadNextTick(dir);//更新蛇头坐标
 		if (snake.death())//死亡判定
 		{
@@ -125,21 +136,32 @@ void game()//可复用
 			break;
 			//...
 		}
-		if (snake.eatGoldApple(apple.GoldAppleX(), apple.GoldAppleY()))//吃到金苹果
+		if (goldAppleTime > TIME_TOTAL)//判定金苹果存在是否超时
 		{
-			music.eat();
-			music.bell();
-			point += goldApplePoint;
 			goldAppleExist = false;
 		}
-		if (snake.eatApple(apple.AppleX(), apple.AppleY()))//吃到苹果
+		if (snake.eatApple(apple.AppleX(), apple.AppleY()))//判定是否吃到苹果
 		{
 			music.eat();
 			point += applePoint;
 			apple.counter += 1;
 			appleExist = false;
 		}
-		snake.move();//移动
+		else //判定是否吃到金苹果(如果吃到苹果就不可能吃金苹果)
+		if (goldAppleExist && snake.eatGoldApple(apple.GoldAppleX(), apple.GoldAppleY()))
+		{
+			music.eat();
+			music.bell();
+			point += goldApplePoint * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
+			if (goldAppleTime / 1000 == 1)
+			{
+				apple.counter += 3;
+			}
+			goldAppleExist = false;
+		}
+		snake.move();
+
+	//生成苹果 && 生成金苹果
 		if (!appleExist)
 		{
 			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());//生成苹果
@@ -148,22 +170,24 @@ void game()//可复用
 			{
 				apple.createGoldApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 				goldAppleExist = true;
+				timer.goldAppleCreate();
 			}
 		}
 
+	//图像输出
 		image.flushBegin();
-		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
-		image.placeApple(apple.AppleX(), apple.AppleY());
 		if (goldAppleExist)
 		{
 			image.placeGoldApple(apple.GoldAppleX(), apple.GoldAppleY());
+			image.placeBar(XUNIT / 2, 0, goldAppleTime, TIME_TOTAL);
 		}
+		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
+		image.placeApple(apple.AppleX(), apple.AppleY());
 		image.placeBoard(point);
 		image.flushEnd();
 
-		key.flush();//以防万一还是清空缓冲区
-		clock_t end = clock();
-		Sleep(TICK - (end - start));//帧率控制
+	//帧率控制
+		Sleep(tick - timer.frameTime());
 	}
 }
 

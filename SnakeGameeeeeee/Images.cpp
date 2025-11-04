@@ -7,7 +7,7 @@
 #define LINECOLOR 0x0066CC			//计分板边框颜色
 #define TEXTCOLOR 0x003366			//字体颜色
 #define UNIT 10						//UNIT_SIZE每个单元格10x10像素
-#define BOARD 2						//计分板单元格数
+#define BOARD 2						//计分板行格数
 #define RATIO 2.5					//放大比例
 
 IMAGE apple;
@@ -33,6 +33,7 @@ IMAGE soundOff;
 IMAGE wall;
 IMAGE title;
 IMAGE pause;
+IMAGE bar;
 LOGFONT textFont;
 LOGFONT numberFont;
 
@@ -94,11 +95,12 @@ Images::Images(int unitx, int unity)
 	loadimage(&wall, _T("./Resource/Images/wall.png"));
 	loadimage(&title, _T("./Resource/Images/title.png"));
 	loadimage(&pause, _T("./Resource/Images/pause.png"));
+	loadimage(&bar, _T("./Resource/Images/bar.png"));
 }
 
 void Images::gameInit()
 {
-	initgraph(UnitX * UNIT * RATIO, (BOARD + UnitY) * UNIT * RATIO);
+	initgraph(UnitX * UNIT * RATIO, (BOARD + UnitY) * UNIT * RATIO, EX_NOCLOSE);
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
 	cleardevice();
@@ -226,7 +228,7 @@ void Images::placeTitle(int x, int y)
 	putimage_alpha(x, y, &title);
 }
 
-void Images::placePause(double x, double y)
+void Images::placePause(int x, int y)
 {
 	putimage_alpha(x, y, &pause);
 }
@@ -243,6 +245,14 @@ void Images::placeBoard(int point)
 	_stprintf_s(Point, _T("%d"), point);
 	settextstyle(&numberFont);
 	outtextxy(6 * UNIT, -3, Point);
+}
+
+void Images::placeBar(int x, int y, int time, int time_total)
+{
+	int h = bar.getheight();
+	int w = bar.getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT, w * (time_total - time) / time_total, h,
+		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
 void Images::flushBegin()

@@ -15,8 +15,9 @@ public:
 	void placeSoundOff(int x, int y);
 	void placeWall(int x, int y);
 	void placeTitle(int x, int y);
-	void placePause(double x, double y);
+	void placePause(int x, int y);
 	void placeBoard(int score);
+	void placeBar(int x, int y, int time, int time_total);
 
 	void flushBegin();
 	void flushEnd();

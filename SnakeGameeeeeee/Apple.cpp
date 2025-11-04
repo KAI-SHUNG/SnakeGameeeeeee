@@ -4,7 +4,7 @@
 
 
 Apple::Apple(int unitx, int unity)
-	:UnitX(unitx), UnitY(unity), appleX(-1), appleY(-1),goldAppleX(-1),goldAppleY(-1)
+	:UnitX(unitx), UnitY(unity), appleX(-1), appleY(-1),goldAppleX(-1),goldAppleY(-1),counter(0)
 {
 	srand((unsigned)time(0));
 }
