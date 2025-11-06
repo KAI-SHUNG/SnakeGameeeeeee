@@ -24,7 +24,7 @@
     <ClCompile Include="Snake.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="KeyBoard.cpp">
+    <ClCompile Include="Keyboard.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Apple.cpp">
@@ -44,7 +44,7 @@
     <ClInclude Include="Music.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="KeyBoard.h">
+    <ClInclude Include="Keyboard.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Apple.h">

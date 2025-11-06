@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SnakeGameeeeeee", "SnakeGameeeeeee\SnakeGameeeeeee.vcxproj", "{60425BA0-B17B-4E07-9A77-14EA5166BEC8}"
 EndProject
@@ -13,8 +13,8 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{60425BA0-B17B-4E07-9A77-14EA5166BEC8}.Debug|x64.ActiveCfg = Debug|x64
-		{60425BA0-B17B-4E07-9A77-14EA5166BEC8}.Debug|x64.Build.0 = Debug|x64
+		{60425BA0-B17B-4E07-9A77-14EA5166BEC8}.Debug|x64.ActiveCfg = Release|x64
+		{60425BA0-B17B-4E07-9A77-14EA5166BEC8}.Debug|x64.Build.0 = Release|x64
 		{60425BA0-B17B-4E07-9A77-14EA5166BEC8}.Debug|x86.ActiveCfg = Debug|Win32
 		{60425BA0-B17B-4E07-9A77-14EA5166BEC8}.Debug|x86.Build.0 = Debug|Win32
 		{60425BA0-B17B-4E07-9A77-14EA5166BEC8}.Release|x64.ActiveCfg = Release|x64

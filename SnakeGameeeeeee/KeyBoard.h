@@ -1,14 +1,20 @@
 #pragma once
-
-class KeyBoard
+enum Menu { BEGIN, EXIT };
+class Keyboard
 {
 public:
+	//返回1代表enter
+	void menu(Menu& state);
 	//返回1代表暂停
-	bool getAndPause(char& dir);
-	//返回1代表继续
-	bool resume();
-	//返回1代表退出
+	bool game(char& dir);
+	bool up();
+	bool left();
+	bool down();
+	bool right();
+	bool enter();
+	bool space();
 	bool escape();
 	//清空输入缓冲区
 	void flush();
+
 };

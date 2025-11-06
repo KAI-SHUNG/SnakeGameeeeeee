@@ -1,50 +1,83 @@
-#include "KeyBoard.h"
+#include "Keyboard.h"
 #include <windows.h>
 
-bool KeyBoard::getAndPause(char& dir)
+void Keyboard::menu(Menu& state)
 {
-    if (GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState('W') & 0x8000)
+    if (up())
+    {
+        state = Menu((state - 1 + 2) % 2);
+        return;
+    }
+    else if (down())
+    {
+        state = Menu((state + 1) % 2);
+        return;
+    }
+    return;
+}
+bool Keyboard::game(char& dir)
+{
+    if (up())
     {
         dir = 'w';
         return 0;
     }
-    if (GetAsyncKeyState(VK_LEFT) & 0x8000 || GetAsyncKeyState('A') & 0x8000)
+    else if (left())
     {
         dir = 'a';
         return 0;
     }
-    if (GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState('S') & 0x8000)
+    else if (down())
     {
         dir = 's';
         return 0;
     }
-    if (GetAsyncKeyState(VK_RIGHT) & 0x8000 || GetAsyncKeyState('D') & 0x8000)
+    else if (right())
     {
         dir = 'd';
         return 0;
     }
-    if (GetAsyncKeyState(VK_SPACE) & 0x8000 || GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+    else if (space() || escape())
     {
         return 1;
     }
     return 0;
 }
 
-bool KeyBoard::resume()
+bool Keyboard::up()
+{
+    return GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState('W') & 0x8000;
+}
+bool Keyboard::left()
+{
+    return GetAsyncKeyState(VK_LEFT) & 0x8000 || GetAsyncKeyState('A') & 0x8000;
+}
+bool Keyboard::down()
+{
+    return GetAsyncKeyState(VK_DOWN) & 0x8000 || GetAsyncKeyState('S') & 0x8000;
+}
+bool Keyboard::right()
+{
+    return GetAsyncKeyState(VK_RIGHT) & 0x8000 || GetAsyncKeyState('D') & 0x8000;
+}
+bool Keyboard::enter()
+{
+    return GetAsyncKeyState(VK_RETURN) & 0x8000;
+}
+bool Keyboard::space()
 {
     return GetAsyncKeyState(VK_SPACE) & 0x8000;
 }
-
-bool KeyBoard::escape()
+bool Keyboard::escape()
 {
     return GetAsyncKeyState(VK_ESCAPE) & 0x8000;
 }
 
-void KeyBoard::flush()
+void Keyboard::flush()
 {
     MSG m;
     while (PeekMessage(&m, NULL, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE))
     {
-        ;
+        GetMessage(&m, NULL,WM_KEYFIRST, WM_KEYLAST);
     }
 }

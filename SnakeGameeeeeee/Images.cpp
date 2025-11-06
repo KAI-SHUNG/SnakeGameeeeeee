@@ -1,5 +1,7 @@
 #include "Images.h"
+#include <string>
 #include <easyx.h>
+#include <math.h>
 #pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
 
 #define BKCOLOR 0xF0FFF0			//背景颜色
@@ -9,6 +11,8 @@
 #define UNIT 10						//UNIT_SIZE每个单元格10x10像素
 #define BOARD 2						//计分板行格数
 #define RATIO 2.5					//放大比例
+#define MENUX 24
+#define MENUY 20
 
 IMAGE apple;
 IMAGE goldApple;
@@ -71,7 +75,11 @@ void setNumberFont()
 Images::Images(int unitx, int unity)
 	:UnitX(unitx), UnitY(unity)
 {
+	resource();
+}
 
+int Images::resource()
+{
 	loadimage(&apple, _T("./Resource/Images/apple.png"));
 	loadimage(&goldApple, _T("./Resource/Images/gold_apple.png"));
 	loadimage(&sHeadW, _T("./Resource/Images/snake_head_w.png"));
@@ -96,6 +104,15 @@ Images::Images(int unitx, int unity)
 	loadimage(&title, _T("./Resource/Images/title.png"));
 	loadimage(&pause, _T("./Resource/Images/pause.png"));
 	loadimage(&bar, _T("./Resource/Images/bar.png"));
+	return 1;
+}
+
+void Images::menuInit()
+{
+	initgraph(24 * UNIT * RATIO, 20 * UNIT * RATIO);
+	setaspectratio(RATIO, RATIO);//10x10->25*25
+	setbkcolor(BKCOLOR);
+	cleardevice();
 }
 
 void Images::gameInit()
@@ -177,7 +194,6 @@ void Images::snakeBody(int x, int y, char dir0, char dir1)
 		}break;
 	}
 }
-
 void Images::snakeTail(int x, int y, char dir)
 {
 	switch (dir) {
@@ -192,27 +208,28 @@ void Images::placeApple(int x, int y)
 {
 	putimage_alpha(x, y, &apple);
 }
-
 void Images::placeGoldApple(int x, int y)
 {
 	putimage_alpha(x, y, &goldApple);
 }
 
-void Images::placeButton(int x, int y)
+void Images::placeButton(int x, int y, int state)
 {
-	putimage_alpha(x, y, &button);
+	switch (state)
+	{
+	case(0):putimage_alpha(x, y, &button); break;
+	case(1):putimage_alpha(x, y, &buttonPressed); break;
+	}
 }
-
-void Images::placeButtonPressed(int x, int y)
-{
-	putimage_alpha(x, y, &buttonPressed);
-}
+//void Images::placeButtonPressed(int x, int y)
+//{
+//	putimage_alpha(x, y, &buttonPressed);
+//}
 
 void Images::placeSoundOn(int x, int y)
 {
 	putimage_alpha(x, y, &soundOn);
 }
-
 void Images::placeSoundOff(int x, int y)
 {
 	putimage_alpha(x, y, &soundOff);
@@ -223,9 +240,12 @@ void Images::placeWall(int x, int y)
 	putimage_alpha(x, y, &wall);
 }
 
-void Images::placeTitle(int x, int y)
+void Images::placeTitle(int clock)
 {
-	putimage_alpha(x, y, &title);
+	int h = title.getheight();
+	int w = title.getwidth();
+	AlphaBlend(GetImageHDC(NULL), 12 * UNIT - w / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
+		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
 void Images::placePause(int x, int y)
@@ -266,32 +286,36 @@ void Images::flushEnd()
 	EndBatchDraw();
 }
 
-void Images::test()
+void Images::close()
 {
-	placeApple(1, 0);
-	placeGoldApple(1, 1);
-	snakeHead(0, 0, 'w');
-	snakeHead(0, 1, 'a');
-	snakeHead(0, 2, 's');
-	snakeHead(0, 3, 'd');
-	snakeBody(0, 4, 'w', 'w');
-	snakeBody(0, 5, 'a', 'a');
-	snakeBody(1, 5, 's', 's');
-	snakeBody(1, 4, 'd', 'd');
-	snakeBody(1, 7, 'w', 'd'); snakeBody(1, 7, 'a', 's');//测试正确性
-	snakeBody(2, 7, 'd', 's'); snakeBody(2, 7, 'w', 'a');//测试正确性
-	snakeBody(1, 8, 'a', 'w'); snakeBody(1, 8, 's', 'd');//测试正确性
-	snakeBody(2, 8, 's', 'a'); snakeBody(2, 8, 'd', 'w');//测试正确性
-	snakeBody(1, 9, ' w', 'w');
-	snakeTail(0, 6, 'w');
-	snakeTail(0, 7, 'a');
-	snakeTail(0, 8, 's');
-	snakeTail(0, 9, 'd');
-	placeButton(0, 10);
-	placeButtonPressed(0, 11);
-	placeSoundOn(0, 12);
-	placeSoundOff(0, 14);
-	placeWall(0, 16);
-	placeTitle(1, 0);
-	placePause(6, 6);
+	closegraph();
 }
+//void Images::test()
+//{
+//	placeApple(1, 0);
+//	placeGoldApple(1, 1);
+//	snakeHead(0, 0, 'w');
+//	snakeHead(0, 1, 'a');
+//	snakeHead(0, 2, 's');
+//	snakeHead(0, 3, 'd');
+//	snakeBody(0, 4, 'w', 'w');
+//	snakeBody(0, 5, 'a', 'a');
+//	snakeBody(1, 5, 's', 's');
+//	snakeBody(1, 4, 'd', 'd');
+//	snakeBody(1, 7, 'w', 'd'); snakeBody(1, 7, 'a', 's');//测试正确性
+//	snakeBody(2, 7, 'd', 's'); snakeBody(2, 7, 'w', 'a');//测试正确性
+//	snakeBody(1, 8, 'a', 'w'); snakeBody(1, 8, 's', 'd');//测试正确性
+//	snakeBody(2, 8, 's', 'a'); snakeBody(2, 8, 'd', 'w');//测试正确性
+//	snakeBody(1, 9, ' w', 'w');
+//	snakeTail(0, 6, 'w');
+//	snakeTail(0, 7, 'a');
+//	snakeTail(0, 8, 's');
+//	snakeTail(0, 9, 'd');
+//	placeButton(0, 10);
+//	placeButtonPressed(0, 11);
+//	placeSoundOn(0, 12);
+//	placeSoundOff(0, 14);
+//	placeWall(0, 16);
+//	placeTitle(0);
+//	placePause(6, 6);
+//}

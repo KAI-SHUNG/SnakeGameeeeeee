@@ -77,8 +77,8 @@ void Snake::snakeHeadNextTick(char dir)
 
 bool Snake::death()
 {
-	//for (int i = 0; i < length; ++i)//两个版本，length在将要吃蛇尾的时候判定死亡
-	for (int i = 0; i < length - 1; ++i)//length - 1在将要吃到蛇尾时不判定死亡
+	for (int i = 0; i < length; ++i)//两个版本，length在将要吃蛇尾的时候判定死亡
+	//for (int i = 0; i < length - 1; ++i)//length - 1在将要吃到蛇尾时不判定死亡---两格长可以原地掉头
 	{
 		if (snakeXNext == snakeX[i] && snakeYNext == snakeY[i])
 		{

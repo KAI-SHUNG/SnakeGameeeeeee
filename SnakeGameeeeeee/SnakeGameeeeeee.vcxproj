@@ -119,6 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,7 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Apple.cpp" />
     <ClCompile Include="Images.cpp" />
-    <ClCompile Include="KeyBoard.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Music.cpp" />
     <ClCompile Include="Snake.cpp" />
@@ -137,7 +138,7 @@
   <ItemGroup>
     <ClInclude Include="Apple.h" />
     <ClInclude Include="Images.h" />
-    <ClInclude Include="KeyBoard.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Music.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="Timer.h" />
