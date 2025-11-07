@@ -1,47 +1,43 @@
-/*
-¿ÉÒÔ¿¼ÂÇÌí¼Ó¸ü¶àÈ¤Î¶µÀ¾ß¡¢´©Ç½¡¢¼ÓËÙ¼õËÙµÈµÈ£¬
-¸üÖØÒªµÄÊÇ³ÌĞòµÄ½á¹¹Éè¼Æ²»ÄÜÓĞÌ«¶àÈßÓà¡¢ÖØ¸´µÄ´úÂë¡¢ÒªÊ¹ÓÃº¯Êı¡¢ÀàµÈ·½·¨ÊµÏÖ´úÂëµÄ¸´ÓÃ£¬
-»¹ÓĞ½çÃæºÍÓÎÏ·Âß¼­µÄ½âñîºÏ£¬¾ÍÊÇ»»Ò»ÖÖÍ¼ĞÎ¿â£¬Ò²ÄÜºÜºÃµÄÀûÓÃÔ­ÓĞµÄÓÎÏ·Âß¼­
+ï»¿/*
+å¯ä»¥è€ƒè™‘æ·»åŠ æ›´å¤šè¶£å‘³é“å…·ã€ç©¿å¢™ã€åŠ é€Ÿå‡é€Ÿç­‰ç­‰ï¼Œ
+æ›´é‡è¦çš„æ˜¯ç¨‹åºçš„ç»“æ„è®¾è®¡ä¸èƒ½æœ‰å¤ªå¤šå†—ä½™ã€é‡å¤çš„ä»£ç ã€è¦ä½¿ç”¨å‡½æ•°ã€ç±»ç­‰æ–¹æ³•å®ç°ä»£ç çš„å¤ç”¨ï¼Œ
+è¿˜æœ‰ç•Œé¢å’Œæ¸¸æˆé€»è¾‘çš„è§£è€¦åˆï¼Œå°±æ˜¯æ¢ä¸€ç§å›¾å½¢åº“ï¼Œä¹Ÿèƒ½å¾ˆå¥½çš„åˆ©ç”¨åŸæœ‰çš„æ¸¸æˆé€»è¾‘
 EasyX
 */
 
 /*
-classµÀ¾ß£¨¼ÓËÙ¼õËÙ£¬ÉÁÏÖ£¬¼¼ÄÜ¼ü£¬»¤¶Ü¡­¡­
-Ç½±Ú£¿Ëæ»úÉú³É£¿
-ÅÅĞĞ°ñ£¬¼ÇÂ¼³É¼¨¡­¡­
+classé“å…·ï¼ˆåŠ é€Ÿå‡é€Ÿï¼Œé—ªç°ï¼ŒæŠ€èƒ½é”®ï¼ŒæŠ¤ç›¾â€¦â€¦
+å¢™å£ï¼Ÿéšæœºç”Ÿæˆï¼Ÿ
+æ’è¡Œæ¦œï¼Œè®°å½•æˆç»©â€¦â€¦
 
 */
 
-//ÊµÏÖ¹¦ÄÜ£º
-//1.×îÓÒ¶Ë´«ËÍ£¨¼òµ¥£©^^^
-//2.£¡£¡£¡ÉßÉíÉßÍ·ÉßÎ²£¬×ªÍä´¦£¿»­Í¼£¿£¿ ^^^
+//å®ç°åŠŸèƒ½ï¼š
+//1.æœ€å³ç«¯ä¼ é€ï¼ˆç®€å•ï¼‰^^^
+//2.ï¼ï¼ï¼è›‡èº«è›‡å¤´è›‡å°¾ï¼Œè½¬å¼¯å¤„ï¼Ÿç”»å›¾ï¼Ÿï¼Ÿ ^^^
 //3.
-//4.Éú³ÉµÀ¾ß£¬»¤¶Ü
-//5.µØÍ¼£¬ÓĞ²»Í¬wall
+//4.ç”Ÿæˆé“å…·ï¼ŒæŠ¤ç›¾
+//5.åœ°å›¾ï¼Œæœ‰ä¸åŒwall
 //6.
-//7.¼ÆÊ±Æ÷£¬Ö¸¶¨Ê±¼äºóµÀ¾ß/¹ûÊµÏûÊ§
-//8.Í¼ĞÎ½çÃæ£¬ÅÅĞĞ°ñ
+//7.è®¡æ—¶å™¨ï¼ŒæŒ‡å®šæ—¶é—´åé“å…·/æœå®æ¶ˆå¤± ^^^
+//8.å›¾å½¢ç•Œé¢ï¼Œæ’è¡Œæ¦œ
 
-//·ÖÀë,½âñîºÏ!!
-//Èç¹ûÎ´À´¿Í»§Òª»»Ò»¸öÍ¼ĞÎ¿â,ÄãµÄ´úÂëÔõÃ´¸´ÓÃ??
-//gameÓÎÏ·Âß¼­ºÍimagesÍ¼ĞÎ·ÖÀë
-//ÄãÒªĞ´Ò»¸öµÀ¾ßÀà£¬»¹ÊÇÆ»¹ûÀà£¬½ğÆ»¹ûÀà£¬¼ÓËÙÀà¡­¡­£¿
+//åˆ†ç¦»,è§£è€¦åˆ!!
+//å¦‚æœæœªæ¥å®¢æˆ·è¦æ¢ä¸€ä¸ªå›¾å½¢åº“,ä½ çš„ä»£ç æ€ä¹ˆå¤ç”¨??
+//gameæ¸¸æˆé€»è¾‘å’Œimageså›¾å½¢åˆ†ç¦»
+//ä½ è¦å†™ä¸€ä¸ªé“å…·ç±»ï¼Œè¿˜æ˜¯è‹¹æœç±»ï¼Œé‡‘è‹¹æœç±»ï¼ŒåŠ é€Ÿç±»â€¦â€¦ï¼Ÿ
 
-//ÏÂÒ»²½				¼Æ·Ö°å ^^^
-// 
-//ÏÂÏÂÏÂÒ»²½			½ğÆ»¹ûµÄ¼ÓÈë£º^^^
-//						³ÔÁù¸öÆ»¹ûÉú³É½ğÆ»¹û ^^^ £¬ÔÚsweet moment³Ôµ½½ğÆ»¹ûÏÂÒ»´Î±äÎª³ÔÈı¸öÆ»¹û¾ÍÉú³É½ğÆ»¹û ^^^
-//							·ÂÕÕ¸ßÖĞÅµ»ùÑÇµÄÂß¼­£¬µ¹¼ÆÊ±6Ãë£¬¼Ó·Öµİ¼õ£¬sweet moment: 5 ^^^
-//							¼ÓÒ»¸ö½ø¶ÈÌõ£¬¿ÉÒÔµ¹¼ÆÊ± ^^^
-//ÏÂÏÂÒ»²½			menu½çÃæ£¬Êó±ê¿ØÖÆµÄ¼ÓÈë£¬ÔÙÀ´Ò»¾ÖµÄÖØÖÃ
-//ÏÂÏÂÏÂÏÂÒ»²½		ÅÅĞĞ°ñ¡¢´æµµ
-//ÏÂÏÂÏÂÏÂÏÂÒ»²½		ÉùÒô¿ØÖÆ¹¦ÄÜ
-//ÏÂÏÂÏÂÏÂÏÂÏÂÒ»²½	²»Í¬µØÍ¼
+//ä¸‹ä¸€æ­¥				è®¡åˆ†æ¿ ^^^
+//ä¸‹ä¸‹ä¸‹ä¸€æ­¥			é‡‘è‹¹æœçš„åŠ å…¥ï¼š^^^
+//						åƒå…­ä¸ªè‹¹æœç”Ÿæˆé‡‘è‹¹æœ ^^^ ï¼Œåœ¨sweet momentåƒåˆ°é‡‘è‹¹æœä¸‹ä¸€æ¬¡å˜ä¸ºåƒä¸‰ä¸ªè‹¹æœå°±ç”Ÿæˆé‡‘è‹¹æœ ^^^
+//							ä»¿ç…§é«˜ä¸­è¯ºåŸºäºšçš„é€»è¾‘ï¼Œå€’è®¡æ—¶6ç§’ï¼ŒåŠ åˆ†é€’å‡ï¼Œsweet moment: 5 ^^^
+//							åŠ ä¸€ä¸ªè¿›åº¦æ¡ï¼Œå¯ä»¥å€’è®¡æ—¶ ^^^
+//ä¸‹ä¸‹ä¸€æ­¥			menuç•Œé¢ ^^^ ï¼Œå†æ¥ä¸€å±€çš„é‡ç½® ï¼Œé¼ æ ‡æ§åˆ¶çš„åŠ å…¥
+//ä¸‹ä¸‹ä¸‹ä¸‹ä¸€æ­¥		menuæ’è¡Œæ¦œã€å­˜æ¡£
+//ä¸‹ä¸‹ä¸‹ä¸‹ä¸‹ä¸€æ­¥		å£°éŸ³æ§åˆ¶åŠŸèƒ½
+//ä¸‹ä¸‹ä¸‹ä¸‹ä¸‹ä¸‹ä¸€æ­¥	ä¸åŒåœ°å›¾
 
-//#include <easyx.h>
-#include <time.h>
 #include <Windows.h>
-#include <wingdi.h>
 #include "Images.h"
 #include "Keyboard.h"
 #include "Music.h"
@@ -50,42 +46,47 @@ classµÀ¾ß£¨¼ÓËÙ¼õËÙ£¬ÉÁÏÖ£¬¼¼ÄÜ¼ü£¬»¤¶Ü¡­¡­
 #include "Apple.h"
 #define MENUX 24
 #define MENUY 20
-#define XUNIT 16//X¹²16µ¥Ôª¸ñ
-#define YUNIT 20//Y¹²20µ¥Ôª¸ñ
-#define TICK_EASY 250	//Ö¡Ê±³¤250ms
-#define TICK_NORMAL 150	//Ö¡Ê±³¤150ms
-#define TICK_HARD 100	//Ö¡Ê±³¤100ms
-#define TIME_TOTAL 6000	//½ğÆ»¹û´æÔÚÊ±¼ä6000ms
-extern Menu;
+#define UNITX 16//Xå…±16å•å…ƒæ ¼
+#define UNITY 20//Yå…±20å•å…ƒæ ¼
+#define TICK_EASY 250	//å¸§æ—¶é•¿250ms
+#define TICK_NORMAL 150	//å¸§æ—¶é•¿150ms
+#define TICK_HARD 100	//å¸§æ—¶é•¿100ms
+#define TIME_TOTAL 6000	//é‡‘è‹¹æœå­˜åœ¨æ—¶é—´6000ms
+extern MenuState;
+extern GameoverState;
+Images image(UNITX, UNITY);
+Keyboard keyboard;
+Music music;
 
 int resourceCheck();
-Menu menu(Images&, Keyboard&, Music&);
-void game(Images&, Keyboard&, Music&);
+MenuState menu();
+int game();
+GameoverState gameover();
 
 int main()
 {
-	Images image(XUNIT, YUNIT);
-	Music music;
-	Keyboard keyboard;
-	Menu menuState;
-	while (1)
+	Images image(UNITX, UNITY);
+	MenuState menuState;
+	while ((menuState = menu()) != MenuState::EXIT)
 	{
-		menuState = menu(image, keyboard, music);
 		switch (menuState)
 		{
-		case(Menu::BEGIN):
+		case(MenuState::PLAY):
 			music.menuStop();
-			game(image, keyboard, music); break;
-		case(Menu::EXIT):return 0;
+			do
+			{
+				if (game() == -1)
+				{
+					break;
+				}
+			} while (gameover() != GameoverState::EXIT);
+			break;
+		case(MenuState::EXIT):;
 		}
 		Sleep(200);
 	}
-	//menu(image, keyboard, music);
-	//game(image, keyboard, music);
-	//Sleep(1000);
 	return 0;
 }
-
 int resourceCheck()
 {
 	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
@@ -100,133 +101,134 @@ int resourceCheck()
 		return -1;
 	}
 }
-
-Menu menu(Images& image, Keyboard& keyboard, Music& music)
+MenuState menu()
 {
 	image.menuInit();
 	music.menu();
-	Menu state = BEGIN;
+	Timer timer;
+	MenuState state = MenuState::PLAY;
 	while (1)
 	{
-		keyboard.flush();
-		keyboard.menu(state);
-		//if (keyboard.menu(state))
-		if(keyboard.enter())
+		if (keyboard.enter())
 		{
 			return state;
 		}
+		keyboard.menu(state);
 
 		image.flushBegin();
-		image.placeButton(MENUX / 2, 10, state == Menu::BEGIN);
-		image.placeButton(MENUX / 2, 14, state == Menu::EXIT);
-		image.placeTitle(clock());
+		image.placePlay(MENUX / 2, 10, state == MenuState::PLAY);
+		image.placeExit(MENUX / 2, 13, state == MenuState::EXIT);
+		image.placeTitle(timer.getTime());
 		image.flushEnd();
-		Sleep(160);
+		Sleep(150);
 	}
 }
-
-void game(Images& image, Keyboard& keyboard, Music& music)
+int game()
 {
-	//³õÊ¼»¯
-	Snake snake(XUNIT, YUNIT);
-	Apple apple(XUNIT, YUNIT);
+	//åˆå§‹åŒ–
+	Snake snake(UNITX, UNITY);
+	Apple apple(UNITX, UNITY);
 	Timer timer;
 	image.gameInit();
 	music.game();
-	music.musicOn();
-	//ÓÎÏ·Ö÷Ìå
 	apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 	bool appleExist = true;
+	int applePoint = 1;
 	bool goldAppleExist = false;
 	int goldApplePoint = 28;
-	int applePoint = 1;
 	int point = 0;
-	int tick = TICK_HARD;//Î´À´ÄÑ¶ÈÑ¡Ôñ
+	int tick = TICK_HARD;//æœªæ¥éš¾åº¦é€‰æ‹©
+	//æ¸¸æˆä¸»ä½“
 	while (1)
 	{
-		//²»ÖªµÀÄÄÀïÓĞÎÊÌâ£¬ºÃ¼¸´ÎÉßÍ»È»²»¶¯ÁË 
-		//ÄªÃûÆäÃîµÄbug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
-		//¸øÄãÉÕÏã
+		//ä¸çŸ¥é“å“ªé‡Œæœ‰é—®é¢˜ï¼Œå¥½å‡ æ¬¡è›‡çªç„¶ä¸åŠ¨äº† 
+		//è«åå…¶å¦™çš„bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
+		//ç»™ä½ ğŸ‘»è¾£ï¼Œç»™ä½ ä¸Šé¦™
+		//å¥½åƒå¥½ä¹…æ²¡å‡ºç°äº†ï¼Ÿ 2025/11/7
 		/* --------------------------------
 						***
 						|||
 						|||
-					¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª
+					â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 					\		  /
 					 \_______/
 		---------------------------------*/
-		//Ö¡ÂÊ¿ØÖÆ
+		//å¸§ç‡æ§åˆ¶
 		timer.frameStart();
-	
-		//wasd¿ØÖÆ && ÔİÍ£ && ÍË³ö
-		char dir = *snake.SnakeDir();
-		//ÎÒÕæÊÇÌì²Å
-		//ÏÈ¶¨ÒåÎªÉÏÒ»¸ödir£¬ÓĞĞŞ¸Ä¾Í¸ÄÁË£¬Ã»ĞŞ¸Ä°´Ô­À´
-		//Ê¡È¥ÁËÔÙĞ´Ò»¸ö¶ÁÈ¡Dir[0]µÄº¯Êı
-		if (keyboard.game(dir))
+		// æš‚åœ && é€€å‡º
+		if (keyboard.space() || keyboard.escape())
 		{
-			int resume = 0;
 			music.gamePause();
 			music.click();
-			// ÖĞ¼äÏÔÊ¾ÔİÍ£½çÃæ£¬Ö®ºóĞèÒª·ÖÖ§£¬resume»òÕßexit
+			// ä¸­é—´æ˜¾ç¤ºæš‚åœç•Œé¢ï¼Œä¹‹åéœ€è¦åˆ†æ”¯ï¼Œresumeæˆ–è€…exit
 			do {
-				Sleep(TICK_HARD);//ÕâÒ»¾äºÃÏñºÜ¹Ø¼ü£¬É¾ÁË²»ĞĞ
-				image.placePause(XUNIT / 2 - 2, YUNIT / 2 - 3);//ÏÔÊ¾ÔİÍ£
-				keyboard.flush();//Çå¿Õ»º³åÇø£¬ÓÃ´¦²»Ã÷
+				image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//æ˜¾ç¤ºæš‚åœ
+				Sleep(250);//è¿™ä¸€å¥å¥½åƒå¾ˆå…³é”®ï¼Œåˆ äº†ä¸è¡Œ
 				if (keyboard.space())
 				{
 					music.click();
-					break;//¼ÌĞøÓÎÏ·
-				}//£¨ÒÑ½â¾ö£©ÎªºÎÖ»ÓĞµÚÒ»´Î¶Ô£¬bugbugbug(*_*)(*_*)(*_*)(*_*)
+					break;//ç»§ç»­æ¸¸æˆ
+				}//ï¼ˆå·²è§£å†³ï¼‰ä¸ºä½•åªæœ‰ç¬¬ä¸€æ¬¡å¯¹ï¼Œbugbugbug(*_*)(*_*)(*_*)(*_*)
 				if (keyboard.escape())
 				{
 					music.gameStop();
-					return;//ÍË³ö
+					return -1;//é€€å‡º
 				}
 			} while (1);
 			music.gameResume();
-			//ÔİÍ£Ö®ºótick - framtime ÈÃSleepµÄÊ±¼äÎª¸ºÊı£¬ËùÒÔÒ»Ö±Í£×¡£¬Ë¢ĞÂstart¼´¿É½â¾ö
+			//æš‚åœä¹‹åtick - framtime è®©Sleepçš„æ—¶é—´ä¸ºè´Ÿæ•°ï¼Œæ‰€ä»¥ä¸€ç›´åœä½ï¼Œåˆ·æ–°startå³å¯è§£å†³
 			timer.frameStart();
 		}
-
-		//ËÀÍöÅĞ¶¨
-		snake.snakeHeadNextTick(dir);//¸üĞÂÉßÍ·×ø±ê
+		//wasdæ§åˆ¶
+		/*
+		æˆ‘çœŸæ˜¯å¤©æ‰
+		å…ˆå®šä¹‰ä¸ºä¸Šä¸€ä¸ªdirï¼Œæœ‰ä¿®æ”¹å°±æ”¹äº†ï¼Œæ²¡ä¿®æ”¹æŒ‰åŸæ¥
+		çœå»äº†å†å†™ä¸€ä¸ªè¯»å–Dir[0]çš„å‡½æ•°
+		*/
+		char dir = *snake.SnakeDir();
+		keyboard.game(dir);
+		//æ›´æ–°è›‡å¤´ä¸‹ä¸€åˆ»åæ ‡
+		snake.snakeHeadNextTick(dir);
+		//æ­»äº¡åˆ¤å®š
 		if (snake.death())
 		{
-			music.gameStop();
 			music.death();
-			Sleep(1000);
-			return;
+			music.gameStop();
+			image.temp();
+			Sleep(500);
+			return 0;
 		}
-		//ÉßµÄÒÆ¶¯ && ³ÔÆ»¹û && ³Ô½ğÆ»¹û
+		//åˆ¤å®šé‡‘è‹¹æœå­˜åœ¨æ˜¯å¦è¶…æ—¶
 		int goldAppleTime = timer.goldAppleTime();
-		if (goldAppleTime > TIME_TOTAL)//ÅĞ¶¨½ğÆ»¹û´æÔÚÊÇ·ñ³¬Ê±
+		if (goldAppleTime > TIME_TOTAL)
 		{
 			goldAppleExist = false;
 		}
-		if (snake.eatApple(apple.AppleX(), apple.AppleY()))//ÅĞ¶¨ÊÇ·ñ³Ôµ½Æ»¹û
+		//åˆ¤å®šæ˜¯å¦åƒåˆ°è‹¹æœ && é‡‘è‹¹æœ && è›‡ç”Ÿé•¿
+		if (snake.eatApple(apple.AppleX(), apple.AppleY()))
 		{
 			music.eat();
 			point += applePoint;
 			apple.counter += 1;
 			appleExist = false;
-		}
-		else if (goldAppleExist && snake.eatGoldApple(apple.GoldAppleX(), apple.GoldAppleY()))
+		}else 
+		if (goldAppleExist && snake.eatGoldApple(apple.GoldAppleX(), apple.GoldAppleY()))
+		{
+			music.bell();
+			music.eat();
+			point += goldApplePoint * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
+			if (goldAppleTime / 1000 == 1)
 			{
-				music.eat();
-				music.bell();
-				point += goldApplePoint * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
-				if (goldAppleTime / 1000 == 1)
-				{
-					apple.counter += 3;
-				}
-				goldAppleExist = false;
+				apple.counter += 3;
 			}
+			goldAppleExist = false;
+		}
+		//è›‡çš„ç§»åŠ¨
 		snake.move();
-		//Éú³ÉÆ»¹û && Éú³É½ğÆ»¹û
+		//ç”Ÿæˆè‹¹æœ && ç”Ÿæˆé‡‘è‹¹æœ
 		if (!appleExist)
 		{
-			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());//Éú³ÉÆ»¹û
+			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 			appleExist = true;
 			if (apple.counter % 6 == 0 && !goldAppleExist)
 			{
@@ -235,8 +237,7 @@ void game(Images& image, Keyboard& keyboard, Music& music)
 				timer.goldAppleCreate();
 			}
 		}
-	
-		//Í¼ÏñÊä³ö
+		//å›¾åƒè¾“å‡º
 		image.flushBegin();
 		if (goldAppleExist)
 		{
@@ -247,8 +248,25 @@ void game(Images& image, Keyboard& keyboard, Music& music)
 		image.placeApple(apple.AppleX(), apple.AppleY());
 		image.placeBoard(point);
 		image.flushEnd();
-	
-		//Ö¡ÂÊ¿ØÖÆ
+		//å¸§ç‡æ§åˆ¶
 		Sleep(tick - timer.frameTime());
+	}
+}
+GameoverState gameover()
+{
+	GameoverState state = GameoverState::AGAIN;
+	while (1)
+	{
+		if (keyboard.enter())
+		{
+			return state;
+		}
+		keyboard.gameover(state);
+		image.flushBegin();
+		image.tempDisplay();
+		image.placePlay(UNITX / 2, 10, state == GameoverState::AGAIN);
+		image.placeExit(UNITX / 2, 13, state == GameoverState::EXIT);
+		image.flushEnd();
+		Sleep(150);
 	}
 }

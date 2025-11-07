@@ -1,49 +1,58 @@
 #include "Keyboard.h"
 #include <windows.h>
 
-void Keyboard::menu(Menu& state)
+void Keyboard::menu(MenuState& state)
 {
     if (up())
     {
-        state = Menu((state - 1 + 2) % 2);
+        state = MenuState(((int)state - 1 + 2) % 2);
         return;
     }
     else if (down())
     {
-        state = Menu((state + 1) % 2);
+        state = MenuState(((int)state + 1) % 2);
         return;
     }
     return;
 }
-bool Keyboard::game(char& dir)
+void Keyboard::game(char& dir)
 {
     if (up())
     {
         dir = 'w';
-        return 0;
+        return;
     }
     else if (left())
     {
         dir = 'a';
-        return 0;
+        return;
     }
     else if (down())
     {
         dir = 's';
-        return 0;
+        return;
     }
     else if (right())
     {
         dir = 'd';
-        return 0;
+        return;
     }
-    else if (space() || escape())
-    {
-        return 1;
-    }
-    return 0;
+    return;
 }
-
+void Keyboard::gameover(GameoverState& state)
+{
+    if (up())
+    {
+        state = GameoverState(((int)state - 1 + 2) % 2);
+        return;
+    }
+    else if (down())
+    {
+        state = GameoverState(((int)state + 1) % 2);
+        return;
+    }
+    return;
+}
 bool Keyboard::up()
 {
     return GetAsyncKeyState(VK_UP) & 0x8000 || GetAsyncKeyState('W') & 0x8000;
@@ -73,11 +82,11 @@ bool Keyboard::escape()
     return GetAsyncKeyState(VK_ESCAPE) & 0x8000;
 }
 
-void Keyboard::flush()
-{
-    MSG m;
-    while (PeekMessage(&m, NULL, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE))
-    {
-        GetMessage(&m, NULL,WM_KEYFIRST, WM_KEYLAST);
-    }
-}
+//void Keyboard::flush()
+//{
+//    MSG m;
+//    while (PeekMessage(&m, NULL, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE))
+//    {
+//        GetMessage(&m, NULL,WM_KEYFIRST, WM_KEYLAST);
+//    }
+//}

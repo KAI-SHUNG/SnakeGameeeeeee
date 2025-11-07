@@ -1,12 +1,15 @@
 #pragma once
-enum Menu { BEGIN, EXIT };
+enum class MenuState { PLAY, EXIT };
+enum class GameoverState { AGAIN, EXIT };
 class Keyboard
 {
 public:
-	//返回1代表enter
-	void menu(Menu& state);
-	//返回1代表暂停
-	bool game(char& dir);
+	//修改Menu状态
+	void menu(MenuState& state);
+	//修改dir
+	void game(char& dir);
+	//修改Gameover后状态
+	void gameover(GameoverState& state);
 	bool up();
 	bool left();
 	bool down();
@@ -16,5 +19,4 @@ public:
 	bool escape();
 	//清空输入缓冲区
 	void flush();
-
 };

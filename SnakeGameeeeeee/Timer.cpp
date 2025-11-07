@@ -12,18 +12,21 @@ void Timer::frameStart()
 {
 	frame_start = clock();
 }
-
-void Timer::goldAppleCreate()
-{
-	goldApple_create = clock();
-}
-
 int Timer::frameTime()
 {
 	return clock() - frame_start;
 }
 
+void Timer::goldAppleCreate()
+{
+	goldApple_create = clock();
+}
 int Timer::goldAppleTime()
 {
 	return clock() - goldApple_create;
+}
+
+int Timer::getTime()
+{
+	return clock();
 }

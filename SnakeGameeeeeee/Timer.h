@@ -6,8 +6,9 @@ private:
 public:
 	Timer();
 	void frameStart();
-	void goldAppleCreate();
 	int frameTime();
+	void goldAppleCreate();
 	int goldAppleTime();
+	int getTime();
 
 };

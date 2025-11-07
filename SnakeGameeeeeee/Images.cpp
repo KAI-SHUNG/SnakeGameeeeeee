@@ -1,5 +1,4 @@
 #include "Images.h"
-#include <string>
 #include <easyx.h>
 #include <math.h>
 #pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
@@ -14,32 +13,22 @@
 #define MENUX 24
 #define MENUY 20
 
-IMAGE apple;
-IMAGE goldApple;
-IMAGE sHeadW;
-IMAGE sHeadA;
-IMAGE sHeadS;
-IMAGE sHeadD;
-IMAGE sBodyAD;
-IMAGE sBodyWS;
-IMAGE sTurnUL;
-IMAGE sTurnDR;
-IMAGE sTurnDL;
-IMAGE sTurnUR;
-IMAGE sTailW;
-IMAGE sTailA;
-IMAGE sTailS;
-IMAGE sTailD;
-IMAGE button;
-IMAGE buttonPressed;
-IMAGE soundOn;
-IMAGE soundOff;
+IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//蛇头
+IMAGE sBodyAD, sBodyWS;//蛇身
+IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇转弯
+IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
+IMAGE apple, goldApple;
+IMAGE button, buttonPressed;
+IMAGE buttonPlay, buttonPlayPressed;
+IMAGE buttonExit, buttonExitPressed;
+IMAGE soundOn, soundOff;
 IMAGE wall;
 IMAGE title;
 IMAGE pause;
 IMAGE bar;
 LOGFONT textFont;
 LOGFONT numberFont;
+IMAGE tempImage;
 
 inline void putimage_alpha(int x, int y, IMAGE* img)
 {
@@ -98,6 +87,10 @@ int Images::resource()
 	loadimage(&sTailD, _T("./Resource/Images/snake_tail_d.png"));
 	loadimage(&button, _T("./Resource/Images/button.png"));
 	loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"));
+	loadimage(&buttonPlay, _T("./Resource/Images/button_play.png"));
+	loadimage(&buttonPlayPressed, _T("./Resource/Images/button_play_pressed.png"));
+	loadimage(&buttonExit, _T("./Resource/Images/button_exit.png"));
+	loadimage(&buttonExitPressed, _T("./Resource/Images/button_exit_pressed.png"));
 	loadimage(&soundOn, _T("./Resource/Images/sound_on.png"));
 	loadimage(&soundOff, _T("./Resource/Images/sound_off.png"));
 	loadimage(&wall, _T("./Resource/Images/wall.png"));
@@ -114,7 +107,6 @@ void Images::menuInit()
 	setbkcolor(BKCOLOR);
 	cleardevice();
 }
-
 void Images::gameInit()
 {
 	initgraph(UnitX * UNIT * RATIO, (BOARD + UnitY) * UNIT * RATIO, EX_NOCLOSE);
@@ -145,6 +137,101 @@ void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeD
 		snakeY[snakeLength - 1],
 		snakeDir[snakeLength - 2]);
 	//注意这里snakeTial读取的应该是length-2的Dir
+}
+void Images::placeApple(int x, int y)
+{
+	putimage_alpha(x, y, &apple);
+}
+void Images::placeGoldApple(int x, int y)
+{
+	putimage_alpha(x, y, &goldApple);
+}
+
+void Images::placeButton(int x, int y, bool state)
+{
+	int h = button.getheight();
+	int w = button.getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+		GetImageHDC(state ? &buttonPressed : &button), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+void Images::placePlay(int x, int y, bool state)
+{
+	int h = button.getheight();
+	int w = button.getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+		GetImageHDC(state ? &buttonPlayPressed : &buttonPlay), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+void Images::placeExit(int x, int y, bool state)
+{
+	int h = button.getheight();
+	int w = button.getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+		GetImageHDC(state ? &buttonExitPressed : &buttonExit), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+//void Images::placeButtonPressed(int x, int y)
+//{
+//	putimage_alpha(x, y, &buttonPressed);
+//}
+void Images::placeWall(int x, int y)
+{
+	putimage_alpha(x, y, &wall);
+}
+void Images::placeTitle(int clock)
+{
+	int h = title.getheight();
+	int w = title.getwidth();
+	AlphaBlend(GetImageHDC(NULL), (MENUX * UNIT - w) / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
+		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+void Images::placePause(int x, int y)
+{
+	putimage_alpha(x, y, &pause);
+}
+void Images::placeBoard(int point)
+{
+	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
+
+	TCHAR textpoint[] = _T("Points:");
+	settextstyle(&textFont);
+	outtextxy(0.5 * UNIT, 4, textpoint);
+
+	TCHAR Point[6];
+	_stprintf_s(Point, _T("%d"), point);
+	settextstyle(&numberFont);
+	outtextxy(6 * UNIT, -3, Point);
+}
+void Images::placeBar(int time, int time_total)
+{
+	int h = bar.getheight();
+	int w = bar.getwidth();
+	AlphaBlend(GetImageHDC(NULL), (UnitX * UNIT - w) / 2, BOARD * UNIT, w * (time_total - time) / time_total, h,
+		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+void Images::placeSoundOn(int x, int y)
+{
+	putimage_alpha(x, y, &soundOn);
+}
+void Images::placeSoundOff(int x, int y)
+{
+	putimage_alpha(x, y, &soundOff);
+}
+
+void Images::flushBegin()
+{
+	BeginBatchDraw();
+	cleardevice();
+}
+void Images::flushEnd()
+{
+	EndBatchDraw();
+}
+void Images::temp()
+{
+	getimage(&tempImage, 0, 0, UnitX * UNIT, (BOARD + UnitY) * UNIT);
+}
+void Images::tempDisplay()
+{
+	putimage(0, 0, &tempImage);
 }
 
 void Images::snakeHead(int x, int y, char dir)
@@ -203,88 +290,6 @@ void Images::snakeTail(int x, int y, char dir)
 	case 'd':putimage_alpha(x, y, &sTailD); break;
 	}
 }
-
-void Images::placeApple(int x, int y)
-{
-	putimage_alpha(x, y, &apple);
-}
-void Images::placeGoldApple(int x, int y)
-{
-	putimage_alpha(x, y, &goldApple);
-}
-
-void Images::placeButton(int x, int y, bool state)
-{
-	int h = button.getheight();
-	int w = button.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
-		GetImageHDC(state ? &buttonPressed : &button), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-//void Images::placeButtonPressed(int x, int y)
-//{
-//	putimage_alpha(x, y, &buttonPressed);
-//}
-
-void Images::placeSoundOn(int x, int y)
-{
-	putimage_alpha(x, y, &soundOn);
-}
-void Images::placeSoundOff(int x, int y)
-{
-	putimage_alpha(x, y, &soundOff);
-}
-
-void Images::placeWall(int x, int y)
-{
-	putimage_alpha(x, y, &wall);
-}
-
-void Images::placeTitle(int clock)
-{
-	int h = title.getheight();
-	int w = title.getwidth();
-	AlphaBlend(GetImageHDC(NULL), (MENUX * UNIT - w) / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
-		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-
-void Images::placePause(int x, int y)
-{
-	putimage_alpha(x, y, &pause);
-}
-
-void Images::placeBoard(int point)
-{
-	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
-
-	TCHAR textpoint[] = _T("Points:");
-	settextstyle(&textFont);
-	outtextxy(0.5 * UNIT, 4, textpoint);
-
-	TCHAR Point[6];
-	_stprintf_s(Point, _T("%d"), point);
-	settextstyle(&numberFont);
-	outtextxy(6 * UNIT, -3, Point);
-}
-
-void Images::placeBar(int time, int time_total)
-{
-	int h = bar.getheight();
-	int w = bar.getwidth();
-	AlphaBlend(GetImageHDC(NULL), (UnitX * UNIT - w) / 2, BOARD * UNIT, w * (time_total - time) / time_total, h,
-		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-
-void Images::flushBegin()
-{
-	BeginBatchDraw();
-	cleardevice();
-}
-
-void Images::flushEnd()
-{
-	EndBatchDraw();
-}
-
 //void Images::test()
 //{
 //	placeApple(1, 0);
