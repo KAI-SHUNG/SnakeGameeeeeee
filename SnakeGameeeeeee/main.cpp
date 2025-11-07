@@ -73,14 +73,16 @@ int main()
 		menuState = menu(image, keyboard, music);
 		switch (menuState)
 		{
-		case(Menu::BEGIN):game(image, keyboard, music); break;
+		case(Menu::BEGIN):
+			music.menuStop();
+			game(image, keyboard, music); break;
 		case(Menu::EXIT):return 0;
 		}
 		Sleep(200);
 	}
 	//menu(image, keyboard, music);
 	//game(image, keyboard, music);
-	Sleep(1000);
+	//Sleep(1000);
 	return 0;
 }
 
@@ -111,34 +113,15 @@ Menu menu(Images& image, Keyboard& keyboard, Music& music)
 		//if (keyboard.menu(state))
 		if(keyboard.enter())
 		{
-			if (state == (int)Menu::EXIT)
-			{
-				music.menuStop();
-				image.close();
-				return Menu::EXIT;
-			}
-			if (state == (int)Menu::BEGIN)
-			{
-				music.menuStop();
-				image.close();
-				return Menu::BEGIN;
-			}
+			return state;
 		}
 
 		image.flushBegin();
-		if (state == BEGIN)
-		{
-			image.placeButton(MENUX / 2 - 2, 12, 1);
-			image.placeButton(MENUX / 2 - 2, 14, 0);
-		}
-		else
-		{
-			image.placeButton(MENUX / 2 - 2, 12, 0);
-			image.placeButton(MENUX / 2 - 2, 14, 1);
-		}
+		image.placeButton(MENUX / 2, 10, state == Menu::BEGIN);
+		image.placeButton(MENUX / 2, 14, state == Menu::EXIT);
 		image.placeTitle(clock());
 		image.flushEnd();
-		Sleep(120);
+		Sleep(160);
 	}
 }
 
@@ -197,7 +180,6 @@ void game(Images& image, Keyboard& keyboard, Music& music)
 				}//（已解决）为何只有第一次对，bugbugbug(*_*)(*_*)(*_*)(*_*)
 				if (keyboard.escape())
 				{
-					image.close();
 					music.gameStop();
 					return;//退出
 				}
@@ -211,7 +193,6 @@ void game(Images& image, Keyboard& keyboard, Music& music)
 		snake.snakeHeadNextTick(dir);//更新蛇头坐标
 		if (snake.death())
 		{
-			image.close();
 			music.gameStop();
 			music.death();
 			Sleep(1000);
@@ -260,7 +241,7 @@ void game(Images& image, Keyboard& keyboard, Music& music)
 		if (goldAppleExist)
 		{
 			image.placeGoldApple(apple.GoldAppleX(), apple.GoldAppleY());
-			image.placeBar(XUNIT / 2, 0, goldAppleTime, TIME_TOTAL);
+			image.placeBar(goldAppleTime, TIME_TOTAL);
 		}
 		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
 		image.placeApple(apple.AppleX(), apple.AppleY());

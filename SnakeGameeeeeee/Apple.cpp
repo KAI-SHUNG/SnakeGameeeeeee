@@ -36,18 +36,18 @@ void Apple::createGoldApple(const int* x, const int* y, int length)
 		check = 1;
 		goldAppleX = rand() % UnitX;
 		goldAppleY = rand() % UnitY;
-		if (goldAppleX == appleX && goldAppleY == appleY)
-		{
-			check = 0;
-			continue;
-		}
 		for (int i = 0; i < length; ++i)
 		{
-			if (*(x + i) == appleX && *(y + i) == appleY)
+			if (*(x + i) == goldAppleX && *(y + i) == goldAppleY)
 			{
 				check = 0;
 				break;
 			}
+		}
+		if (goldAppleX == appleX && goldAppleY == appleY)
+		{
+			check = 0;
+			continue;
 		}
 	} while (!check);
 }

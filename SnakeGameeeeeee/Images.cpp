@@ -213,13 +213,12 @@ void Images::placeGoldApple(int x, int y)
 	putimage_alpha(x, y, &goldApple);
 }
 
-void Images::placeButton(int x, int y, int state)
+void Images::placeButton(int x, int y, bool state)
 {
-	switch (state)
-	{
-	case(0):putimage_alpha(x, y, &button); break;
-	case(1):putimage_alpha(x, y, &buttonPressed); break;
-	}
+	int h = button.getheight();
+	int w = button.getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+		GetImageHDC(state ? &buttonPressed : &button), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 //void Images::placeButtonPressed(int x, int y)
 //{
@@ -244,7 +243,7 @@ void Images::placeTitle(int clock)
 {
 	int h = title.getheight();
 	int w = title.getwidth();
-	AlphaBlend(GetImageHDC(NULL), 12 * UNIT - w / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
+	AlphaBlend(GetImageHDC(NULL), (MENUX * UNIT - w) / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
 		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
@@ -267,11 +266,11 @@ void Images::placeBoard(int point)
 	outtextxy(6 * UNIT, -3, Point);
 }
 
-void Images::placeBar(int x, int y, int time, int time_total)
+void Images::placeBar(int time, int time_total)
 {
 	int h = bar.getheight();
 	int w = bar.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT, w * (time_total - time) / time_total, h,
+	AlphaBlend(GetImageHDC(NULL), (UnitX * UNIT - w) / 2, BOARD * UNIT, w * (time_total - time) / time_total, h,
 		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
@@ -286,10 +285,6 @@ void Images::flushEnd()
 	EndBatchDraw();
 }
 
-void Images::close()
-{
-	closegraph();
-}
 //void Images::test()
 //{
 //	placeApple(1, 0);
