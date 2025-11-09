@@ -32,7 +32,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //						吃六个苹果生成金苹果 ^^^ ，在sweet moment吃到金苹果下一次变为吃三个苹果就生成金苹果 ^^^
 //							仿照高中诺基亚的逻辑，倒计时6秒，加分递减，sweet moment: 5 ^^^
 //							加一个进度条，可以倒计时 ^^^
-//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ，鼠标控制的加入
+//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ，难度选择 ， 鼠标控制的加入
 //下下下下一步		menu排行榜、存档
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
@@ -45,14 +45,19 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Timer.h"
 #include "Snake.h"
 #include "Apple.h"
-#define MENUX 24
-#define MENUY 20
-#define UNITX 16//X共16单元格
-#define UNITY 20//Y共20单元格
-#define TICK_EASY 250	//帧时长250ms
-#define TICK_NORMAL 150	//帧时长150ms
-#define TICK_HARD 100	//帧时长100ms
-#define TIME_TOTAL 6000	//金苹果存在时间6000ms
+
+#define MENUX 24			//菜单界面X共24单元格
+#define MENUY 20			//菜单界面Y共20单元格
+
+#define UNITX 16			//游戏界面X共16单元格
+#define UNITY 20			//游戏界面Y共20单元格
+#define TICK_EASY 250		//简单模式帧时长250ms
+#define TICK_NORMAL 150		//普通模式帧时长150ms
+#define TICK_HARD 100		//困难模式帧时长100ms
+#define TIME_TOTAL 6000		//金苹果存在时间6000ms
+#define POINT_APPLE 1		//苹果分值
+#define POINT_GOLDAPPLE 26	//金苹果分值
+
 Images image(MENUX, MENUY,UNITX, UNITY);
 Keyboard keyboard;
 Music music;
@@ -142,11 +147,8 @@ int Game()
 	Timer timer;
 	image.gameInit();
 	music.game();
-	apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
-	bool appleExist = true;
-	int applePoint = 1;
+	bool appleExist = false;
 	bool goldAppleExist = false;
-	int goldApplePoint = 28;
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
 	//游戏主体
@@ -218,7 +220,7 @@ int Game()
 		if (snake.eatApple(apple.AppleX(), apple.AppleY()))
 		{
 			music.eat();
-			score += applePoint;
+			score += POINT_APPLE;
 			apple.counter += 1;
 			appleExist = false;
 		}else 
@@ -226,7 +228,7 @@ int Game()
 		{
 			music.bell();
 			music.eat();
-			score += goldApplePoint * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
+			score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
 			if (goldAppleTime / 1000 == 1)
 			{
 				apple.counter += 3;
@@ -240,7 +242,7 @@ int Game()
 		{
 			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 			appleExist = true;
-			if (apple.counter % 6 == 0 && !goldAppleExist)
+			if (apple.counter % 6 == 0 && !goldAppleExist && apple.counter != 0)
 			{
 				apple.createGoldApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
 				goldAppleExist = true;
