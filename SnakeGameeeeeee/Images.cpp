@@ -40,11 +40,11 @@ inline void putimage_alpha(int x, int y, IMAGE* img)
 
 void setTextFont()
 {
-	textFont.lfHeight = 15;
+	textFont.lfHeight = 24;
 	textFont.lfWeight = FW_BOLD;
 	textFont.lfItalic = 0;
 	textFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(textFont.lfFaceName, _T("Centuries"));
+	_tcscpy_s(textFont.lfFaceName, _T("Courier New"));
 	setbkmode(TRANSPARENT);
 	settextcolor(TEXTCOLOR);
 }
@@ -192,9 +192,11 @@ void Images::placeWall(int x, int y)
 }
 void Images::placeTitle(int clock)
 {
+	int deltaY = clock / 300 % 8 ;
+	deltaY < 4 ? deltaY = deltaY - 2 : deltaY = 6 - deltaY;
 	int h = title.getheight();
 	int w = title.getwidth();
-	AlphaBlend(GetImageHDC(NULL), (MenuX * UNIT - w) / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
+	AlphaBlend(GetImageHDC(NULL), (MenuX * UNIT - w) / 2, UNIT + deltaY, w, h,
 		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 void Images::placePause(int x, int y)
@@ -207,12 +209,12 @@ void Images::placeBoard(int score)
 
 	TCHAR textScore[] = _T("Score:");
 	settextstyle(&textFont);
-	outtextxy(0.5 * UNIT, 4, textScore);
+	outtextxy(0, 0, textScore);
 
 	TCHAR Score[6];
 	_stprintf_s(Score, _T("%d"), score);
 	settextstyle(&numberFont);
-	outtextxy(6 * UNIT, -3, Score);
+	outtextxy(7.5 * UNIT, -3, Score);
 }
 void Images::placeBar(int time, int time_total)
 {
