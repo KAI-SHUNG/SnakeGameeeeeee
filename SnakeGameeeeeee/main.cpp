@@ -32,7 +32,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //						吃六个苹果生成金苹果 ^^^ ，在sweet moment吃到金苹果下一次变为吃三个苹果就生成金苹果 ^^^
 //							仿照高中诺基亚的逻辑，倒计时6秒，加分递减，sweet moment: 5 ^^^
 //							加一个进度条，可以倒计时 ^^^
-//下下一步			menu界面 ^^^ ，再来一局的重置 ，鼠标控制的加入
+//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ，鼠标控制的加入
 //下下下下一步		menu排行榜、存档
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
@@ -59,31 +59,34 @@ Keyboard keyboard;
 Music music;
 
 int resourceCheck();
-MenuState menu();
-int game();
-GameoverState gameover();
+MenuState Menu(MenuState&);
+void Sound();
+int Game();
+GameoverState Gameover();
 
 int main()
 {
-	Images image(UNITX, UNITY);
-	MenuState menuState;
-	while ((menuState = menu()) != MenuState::EXIT)
+	MenuState menuState = MenuState::PLAY;
+	while(1)
 	{
+		Menu(menuState);
 		switch (menuState)
 		{
 		case(MenuState::PLAY):
 			music.menuStop();
-			do
-			{
-				if (game() == -1)
+			do{
+				int score = Game();
+				if (score == -1)
 				{
 					break;
 				}
-			} while (gameover() != GameoverState::EXIT);
+				Sleep(500);
+			} while (Gameover() != GameoverState::EXIT);
 			break;
-		case(MenuState::EXIT):;
+		case(MenuState::EXIT):
+			return 0;
 		}
-		Sleep(200);
+		Sleep(TICK_NORMAL);
 	}
 	return 0;
 }
@@ -101,15 +104,18 @@ int resourceCheck()
 		return -1;
 	}
 }
-MenuState menu()
+MenuState Menu(MenuState& state)
 {
 	image.menuInit();
 	music.menu();
 	Timer timer;
-	MenuState state = MenuState::PLAY;
 	while (1)
 	{
 		if (keyboard.enter())
+		{
+			return state;
+		}
+		if (state == MenuState::EXIT && keyboard.escape())
 		{
 			return state;
 		}
@@ -120,14 +126,24 @@ MenuState menu()
 		image.placeExit(MENUX / 2, 13, state == MenuState::EXIT);
 		image.placeTitle(timer.getTime());
 		image.flushEnd();
-		Sleep(150);
+		Sleep(TICK_NORMAL);
 	}
 }
-int game()
+void Sound()
+{
+	while (1)
+	{
+		image.flushBegin();
+		//image.placeSound(UNITX / 2 - 2, UNITY / 2 - 2, 1);
+		//image.placeSound(UNITX / 2 - 2, UNITY / 2 - 2, 1);
+		image.flushEnd();
+	}
+}
+int Game()
 {
 	//初始化
-	Snake snake(UNITX, UNITY);
 	Apple apple(UNITX, UNITY);
+	Snake snake(UNITX, UNITY);
 	Timer timer;
 	image.gameInit();
 	music.game();
@@ -136,7 +152,7 @@ int game()
 	int applePoint = 1;
 	bool goldAppleExist = false;
 	int goldApplePoint = 28;
-	int point = 0;
+	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
 	//游戏主体
 	while (1)
@@ -158,8 +174,8 @@ int game()
 		// 暂停 && 退出
 		if (keyboard.space() || keyboard.escape())
 		{
-			music.gamePause();
 			music.click();
+			music.gamePause();
 			// 中间显示暂停界面，之后需要分支，resume或者exit
 			do {
 				image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//显示暂停
@@ -186,17 +202,16 @@ int game()
 		省去了再写一个读取Dir[0]的函数
 		*/
 		char dir = *snake.SnakeDir();
-		keyboard.game(dir);
+		keyboard.move(dir);
 		//更新蛇头下一刻坐标
 		snake.snakeHeadNextTick(dir);
 		//死亡判定
 		if (snake.death())
 		{
+			image.temp();
 			music.death();
 			music.gameStop();
-			image.temp();
-			Sleep(500);
-			return 0;
+			return score;
 		}
 		//判定金苹果存在是否超时
 		int goldAppleTime = timer.goldAppleTime();
@@ -208,7 +223,7 @@ int game()
 		if (snake.eatApple(apple.AppleX(), apple.AppleY()))
 		{
 			music.eat();
-			point += applePoint;
+			score += applePoint;
 			apple.counter += 1;
 			appleExist = false;
 		}else 
@@ -216,7 +231,7 @@ int game()
 		{
 			music.bell();
 			music.eat();
-			point += goldApplePoint * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
+			score += goldApplePoint * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
 			if (goldAppleTime / 1000 == 1)
 			{
 				apple.counter += 3;
@@ -241,18 +256,18 @@ int game()
 		image.flushBegin();
 		if (goldAppleExist)
 		{
-			image.placeGoldApple(apple.GoldAppleX(), apple.GoldAppleY());
 			image.placeBar(goldAppleTime, TIME_TOTAL);
+			image.placeGoldApple(apple.GoldAppleX(), apple.GoldAppleY());
 		}
-		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
 		image.placeApple(apple.AppleX(), apple.AppleY());
-		image.placeBoard(point);
+		image.placeBoard(score);
+		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
 		image.flushEnd();
 		//帧率控制
 		Sleep(tick - timer.frameTime());
 	}
 }
-GameoverState gameover()
+GameoverState Gameover()
 {
 	GameoverState state = GameoverState::AGAIN;
 	while (1)
@@ -261,12 +276,17 @@ GameoverState gameover()
 		{
 			return state;
 		}
+		if (keyboard.escape() && state == GameoverState::EXIT)
+		{
+			return state;
+		}
 		keyboard.gameover(state);
+
 		image.flushBegin();
 		image.tempDisplay();
-		image.placePlay(UNITX / 2, 10, state == GameoverState::AGAIN);
+		image.placeAgain(UNITX / 2, 10, state == GameoverState::AGAIN);
 		image.placeExit(UNITX / 2, 13, state == GameoverState::EXIT);
 		image.flushEnd();
-		Sleep(150);
+		Sleep(TICK_NORMAL);
 	}
 }

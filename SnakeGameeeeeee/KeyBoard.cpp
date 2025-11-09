@@ -13,9 +13,14 @@ void Keyboard::menu(MenuState& state)
         state = MenuState(((int)state + 1) % 2);
         return;
     }
+    else if (escape())
+    {
+        state = MenuState::EXIT;
+        return;
+    }
     return;
 }
-void Keyboard::game(char& dir)
+void Keyboard::move(char& dir)
 {
     if (up())
     {
@@ -50,6 +55,10 @@ void Keyboard::gameover(GameoverState& state)
     {
         state = GameoverState(((int)state + 1) % 2);
         return;
+    }
+    else if (escape())
+    {
+        state = GameoverState::EXIT;
     }
     return;
 }

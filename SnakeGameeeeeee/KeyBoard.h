@@ -7,7 +7,7 @@ public:
 	//ÐÞ¸ÄMenu×´Ì¬
 	void menu(MenuState& state);
 	//ÐÞ¸Ädir
-	void game(char& dir);
+	void move(char& dir);
 	//ÐÞ¸ÄGameoverºó×´Ì¬
 	void gameover(GameoverState& state);
 	bool up();

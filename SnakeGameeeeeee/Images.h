@@ -15,6 +15,7 @@ public:
 
 	void placeButton(int x, int y, bool state);
 	void placePlay(int x, int y, bool state);
+	void placeAgain(int x, int y, bool state);
 	void placeExit(int x, int y, bool state);
 	//void placeButtonPressed(int x, int y);
 	void placeWall(int x, int y);
@@ -22,8 +23,8 @@ public:
 	void placePause(int x, int y);
 	void placeBoard(int score);
 	void placeBar(int time, int time_total);
-	void placeSoundOn(int x, int y);
-	void placeSoundOff(int x, int y);
+	void placeSound(int x, int y, bool state);
+	//void placeSoundOff(int x, int y);
 
 	void flushBegin();
 	void flushEnd();

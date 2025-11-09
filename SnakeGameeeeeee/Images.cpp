@@ -20,6 +20,7 @@ IMAGE sTailW, sTailA, sTailS, sTailD;//ÉßÎ²
 IMAGE apple, goldApple;
 IMAGE button, buttonPressed;
 IMAGE buttonPlay, buttonPlayPressed;
+IMAGE buttonAgain, buttonAgainPressed;
 IMAGE buttonExit, buttonExitPressed;
 IMAGE soundOn, soundOff;
 IMAGE wall;
@@ -89,6 +90,8 @@ int Images::resource()
 	loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"));
 	loadimage(&buttonPlay, _T("./Resource/Images/button_play.png"));
 	loadimage(&buttonPlayPressed, _T("./Resource/Images/button_play_pressed.png"));
+	loadimage(&buttonAgain, _T("./Resource/Images/button_again.png"));
+	loadimage(&buttonAgainPressed, _T("./Resource/Images/button_again_pressed.png"));
 	loadimage(&buttonExit, _T("./Resource/Images/button_exit.png"));
 	loadimage(&buttonExitPressed, _T("./Resource/Images/button_exit_pressed.png"));
 	loadimage(&soundOn, _T("./Resource/Images/sound_on.png"));
@@ -156,15 +159,22 @@ void Images::placeButton(int x, int y, bool state)
 }
 void Images::placePlay(int x, int y, bool state)
 {
-	int h = button.getheight();
-	int w = button.getwidth();
+	int h = buttonPlay.getheight();
+	int w = buttonPlay.getwidth();
 	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
 		GetImageHDC(state ? &buttonPlayPressed : &buttonPlay), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
+void Images::placeAgain(int x, int y, bool state)
+{
+	int h = buttonAgain.getheight();
+	int w = buttonAgain.getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+		GetImageHDC(state ? &buttonAgainPressed : &buttonAgain), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
 void Images::placeExit(int x, int y, bool state)
 {
-	int h = button.getheight();
-	int w = button.getwidth();
+	int h = buttonExit.getheight();
+	int w = buttonExit.getwidth();
 	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
 		GetImageHDC(state ? &buttonExitPressed : &buttonExit), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
@@ -187,18 +197,18 @@ void Images::placePause(int x, int y)
 {
 	putimage_alpha(x, y, &pause);
 }
-void Images::placeBoard(int point)
+void Images::placeBoard(int score)
 {
 	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
 
-	TCHAR textpoint[] = _T("Points:");
+	TCHAR textScore[] = _T("Score:");
 	settextstyle(&textFont);
-	outtextxy(0.5 * UNIT, 4, textpoint);
+	outtextxy(0.5 * UNIT, 4, textScore);
 
-	TCHAR Point[6];
-	_stprintf_s(Point, _T("%d"), point);
+	TCHAR Score[6];
+	_stprintf_s(Score, _T("%d"), score);
 	settextstyle(&numberFont);
-	outtextxy(6 * UNIT, -3, Point);
+	outtextxy(6 * UNIT, -3, Score);
 }
 void Images::placeBar(int time, int time_total)
 {
@@ -207,14 +217,14 @@ void Images::placeBar(int time, int time_total)
 	AlphaBlend(GetImageHDC(NULL), (UnitX * UNIT - w) / 2, BOARD * UNIT, w * (time_total - time) / time_total, h,
 		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
-void Images::placeSoundOn(int x, int y)
+void Images::placeSound(int x, int y, bool state)
 {
-	putimage_alpha(x, y, &soundOn);
+	putimage_alpha(x, y, state ? &soundOn : &soundOff);
 }
-void Images::placeSoundOff(int x, int y)
-{
-	putimage_alpha(x, y, &soundOff);
-}
+//void Images::placeSoundOff(int x, int y)
+//{
+//	putimage_alpha(x, y, &soundOff);
+//}
 
 void Images::flushBegin()
 {
