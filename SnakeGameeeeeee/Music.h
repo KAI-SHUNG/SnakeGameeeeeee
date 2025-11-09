@@ -4,6 +4,7 @@ class Music
 {
 public:
 	Music();
+	int loadMusic();
 	void menu();
 	void menuStop();
 	void game();

@@ -1,18 +1,30 @@
 #include "Music.h"
+#include <iostream>
 #include <windows.h>
 #include <mmsystem.h>				// 包含mciSendStringA声明
 #pragma comment(lib, "winmm.lib")	// 链接必要的库
 
 Music::Music()
 {
-	mciSendStringA("open ./Resource/Music/menu_bgm.mp3 type mpegvideo alias menubgm", NULL, 0, NULL);
-	mciSendStringA("open ./Resource/Music/game_bgm.mp3 type mpegvideo alias gamebgm", NULL, 0, NULL);
-	mciSendStringA("open ./Resource/Music/click_sound.mp3 type mpegvideo alias click", NULL, 0, NULL);
-	mciSendStringA("open ./Resource/Music/eat_sound.mp3 type mpegvideo alias eat", NULL, 0, NULL);
-	mciSendStringA("open ./Resource/Music/bell_sound.mp3 type mpegvideo alias bell", NULL, 0, NULL);
-	mciSendStringA("open ./Resource/Music/death_sound.mp3 type mpegvideo alias death", NULL, 0, NULL);
 }
-
+int Music::loadMusic()
+{
+	if (mciSendStringA("open ./Resource/Music/menu_bgm.mp3 type mpegvideo alias menubgm", NULL, 0, NULL)
+		+ mciSendStringA("open ./Resource/Music/game_bgm.mp3 type mpegvideo alias gamebgm", NULL, 0, NULL)
+		+ mciSendStringA("open ./Resource/Music/click_sound.mp3 type mpegvideo alias click", NULL, 0, NULL)
+		+ mciSendStringA("open ./Resource/Music/eat_sound.mp3 type mpegvideo alias eat", NULL, 0, NULL)
+		+ mciSendStringA("open ./Resource/Music/bell_sound.mp3 type mpegvideo alias bell", NULL, 0, NULL)
+		+ mciSendStringA("open ./Resource/Music/death_sound.mp3 type mpegvideo alias death", NULL, 0, NULL)
+		!= 0)
+	{
+		std::cerr << "Music Resource ERROR!\n";
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
 void Music::menu()
 {
 	mciSendStringA("play menubgm repeat from 0", NULL, 0, NULL);

@@ -3,8 +3,8 @@
 class Images
 {
 public:
-	Images(int unitx, int unity);
-	int resource();
+	Images(int menux, int menuy, int unitx, int unity);
+	int loadImages();
 	void menuInit();
 	void gameInit();
 
@@ -36,6 +36,8 @@ private:
 	void snakeBody(int x, int y, char dir0, char dir1);
 	void snakeTail(int x, int y, char dir);
 
+	const int MenuX;
+	const int MenuY;
 	const int UnitX;
 	const int UnitY;
 };

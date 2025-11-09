@@ -1,6 +1,7 @@
 #include "Images.h"
 #include <easyx.h>
 #include <math.h>
+#include <iostream>
 #pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
 
 #define BKCOLOR 0xF0FFF0			//背景颜色
@@ -10,8 +11,6 @@
 #define UNIT 10						//UNIT_SIZE每个单元格10x10像素
 #define BOARD 2						//计分板行格数
 #define RATIO 2.5					//放大比例
-#define MENUX 24
-#define MENUY 20
 
 IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//蛇头
 IMAGE sBodyAD, sBodyWS;//蛇身
@@ -62,50 +61,55 @@ void setNumberFont()
 }
 
 //输入地图单元格数x，y
-Images::Images(int unitx, int unity)
-	:UnitX(unitx), UnitY(unity)
+Images::Images(int menux, int menuy, int unitx, int unity)
+	:MenuX(menux), MenuY(menuy),UnitX(unitx), UnitY(unity)
 {
-	resource();
 }
-
-int Images::resource()
+int Images::loadImages()
 {
-	loadimage(&apple, _T("./Resource/Images/apple.png"));
-	loadimage(&goldApple, _T("./Resource/Images/gold_apple.png"));
-	loadimage(&sHeadW, _T("./Resource/Images/snake_head_w.png"));
-	loadimage(&sHeadA, _T("./Resource/Images/snake_head_a.png"));
-	loadimage(&sHeadS, _T("./Resource/Images/snake_head_s.png"));
-	loadimage(&sHeadD, _T("./Resource/Images/snake_head_d.png"));
-	loadimage(&sBodyAD, _T("./Resource/Images/snake_body_ad.png"));
-	loadimage(&sBodyWS, _T("./Resource/Images/snake_body_ws.png"));
-	loadimage(&sTurnUL, _T("./Resource/Images/snake_turn_ul.png"));
-	loadimage(&sTurnDR, _T("./Resource/Images/snake_turn_dr.png"));
-	loadimage(&sTurnDL, _T("./Resource/Images/snake_turn_dl.png"));
-	loadimage(&sTurnUR, _T("./Resource/Images/snake_turn_ur.png"));
-	loadimage(&sTailW, _T("./Resource/Images/snake_tail_w.png"));
-	loadimage(&sTailA, _T("./Resource/Images/snake_tail_a.png"));
-	loadimage(&sTailS, _T("./Resource/Images/snake_tail_s.png"));
-	loadimage(&sTailD, _T("./Resource/Images/snake_tail_d.png"));
-	loadimage(&button, _T("./Resource/Images/button.png"));
-	loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"));
-	loadimage(&buttonPlay, _T("./Resource/Images/button_play.png"));
-	loadimage(&buttonPlayPressed, _T("./Resource/Images/button_play_pressed.png"));
-	loadimage(&buttonAgain, _T("./Resource/Images/button_again.png"));
-	loadimage(&buttonAgainPressed, _T("./Resource/Images/button_again_pressed.png"));
-	loadimage(&buttonExit, _T("./Resource/Images/button_exit.png"));
-	loadimage(&buttonExitPressed, _T("./Resource/Images/button_exit_pressed.png"));
-	loadimage(&soundOn, _T("./Resource/Images/sound_on.png"));
-	loadimage(&soundOff, _T("./Resource/Images/sound_off.png"));
-	loadimage(&wall, _T("./Resource/Images/wall.png"));
-	loadimage(&title, _T("./Resource/Images/title.png"));
-	loadimage(&pause, _T("./Resource/Images/pause.png"));
-	loadimage(&bar, _T("./Resource/Images/bar.png"));
-	return 1;
+	if (loadimage(&apple, _T("./Resource/Images/apple.png"))
+		+ loadimage(&goldApple, _T("./Resource/Images/gold_apple.png"))
+		+ loadimage(&sHeadW, _T("./Resource/Images/snake_head_w.png"))
+		+ loadimage(&sHeadA, _T("./Resource/Images/snake_head_a.png"))
+		+ loadimage(&sHeadS, _T("./Resource/Images/snake_head_s.png"))
+		+ loadimage(&sHeadD, _T("./Resource/Images/snake_head_d.png"))
+		+ loadimage(&sBodyAD, _T("./Resource/Images/snake_body_ad.png"))
+		+ loadimage(&sBodyWS, _T("./Resource/Images/snake_body_ws.png"))
+		+ loadimage(&sTurnUL, _T("./Resource/Images/snake_turn_ul.png"))
+		+ loadimage(&sTurnDR, _T("./Resource/Images/snake_turn_dr.png"))
+		+ loadimage(&sTurnDL, _T("./Resource/Images/snake_turn_dl.png"))
+		+ loadimage(&sTurnUR, _T("./Resource/Images/snake_turn_ur.png"))
+		+ loadimage(&sTailW, _T("./Resource/Images/snake_tail_w.png"))
+		+ loadimage(&sTailA, _T("./Resource/Images/snake_tail_a.png"))
+		+ loadimage(&sTailS, _T("./Resource/Images/snake_tail_s.png"))
+		+ loadimage(&sTailD, _T("./Resource/Images/snake_tail_d.png"))
+		+ loadimage(&button, _T("./Resource/Images/button.png"))
+		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
+		+ loadimage(&buttonPlay, _T("./Resource/Images/button_play.png"))
+		+ loadimage(&buttonPlayPressed, _T("./Resource/Images/button_play_pressed.png"))
+		+ loadimage(&buttonAgain, _T("./Resource/Images/button_again.png"))
+		+ loadimage(&buttonAgainPressed, _T("./Resource/Images/button_again_pressed.png"))
+		+ loadimage(&buttonExit, _T("./Resource/Images/button_exit.png"))
+		+ loadimage(&buttonExitPressed, _T("./Resource/Images/button_exit_pressed.png"))
+		+ loadimage(&soundOn, _T("./Resource/Images/sound_on.png"))
+		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png"))
+		+ loadimage(&wall, _T("./Resource/Images/wall.png"))
+		+ loadimage(&title, _T("./Resource/Images/title.png"))
+		+ loadimage(&pause, _T("./Resource/Images/pause.png"))
+		+ loadimage(&bar, _T("./Resource/Images/bar.png"))
+		!= 0)
+	{
+		std::cerr << "Image Resource ERROR!\n";
+		return 1;
+	}
+	else 
+	{
+		return 0;
+	}
 }
-
 void Images::menuInit()
 {
-	initgraph(24 * UNIT * RATIO, 20 * UNIT * RATIO);
+	initgraph(MenuX * UNIT * RATIO, MenuY * UNIT * RATIO);
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
 	cleardevice();
@@ -161,21 +165,21 @@ void Images::placePlay(int x, int y, bool state)
 {
 	int h = buttonPlay.getheight();
 	int w = buttonPlay.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
 		GetImageHDC(state ? &buttonPlayPressed : &buttonPlay), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 void Images::placeAgain(int x, int y, bool state)
 {
 	int h = buttonAgain.getheight();
 	int w = buttonAgain.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
 		GetImageHDC(state ? &buttonAgainPressed : &buttonAgain), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 void Images::placeExit(int x, int y, bool state)
 {
 	int h = buttonExit.getheight();
 	int w = buttonExit.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
 		GetImageHDC(state ? &buttonExitPressed : &buttonExit), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 //void Images::placeButtonPressed(int x, int y)
@@ -190,7 +194,7 @@ void Images::placeTitle(int clock)
 {
 	int h = title.getheight();
 	int w = title.getwidth();
-	AlphaBlend(GetImageHDC(NULL), (MENUX * UNIT - w) / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
+	AlphaBlend(GetImageHDC(NULL), (MenuX * UNIT - w) / 2, (0.5 + sin(clock / 290) / 3.3) * UNIT, w, h,
 		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 void Images::placePause(int x, int y)

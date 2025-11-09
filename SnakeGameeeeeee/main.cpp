@@ -38,6 +38,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //下下下下下下一步	不同地图
 
 #include <Windows.h>
+#include <iostream>
 #include "Images.h"
 #include "Keyboard.h"
 #include "Music.h"
@@ -52,13 +53,12 @@ class道具（加速减速，闪现，技能键，护盾……
 #define TICK_NORMAL 150	//帧时长150ms
 #define TICK_HARD 100	//帧时长100ms
 #define TIME_TOTAL 6000	//金苹果存在时间6000ms
-extern MenuState;
-extern GameoverState;
-Images image(UNITX, UNITY);
+Images image(MENUX, MENUY,UNITX, UNITY);
 Keyboard keyboard;
 Music music;
 
 int resourceCheck();
+int loadFont();
 MenuState Menu(MenuState&);
 void Sound();
 int Game();
@@ -66,6 +66,11 @@ GameoverState Gameover();
 
 int main()
 {
+	if (resourceCheck() != 0)
+	{
+		system("pause");
+		return 1;
+	}
 	MenuState menuState = MenuState::PLAY;
 	while(1)
 	{
@@ -88,21 +93,11 @@ int main()
 		}
 		Sleep(TICK_NORMAL);
 	}
-	return 0;
 }
+
 int resourceCheck()
 {
-	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
-	int addFontResult = AddFontResourceExA(ROG_Fonts_Path, FR_PRIVATE, 0);
-	if (addFontResult > 0)
-	{
-		SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
-		return 0;
-	}
-	else
-	{
-		return -1;
-	}
+	return image.loadImages() + loadFont() + music.loadMusic();
 }
 MenuState Menu(MenuState& state)
 {
@@ -122,8 +117,8 @@ MenuState Menu(MenuState& state)
 		keyboard.menu(state);
 
 		image.flushBegin();
-		image.placePlay(MENUX / 2, 10, state == MenuState::PLAY);
-		image.placeExit(MENUX / 2, 13, state == MenuState::EXIT);
+		image.placePlay(MENUX / 2, 12, state == MenuState::PLAY);
+		image.placeExit(MENUX / 2, 15, state == MenuState::EXIT);
 		image.placeTitle(timer.getTime());
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
@@ -288,5 +283,20 @@ GameoverState Gameover()
 		image.placeExit(UNITX / 2, 13, state == GameoverState::EXIT);
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
+	}
+}
+int loadFont()
+{
+	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
+	int addFontResult = AddFontResourceExA(ROG_Fonts_Path, FR_PRIVATE, 0);
+	if (addFontResult > 0)
+	{
+		SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+		return 0;
+	}
+	else
+	{
+		std::cerr << "Font Resource ERROR!\n";
+		return 1;
 	}
 }
