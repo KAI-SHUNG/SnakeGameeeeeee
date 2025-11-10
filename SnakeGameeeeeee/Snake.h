@@ -33,7 +33,10 @@ public:
 	void move();
 
 	std::vector<Coordinate> coordinate_p();
-	//std::vector<Coordinate> coordinate_p();
+
+	const int x_next();
+	const int y_next();
+
 	//读取蛇长的接口
 	//const int SnakeLength() const;
 	////读取坐标的接口

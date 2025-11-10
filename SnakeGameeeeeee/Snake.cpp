@@ -137,6 +137,14 @@ std::vector<Coordinate> Snake::coordinate_p()
 	return coordinate;
 }
 
+const int x_next()
+{
+	return snakeXNext;
+}
+const int y_next()
+{
+	return snakeYNext;
+}
 
 //const int Snake::SnakeLength() const
 //{
