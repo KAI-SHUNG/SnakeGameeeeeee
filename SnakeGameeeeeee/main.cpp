@@ -209,7 +209,7 @@ int Game()
 		先定义为上一个dir，有修改就改了，没修改按原来
 		省去了再写一个读取Dir[0]的函数
 		*/
-		char dir = *snake.SnakeDir();
+		char dir = snake.coordinate_p().at(0).Dir;
 		keyboard.move(dir);
 		//更新蛇头下一刻坐标
 		snake.snakeHeadNextTick(dir);
@@ -269,7 +269,7 @@ int Game()
 		}
 		image.placeApple(appleX, appleY);
 		image.placeBoard(score);
-		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
+		placeSnake(snake.coordinate_p());
 		image.flushEnd();
 		//帧率控制
 		Sleep(tick - timer.frameTime());
@@ -317,7 +317,7 @@ int loadFont()
 void placeSnake(std::vector<Coordinate> coord)
 {
 	image.snakeHead(coord.at(0).X, coord.at(0).Y, coord.at(0).Dir);
-	for (int i = 1; i < coord.size(); ++i)
+	for (int i = 1; i < coord.size() - 1; ++i)
 	{
 		image.snakeBody(coord.at(i).X, coord.at(i).Y,
 			coord.at(i).Dir, coord.at(i - 1).Dir);

@@ -1,6 +1,5 @@
 #include "Snake.h"
-#include <iostream>
-#include <vector>
+
 
 std::vector<Coordinate> coordinate;
 bool eat_apple = false;
@@ -31,8 +30,8 @@ Snake::Snake(int unitX, int unitY)
 	//setSnakePosition(0, UnitX / 2, UnitY / 2, 'd');
 	//setSnakePosition(1, UnitX / 2 - 1, UnitY / 2, 'd');
 	//length = 2;
-	coordinate.push_back({ UnitX / 2 - 1, UnitY / 2, 'd' });
 	coordinate.push_back({ UnitX / 2, UnitY / 2, 'd' });
+	coordinate.push_back({ UnitX / 2 - 1, UnitY / 2, 'd' });
 	//≤‚ ‘¥˙¬Î
 	//length = 8;
 	//setSnakePosition(0, 3, 1, 'w');

@@ -1,6 +1,7 @@
 #pragma once
 #define ATTENTION "注意，蛇死亡判定未来需要更新墙的坐标，可能需要新的接口"
-
+#include <iostream>
+#include <vector>
 struct Coordinate {
 	int X;
 	int Y;
@@ -34,11 +35,11 @@ public:
 	std::vector<Coordinate> coordinate_p();
 	//std::vector<Coordinate> coordinate_p();
 	//读取蛇长的接口
-	const int SnakeLength() const;
-	//读取坐标的接口
-	const int* SnakeX() const;
-	//读取坐标的接口
-	const int* SnakeY() const;
-	//读取朝向的接口
-	const char* SnakeDir() const;
+	//const int SnakeLength() const;
+	////读取坐标的接口
+	//const int* SnakeX() const;
+	////读取坐标的接口
+	//const int* SnakeY() const;
+	////读取朝向的接口
+	//const char* SnakeDir() const;
 };
