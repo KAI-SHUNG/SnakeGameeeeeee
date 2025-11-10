@@ -1,4 +1,5 @@
 #include "Snake.h"
+#include <iostream>
 #include <vector>
 
 std::vector<Coordinate> coordinate;
@@ -130,9 +131,9 @@ void Snake::move()
 	//setSnakePosition(0, snakeXNext, snakeYNext, snakeDirNext);
 }
 
-const std::vector<Coordinate>* coordinate_p()
+std::vector<Coordinate> Snake::coordinate_p()
 {
-	return &coordinate;
+	return coordinate;
 }
 
 

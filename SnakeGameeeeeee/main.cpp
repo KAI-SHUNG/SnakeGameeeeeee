@@ -63,9 +63,9 @@ int appleX;
 int appleY;
 int goldAppleX;
 int goldAppleY;
-void placeSnake(const std::vector<Coordinate>*);
-void createApple(const std::vector<Coordinate>*);
-void createGoldApple(const std::vector<Coordinate>*);
+void placeSnake(std::vector<Coordinate>);
+void createApple(std::vector<Coordinate>);
+void createGoldApple(std::vector<Coordinate>);
 
 Images image(MENUX, MENUY,UNITX, UNITY);
 Keyboard keyboard;
@@ -314,21 +314,21 @@ int loadFont()
 	}
 }
 
-void placeSnake(const std::vector<Coordinate>* coord)
+void placeSnake(std::vector<Coordinate> coord)
 {
-	snakeHead(snakeX[0], snakeY[0], snakeDir[0]);
-	for (int i = 1; i < snakeLength - 1; ++i)
+	image.snakeHead(coord.at(0).X, coord.at(0).Y, coord.at(0).Dir);
+	for (int i = 1; i < coord.size(); ++i)
 	{
-		snakeBody(snakeX[i], snakeY[i],
-			snakeDir[i], snakeDir[i - 1]);
+		image.snakeBody(coord.at(i).X, coord.at(i).Y,
+			coord.at(i).Dir, coord.at(i - 1).Dir);
 		//注意这里反直觉，方向靠近蛇头的为下一个，但是是i - 1
 	}
-	snakeTail(snakeX[snakeLength - 1],
-		snakeY[snakeLength - 1],
-		snakeDir[snakeLength - 2]);
+	image.snakeTail(coord.at(coord.size() - 1).X,
+		coord.at(coord.size() - 1).Y,
+		coord.at(coord.size() - 2).Dir);
 	//注意这里snakeTial读取的应该是length-2的Dir
 }
-void createApple(const std::vector<Coordinate>* coord)
+void createApple(std::vector<Coordinate> coord)
 {
 	bool check;
 	do
@@ -336,9 +336,9 @@ void createApple(const std::vector<Coordinate>* coord)
 		check = 1;
 		appleX = rand() % UNITX;
 		appleY = rand() % UNITY;
-		for (int i = 0; i < coord->size(); ++i)
+		for (int i = 0; i < coord.size(); ++i)
 		{
-			if (coord->at(i).X == goldAppleX && coord->at(i).Y == goldAppleY)
+			if (coord.at(i).X == goldAppleX && coord.at(i).Y == goldAppleY)
 			{
 				check = 0;
 				break;
@@ -346,7 +346,7 @@ void createApple(const std::vector<Coordinate>* coord)
 		}
 	} while (!check);
 }
-void createGoldApple(const std::vector<Coordinate>* coord)
+void createGoldApple(std::vector<Coordinate> coord)
 {
 	bool check;
 	do
@@ -354,9 +354,9 @@ void createGoldApple(const std::vector<Coordinate>* coord)
 		check = 1;
 		goldAppleX = rand() % UNITX;
 		goldAppleY = rand() % UNITY;
-		for (int i = 0; i < coord->size(); ++i)
+		for (int i = 0; i < coord.size(); ++i)
 		{
-			if (coord->at(i).X == goldAppleX && coord->at(i).Y == goldAppleY)
+			if (coord.at(i).X == goldAppleX && coord.at(i).Y == goldAppleY)
 			{
 				check = 0;
 				break;

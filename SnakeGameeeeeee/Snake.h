@@ -12,6 +12,7 @@ class Snake
 private:
 	int UnitX;
 	int UnitY;
+	std::vector<Coordinate> coordinate;
 	//让蛇坐标循环，取mol
 	int molX(int x); int molY(int y);
 
@@ -30,7 +31,8 @@ public:
 	//蛇移动
 	void move();
 
-	const std::vector<Coordinate>* coordinate_p();
+	std::vector<Coordinate> coordinate_p();
+	//std::vector<Coordinate> coordinate_p();
 	//读取蛇长的接口
 	const int SnakeLength() const;
 	//读取坐标的接口
