@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
 #include "Apple.h"
 
 Apple::Apple(int unitx, int unity)

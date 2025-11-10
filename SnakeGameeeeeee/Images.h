@@ -31,11 +31,11 @@ public:
 	void temp();
 	void tempDisplay();
 	//void test();
-private:
+
 	void snakeHead(int x, int y, char dir);
 	void snakeBody(int x, int y, char dir0, char dir1);
 	void snakeTail(int x, int y, char dir);
-
+private:
 	const int MenuX;
 	const int MenuY;
 	const int UnitX;

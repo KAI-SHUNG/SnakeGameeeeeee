@@ -1,6 +1,12 @@
 #pragma once
-
 #define ATTENTION "注意，蛇死亡判定未来需要更新墙的坐标，可能需要新的接口"
+
+struct Coordinate {
+	int X;
+	int Y;
+	char Dir;
+};
+
 class Snake
 {
 private:
@@ -24,6 +30,7 @@ public:
 	//蛇移动
 	void move();
 
+	const std::vector<Coordinate>* coordinate_p();
 	//读取蛇长的接口
 	const int SnakeLength() const;
 	//读取坐标的接口

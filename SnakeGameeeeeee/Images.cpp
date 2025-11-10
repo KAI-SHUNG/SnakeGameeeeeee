@@ -1,6 +1,6 @@
 #include "Images.h"
 #include <easyx.h>
-#include <math.h>
+#include <vector>
 #include <iostream>
 #pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
 
