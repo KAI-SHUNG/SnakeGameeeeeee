@@ -101,11 +101,7 @@ bool Snake::eatApple(int xapple, int yapple)
 }
 bool Snake::eatGoldApple(int xapple, int yapple)
 {
-	if (snakeXNext == xapple && snakeYNext == yapple)
-	{
-		return true;
-	}
-	return false;
+	return snakeXNext == xapple && snakeYNext == yapple;
 }
 
 void Snake::move()

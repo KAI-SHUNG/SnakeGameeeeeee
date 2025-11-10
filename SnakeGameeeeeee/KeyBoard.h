@@ -1,4 +1,6 @@
 #pragma once
+#include <windows.h>
+
 enum class MenuState { PLAY, EXIT };
 enum class GameoverState { AGAIN, EXIT };
 class Keyboard

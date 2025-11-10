@@ -1,5 +1,4 @@
 #include "Keyboard.h"
-#include <windows.h>
 
 void Keyboard::menu(MenuState& state)
 {

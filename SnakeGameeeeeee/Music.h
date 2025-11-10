@@ -1,4 +1,8 @@
 #pragma once
+#include <iostream>
+#include <windows.h>
+#include <mmsystem.h>				// 包含mciSendStringA声明
+#pragma comment(lib, "winmm.lib")	// 链接必要的库
 
 class Music
 {

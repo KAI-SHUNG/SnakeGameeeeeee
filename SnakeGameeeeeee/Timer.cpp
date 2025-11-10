@@ -1,5 +1,4 @@
 #include "Timer.h"
-#include <time.h>
 
 clock_t goldApple_create;
 clock_t frame_start;
