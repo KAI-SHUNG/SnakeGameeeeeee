@@ -120,9 +120,11 @@ void Snake::move()
 	coordinate.insert(coordinate.begin(), {snakeXNext, snakeYNext, snakeDirNext});
 	if (!eat_apple)
 	{
-		coordinate.pop_back();
-		eat_apple = false;
+		std::cout << eat_apple;
+		coordinate.erase(coordinate.end() - 1);
 	}
+	eat_apple = false;
+
 	//for (int i = length - 1; i > 0; --i)
 	//{
 	//	setSnakePosition(i, snakeX[i - 1], snakeY[i - 1], snakeDir[i - 1]);

@@ -37,6 +37,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
 
+#include <easyx.h>
 #include <Windows.h>
 #include <iostream>
 #include <vector>
@@ -47,9 +48,17 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Snake.h"
 #include "Apple.h"
 
+int resourceCheck();
+int loadFont();
+
+MenuState Menu(MenuState&);
 #define MENUX 24			//菜单界面X共24单元格
 #define MENUY 20			//菜单界面Y共20单元格
 
+void Sound();
+
+int Game();
+GameoverState Gameover();
 #define UNITX 16			//游戏界面X共16单元格
 #define UNITY 20			//游戏界面Y共20单元格
 #define TICK_EASY 250		//简单模式帧时长250ms
@@ -58,7 +67,6 @@ class道具（加速减速，闪现，技能键，护盾……
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
-
 int appleX;
 int appleY;
 int goldAppleX;
@@ -67,16 +75,9 @@ void placeSnake(std::vector<Coordinate>);
 void createApple(std::vector<Coordinate>);
 void createGoldApple(std::vector<Coordinate>);
 
-Images image(MENUX, MENUY,UNITX, UNITY);
+Images image(MENUX, MENUY, UNITX, UNITY);
 Keyboard keyboard;
 Music music;
-
-int resourceCheck();
-int loadFont();
-MenuState Menu(MenuState&);
-void Sound();
-int Game();
-GameoverState Gameover();
 
 int main()
 {
@@ -113,6 +114,22 @@ int resourceCheck()
 {
 	return image.loadImages() + loadFont() + music.loadMusic();
 }
+int loadFont()
+{
+	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
+	int addFontResult = AddFontResourceExA(ROG_Fonts_Path, FR_PRIVATE, 0);
+	if (addFontResult > 0)
+	{
+		SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+		return 0;
+	}
+	else
+	{
+		std::cerr << "Font Resource ERROR!\n";
+		return 1;
+	}
+}
+
 MenuState Menu(MenuState& state)
 {
 	image.menuInit();
@@ -296,21 +313,6 @@ GameoverState Gameover()
 		image.placeExit(UNITX / 2, 13, state == GameoverState::EXIT);
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
-	}
-}
-int loadFont()
-{
-	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
-	int addFontResult = AddFontResourceExA(ROG_Fonts_Path, FR_PRIVATE, 0);
-	if (addFontResult > 0)
-	{
-		SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
-		return 0;
-	}
-	else
-	{
-		std::cerr << "Font Resource ERROR!\n";
-		return 1;
 	}
 }
 
