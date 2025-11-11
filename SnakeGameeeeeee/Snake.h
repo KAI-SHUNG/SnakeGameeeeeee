@@ -1,6 +1,5 @@
 #pragma once
 #define ATTENTION "注意，蛇死亡判定未来需要更新墙的坐标，可能需要新的接口"
-#include <iostream>
 #include <vector>
 struct Coordinate {
 	int X;

@@ -1,4 +1,5 @@
 #include "Snake.h"
+#include <iostream>
 
 
 std::vector<Coordinate> coordinate;

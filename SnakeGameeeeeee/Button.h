@@ -1,5 +1,4 @@
 #pragma once
-#include <easyx.h>
 
 class Button
 {
