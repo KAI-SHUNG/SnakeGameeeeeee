@@ -41,12 +41,14 @@ class道具（加速减速，闪现，技能键，护盾……
 #include <Windows.h>
 #include <iostream>
 #include <vector>
+#include "Item.h"
 #include "Images.h"
 #include "Keyboard.h"
 #include "Music.h"
 #include "Timer.h"
 #include "Snake.h"
-#include "Apple.h"
+#include "Coordinate.h"
+//#include "Apple.h"
 
 int resourceCheck();
 int loadFont();
@@ -67,13 +69,7 @@ GameoverState Gameover();
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
-//int appleX;
-//int appleY;
-//int goldAppleX;
-//int goldAppleY;
 void placeSnake(std::vector<Coordinate>);
-void createApple(std::vector<Coordinate>);
-void createGoldApple(std::vector<Coordinate>);
 
 Images image(MENUX, MENUY, UNITX, UNITY);
 Keyboard keyboard;
@@ -159,11 +155,13 @@ MenuState Menu(MenuState& state)
 int Game()
 {
 	//初始化
-	Apple apple(UNITX, UNITY);
+	//Apple apple(UNITX, UNITY);
+	Item apple(UNITX, UNITY);
+	Item goldapple(UNITX, UNITY);
 	Snake snake(UNITX, UNITY);
 	Timer timer;
 	//appleX = appleY = goldAppleX = goldAppleY = -1;
-	//int apple_counter = 0;
+	int apple_counter = 0;
 	image.gameInit();
 	music.game();
 	bool appleExist = false;
@@ -233,17 +231,18 @@ int Game()
 		int goldAppleTime = timer.goldAppleTime();
 		if (goldAppleTime > TIME_TOTAL)
 		{
-			goldAppleExist = false;
+			goldapple.exist = false;
 		}
 		//判定是否吃到苹果 && 金苹果 && 蛇生长
-		if (snake.eatApple(appleX, appleY))
+		if (snake.eatApple(apple.get_x(), apple.get_y()))
 		{
 			music.eat();
 			score += POINT_APPLE;
 			apple_counter += 1;
-			appleExist = false;
+			apple.reset();
+			//apple.exist = false;
 		}else 
-		if (goldAppleExist && snake.eatGoldApple(goldAppleX, goldAppleY))
+		if (goldapple.exist && snake.eatGoldApple(goldapple.get_x(), goldapple.get_y()))
 		{
 			music.bell();
 			music.eat();
@@ -252,19 +251,20 @@ int Game()
 			{
 				apple_counter += 3;
 			}
-			goldAppleExist = false;
+			goldapple.reset();
+			//goldapple.exist = false;
 		}
 		//蛇的移动
 		snake.move();
 		//生成苹果 && 生成金苹果
-		if (!appleExist)
+		if (!apple.exist)
 		{
-			createApple(snake.coordinate_p());
-			appleExist = true;
-			if (apple_counter % 6 == 0 && !goldAppleExist && apple_counter != 0)
+			apple.create(snake.coordinate_p(), goldapple.get_x(), goldapple.get_y());
+			apple.exist = true;
+			if (apple_counter % 6 == 0 && !goldapple.exist && apple_counter != 0)
 			{
-				createGoldApple(snake.coordinate_p());
-				goldAppleExist = true;
+				goldapple.create(snake.coordinate_p(), apple.get_x(), apple.get_y());
+				goldapple.exist = true;
 				timer.goldAppleCreate();
 			}
 		}
@@ -273,9 +273,9 @@ int Game()
 		if (goldAppleExist)
 		{
 			image.placeBar(goldAppleTime, TIME_TOTAL);
-			image.placeGoldApple(goldAppleX, goldAppleY);
+			image.placeGoldApple(goldapple.get_x(), goldapple.get_y());
 		}
-		image.placeApple(appleX, appleY);
+		image.placeApple(apple.get_x(), apple.get_y());
 		image.placeBoard(score);
 		placeSnake(snake.coordinate_p());
 		image.flushEnd();
@@ -320,45 +320,4 @@ void placeSnake(std::vector<Coordinate> coord)
 		coord.at(coord.size() - 1).Y,
 		coord.at(coord.size() - 2).Dir);
 	//注意这里snakeTial读取的应该是length-2的Dir
-}
-void createApple(std::vector<Coordinate> coord)
-{
-	bool check;
-	do
-	{
-		check = 1;
-		appleX = rand() % UNITX;
-		appleY = rand() % UNITY;
-		for (int i = 0; i < coord.size(); ++i)
-		{
-			if (coord.at(i).X == goldAppleX && coord.at(i).Y == goldAppleY)
-			{
-				check = 0;
-				break;
-			}
-		}
-	} while (!check);
-}
-void createGoldApple(std::vector<Coordinate> coord)
-{
-	bool check;
-	do
-	{
-		check = 1;
-		goldAppleX = rand() % UNITX;
-		goldAppleY = rand() % UNITY;
-		for (int i = 0; i < coord.size(); ++i)
-		{
-			if (coord.at(i).X == goldAppleX && coord.at(i).Y == goldAppleY)
-			{
-				check = 0;
-				break;
-			}
-		}
-		if (goldAppleX == appleX && goldAppleY == appleY)
-		{
-			check = 0;
-			continue;
-		}
-	} while (!check);
 }

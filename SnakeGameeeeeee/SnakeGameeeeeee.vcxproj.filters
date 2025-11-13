@@ -36,7 +36,7 @@
     <ClCompile Include="Timer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Goldapple.cpp">
+    <ClCompile Include="Item.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,7 +62,7 @@
     <ClInclude Include="Coordinate.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Goldapple.h">
+    <ClInclude Include="Item.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

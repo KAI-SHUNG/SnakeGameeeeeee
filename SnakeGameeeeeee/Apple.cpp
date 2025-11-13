@@ -4,53 +4,30 @@
 #include "Apple.h"
 
 Apple::Apple(int unitx, int unity)
-	:UnitX(unitx), UnitY(unity), appleX(-1), appleY(-1),goldAppleX(-1),goldAppleY(-1),counter(0)
+	:UNITX(unitx), UNITY(unity), x(-1), y(-1),counter(0)
 {
 	srand((unsigned)time(0));
 }
 
-void Apple::createApple(const int* x, const int* y, int length)
-{
-	bool check;
-	do
-	{
-		check = 1;
-		appleX = rand() % UnitX;
-		appleY = rand() % UnitY;
-		for (int i = 0; i < length; ++i)
-		{
-			if (*(x + i) == appleX && *(y + i) == appleY)
-			{
-				check = 0;
-				break;
-			}
-		}
-	} while (!check);
-}
+//void Apple::create(const int* x, const int* y, int length)
+//{
+//	bool check;
+//	do
+//	{
+//		check = 1;
+//		appleX = rand() % UNITX;
+//		appleY = rand() % UNITY;
+//		for (int i = 0; i < length; ++i)
+//		{
+//			if (*(x + i) == appleX && *(y + i) == appleY)
+//			{
+//				check = 0;
+//				break;
+//			}
+//		}
+//	} while (!check);
+//}
 
-void Apple::createGoldApple(const int* x, const int* y, int length)
-{
-	bool check;
-	do
-	{
-		check = 1;
-		goldAppleX = rand() % UnitX;
-		goldAppleY = rand() % UnitY;
-		for (int i = 0; i < length; ++i)
-		{
-			if (*(x + i) == goldAppleX && *(y + i) == goldAppleY)
-			{
-				check = 0;
-				break;
-			}
-		}
-		if (goldAppleX == appleX && goldAppleY == appleY)
-		{
-			check = 0;
-			continue;
-		}
-	} while (!check);
-}
 
 const int Apple::AppleX() const
 {
