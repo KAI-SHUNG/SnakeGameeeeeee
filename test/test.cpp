@@ -2,8 +2,6 @@
 #include <vector>
 #include "ClassTest.h"
 
-
-
 void func(const std::vector<Test> t1)
 {
 	for (auto it = t1.begin(); it != t1.end(); ++it)
@@ -14,8 +12,11 @@ void func(const std::vector<Test> t1)
 
 int main()
 {
-	Test_class c_t;
+	//Test_class c_t;
 
-	func(c_t.func());
+	//func(c_t.func());
 
+	char a[] = "Play";
+	char* b = &a[0];
+	std::cout << b[1];
 }

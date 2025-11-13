@@ -53,6 +53,7 @@ class道具（加速减速，闪现，技能键，护盾……
 #define UNIT 10				//UNIT_SIZE每个单元格10x10像素
 #define BOARD 2				//计分板行格数
 IMAGE apple_i, goldapple_i;
+IMAGE button, buttonPressed;
 IMAGE button_again, button_again_pressed;
 IMAGE button_play, button_play_pressed;
 IMAGE button_exit, button_exit_pressed;
@@ -122,7 +123,9 @@ int loadImage()
 		+ loadimage(&button_exit, _T("./Resource/Images/button_exit.png"))
 		+ loadimage(&button_exit_pressed, _T("./Resource/Images/button_exit_pressed.png"))
 		+ loadimage(&button_again, _T("./Resource/Images/button_again.png"))
-		+ loadimage(&button_again_pressed, _T("./Resource/Images/button_again_pressed.png"));
+		+ loadimage(&button_again_pressed, _T("./Resource/Images/button_again_pressed.png"))
+		+ loadimage(&button, _T("./Resource/Images/button.png"))
+		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"));
 }
 int loadFont()
 {
@@ -148,6 +151,7 @@ int resourceCheck()
 
 MenuState Menu(MenuState& state)
 {
+	//Button bttest(&button, &buttonPressed, 0, 0);
 	Button btn_menu_play(&button_play, &button_play_pressed, MENUX / 2, 11);
 	Button btn_menu_exit(&button_exit, &button_exit_pressed, MENUX / 2, 14);
 	image.menuInit();
@@ -166,6 +170,8 @@ MenuState Menu(MenuState& state)
 		keyboard.menu(state);
 
 		image.flushBegin();
+		//TCHAR s[] = _T("Play");
+		//bttest.display(1, s);
 		btn_menu_play.display(state == MenuState::PLAY);
 		btn_menu_exit.display(state == MenuState::EXIT);
 		image.placeTitle(timer.getTime());

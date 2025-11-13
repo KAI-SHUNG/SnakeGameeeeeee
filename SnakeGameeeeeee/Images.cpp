@@ -17,7 +17,6 @@ IMAGE sBodyAD, sBodyWS;//ÉßÉí
 IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//Éß×ªÍä
 IMAGE sTailW, sTailA, sTailS, sTailD;//ÉßÎ²
 IMAGE apple, goldApple;
-IMAGE button, buttonPressed;
 IMAGE buttonPlay, buttonPlayPressed;
 IMAGE buttonAgain, buttonAgainPressed;
 IMAGE buttonExit, buttonExitPressed;
@@ -83,8 +82,8 @@ int Images::loadImages()
 		+ loadimage(&sTailA, _T("./Resource/Images/snake_tail_a.png"))
 		+ loadimage(&sTailS, _T("./Resource/Images/snake_tail_s.png"))
 		+ loadimage(&sTailD, _T("./Resource/Images/snake_tail_d.png"))
-		+ loadimage(&button, _T("./Resource/Images/button.png"))
-		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
+		//+ loadimage(&button, _T("./Resource/Images/button.png"))
+		//+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
 		+ loadimage(&buttonPlay, _T("./Resource/Images/button_play.png"))
 		+ loadimage(&buttonPlayPressed, _T("./Resource/Images/button_play_pressed.png"))
 		+ loadimage(&buttonAgain, _T("./Resource/Images/button_again.png"))
