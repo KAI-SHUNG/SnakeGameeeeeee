@@ -67,10 +67,10 @@ GameoverState Gameover();
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
-int appleX;
-int appleY;
-int goldAppleX;
-int goldAppleY;
+//int appleX;
+//int appleY;
+//int goldAppleX;
+//int goldAppleY;
 void placeSnake(std::vector<Coordinate>);
 void createApple(std::vector<Coordinate>);
 void createGoldApple(std::vector<Coordinate>);
@@ -155,24 +155,15 @@ MenuState Menu(MenuState& state)
 		Sleep(TICK_NORMAL);
 	}
 }
-void Sound()
-{
-	while (1)
-	{
-		image.flushBegin();
-		//image.placeSound(UNITX / 2 - 2, UNITY / 2 - 2, 1);
-		//image.placeSound(UNITX / 2 - 2, UNITY / 2 - 2, 1);
-		image.flushEnd();
-	}
-}
+
 int Game()
 {
 	//初始化
-	//Apple apple(UNITX, UNITY);
+	Apple apple(UNITX, UNITY);
 	Snake snake(UNITX, UNITY);
 	Timer timer;
-	appleX = appleY = goldAppleX = goldAppleY = -1;
-	int apple_counter = 0;
+	//appleX = appleY = goldAppleX = goldAppleY = -1;
+	//int apple_counter = 0;
 	image.gameInit();
 	music.game();
 	bool appleExist = false;
