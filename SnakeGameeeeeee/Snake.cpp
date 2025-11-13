@@ -1,22 +1,9 @@
 #include "Snake.h"
-#include <iostream>
 Snake::Snake(int unitx, int unity)
 	:UNITX(unitx), UNITY(unity),coord_next({unitx / 2 + 1, unity / 2, 'd'})
 {
 	coordinate.push_back({ UNITX / 2, UNITY / 2, 'd' });
 	coordinate.push_back({ UNITX / 2 - 1, UNITY / 2, 'd' });
-}
-Snake::~Snake()
-{
-}
-
-int Snake::molX(int x)
-{
-	return (x + UNITX) % UNITX;
-}
-int Snake::molY(int y)
-{
-	return (y + UNITY) % UNITY;
 }
 
 void Snake::snakeHeadNextTick(char dir)
@@ -53,11 +40,7 @@ bool Snake::eatApple(int x, int y)
 }
 bool Snake::eatGoldApple(int x, int y)
 {
-	if (coord_next.X == x && coord_next.Y == y)
-	{
-		return true;
-	}
-	return false;
+	return coord_next.X == x && coord_next.Y == y;
 }
 
 void Snake::move()
@@ -65,13 +48,11 @@ void Snake::move()
 	coordinate.insert(coordinate.begin(), coord_next);
 	if (!eat_apple)
 	{
-		//std::cout << eat_apple;
 		coordinate.erase(coordinate.end() - 1);
 	}
 	eat_apple = false;
 }
 
-std::vector<Coordinate> Snake::coordinate_p()
-{
-	return coordinate;
-}
+std::vector<Coordinate> Snake::coordinate_p() { return coordinate; }
+int Snake::molX(int x) { return (x + UNITX) % UNITX; }
+int Snake::molY(int y) { return (y + UNITY) % UNITY; }

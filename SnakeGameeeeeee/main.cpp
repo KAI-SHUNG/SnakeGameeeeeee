@@ -61,6 +61,7 @@ int Game();
 GameoverState Gameover();
 #define UNITX 16			//游戏界面X共16单元格
 #define UNITY 20			//游戏界面Y共20单元格
+#define BOARD 2				//计分板宽度
 #define TICK_EASY 250		//简单模式帧时长250ms
 #define TICK_NORMAL 150		//普通模式帧时长150ms
 #define TICK_HARD 100		//困难模式帧时长100ms
@@ -187,7 +188,7 @@ int Game()
 			// 中间显示暂停界面，之后需要分支，resume或者exit
 			do {
 				image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//显示暂停
-				Sleep(250);//这一句好像很关键，删了不行
+				Sleep(TICK_EASY);//这一句好像很关键，删了不行
 				if (keyboard.space())
 				{
 					music.click();

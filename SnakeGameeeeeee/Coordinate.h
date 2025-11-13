@@ -5,5 +5,4 @@ struct Coordinate {
 	int Y;
 	char Dir;
 };
-
 #endif // !Coordinate_H
