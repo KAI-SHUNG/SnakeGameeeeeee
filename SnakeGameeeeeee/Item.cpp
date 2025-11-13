@@ -1,9 +1,10 @@
 #include "Item.h"
 #include <stdlib.h>
 #include <time.h>
-
-Item::Item(int unitx, int unity)
-	:UNITX(unitx), UNITY(unity), x(-1), y(-1),exist(false),counter(0)
+#define UNIT 10
+#define BOARD 2
+Item::Item(int unitx, int unity, IMAGE* img)
+	:i0(img),UNITX(unitx), UNITY(unity), x(-1), y(-1), exist(false), counter(0)
 {
 	srand((unsigned)time(0));
 }
@@ -36,11 +37,18 @@ void Item::reset()
 	y = -1;
 	exist = false;
 }
-int Item::get_x()
+void Item::display()
+{
+	int h = i0->getheight();
+	int w = i0->getwidth();
+	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
+		GetImageHDC(i0), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+}
+const int Item::get_x() const
 {
 	return x;
 }
-int Item::get_y()
+const int Item::get_y() const
 {
 	return y;
 }

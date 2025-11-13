@@ -49,6 +49,14 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Snake.h"
 #include "Coordinate.h"
 
+#define BKCOLOR 0xF0FFF0			//背景颜色
+#define BOARDCOLOR 0x66B2FF			//计分板颜色
+#define LINECOLOR 0x0066CC			//计分板边框颜色
+#define TEXTCOLOR 0x003366			//字体颜色
+#define UNIT 10						//UNIT_SIZE每个单元格10x10像素
+#define BOARD 2						//计分板行格数
+#define RATIO 2.5					//放大比例
+IMAGE apple_i, goldapple_i;
 int resourceCheck();
 int loadFont();
 
@@ -104,10 +112,11 @@ int main()
 		Sleep(TICK_NORMAL);
 	}
 }
-
-int resourceCheck()
+int loadImage()
 {
-	return image.loadImages() + loadFont() + music.loadMusic();
+	loadimage(&apple_i, _T("./Resource/Images/apple.png"));
+	loadimage(&goldapple_i, _T("./Resource/Images/gold_apple.png"));
+	return 0;
 }
 int loadFont()
 {
@@ -124,6 +133,12 @@ int loadFont()
 		return 1;
 	}
 }
+int resourceCheck()
+{
+	loadImage();
+	return image.loadImages() + loadFont() + music.loadMusic();
+}
+
 
 MenuState Menu(MenuState& state)
 {
@@ -154,8 +169,8 @@ MenuState Menu(MenuState& state)
 int Game()
 {
 	//初始化
-	Item apple(UNITX, UNITY);
-	Item goldapple(UNITX, UNITY);
+	Item apple(UNITX, UNITY, &apple_i);
+	Item goldapple(UNITX, UNITY, &goldapple_i);
 	Snake snake(UNITX, UNITY);
 	Timer timer;
 	image.gameInit();
@@ -163,6 +178,7 @@ int Game()
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
 	//游戏主体
+
 	while (1)
 	{
 		//不知道哪里有问题，好几次蛇突然不动了 
@@ -244,6 +260,7 @@ int Game()
 				score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
 				if (goldAppleTime / 1000 == 1)
 				{
+					music.bell();
 					apple.counter += 3;
 				}
 				goldapple.reset();
@@ -267,9 +284,11 @@ int Game()
 		if (goldapple.exist)
 		{
 			image.placeBar(goldAppleTime, TIME_TOTAL);
-			image.placeGoldApple(goldapple.get_x(), goldapple.get_y());
+			//image.placeGoldApple(goldapple.get_x(), goldapple.get_y());
+			goldapple.display();
 		}
-		image.placeApple(apple.get_x(), apple.get_y());
+		//image.placeApple(apple.get_x(), apple.get_y());
+		apple.display();
 		image.placeBoard(score);
 		placeSnake(snake.coordinate_p());
 		image.flushEnd();
