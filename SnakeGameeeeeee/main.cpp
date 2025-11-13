@@ -41,6 +41,7 @@ class道具（加速减速，闪现，技能键，护盾……
 #include <Windows.h>
 #include <iostream>
 #include <vector>
+#include "Button.h"
 #include "Item.h"
 #include "Images.h"
 #include "Keyboard.h"
@@ -49,16 +50,15 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Snake.h"
 #include "Coordinate.h"
 
-#define BKCOLOR 0xF0FFF0			//背景颜色
-#define BOARDCOLOR 0x66B2FF			//计分板颜色
-#define LINECOLOR 0x0066CC			//计分板边框颜色
-#define TEXTCOLOR 0x003366			//字体颜色
-#define UNIT 10						//UNIT_SIZE每个单元格10x10像素
-#define BOARD 2						//计分板行格数
-#define RATIO 2.5					//放大比例
+#define UNIT 10				//UNIT_SIZE每个单元格10x10像素
+#define BOARD 2				//计分板行格数
 IMAGE apple_i, goldapple_i;
-int resourceCheck();
+IMAGE button_again, button_again_pressed;
+IMAGE button_play, button_play_pressed;
+IMAGE button_exit, button_exit_pressed;
+int loadImage();
 int loadFont();
+int resourceCheck();
 
 MenuState Menu(MenuState&);
 #define MENUX 24			//菜单界面X共24单元格
@@ -71,7 +71,7 @@ GameoverState Gameover();
 #define UNITY 20			//游戏界面Y共20单元格
 #define BOARD 2				//计分板宽度
 #define TICK_EASY 250		//简单模式帧时长250ms
-#define TICK_NORMAL 150		//普通模式帧时长150ms
+#define TICK_NORMAL 180		//普通模式帧时长180ms
 #define TICK_HARD 100		//困难模式帧时长100ms
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
 #define POINT_APPLE 1		//苹果分值
@@ -114,9 +114,15 @@ int main()
 }
 int loadImage()
 {
-	loadimage(&apple_i, _T("./Resource/Images/apple.png"));
-	loadimage(&goldapple_i, _T("./Resource/Images/gold_apple.png"));
-	return 0;
+	return 0
+		+ loadimage(&apple_i, _T("./Resource/Images/apple.png"))
+		+ loadimage(&goldapple_i, _T("./Resource/Images/gold_apple.png"))
+		+ loadimage(&button_play, _T("./Resource/Images/button_play.png"))
+		+ loadimage(&button_play_pressed, _T("./Resource/Images/button_play_pressed.png"))
+		+ loadimage(&button_exit, _T("./Resource/Images/button_exit.png"))
+		+ loadimage(&button_exit_pressed, _T("./Resource/Images/button_exit_pressed.png"))
+		+ loadimage(&button_again, _T("./Resource/Images/button_again.png"))
+		+ loadimage(&button_again_pressed, _T("./Resource/Images/button_again_pressed.png"));
 }
 int loadFont()
 {
@@ -142,6 +148,8 @@ int resourceCheck()
 
 MenuState Menu(MenuState& state)
 {
+	Button btn_menu_play(&button_play, &button_play_pressed, MENUX / 2, 11);
+	Button btn_menu_exit(&button_exit, &button_exit_pressed, MENUX / 2, 14);
 	image.menuInit();
 	music.menu();
 	Timer timer;
@@ -158,8 +166,8 @@ MenuState Menu(MenuState& state)
 		keyboard.menu(state);
 
 		image.flushBegin();
-		image.placePlay(MENUX / 2, 12, state == MenuState::PLAY);
-		image.placeExit(MENUX / 2, 15, state == MenuState::EXIT);
+		btn_menu_play.display(state == MenuState::PLAY);
+		btn_menu_exit.display(state == MenuState::EXIT);
 		image.placeTitle(timer.getTime());
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
@@ -284,10 +292,8 @@ int Game()
 		if (goldapple.exist)
 		{
 			image.placeBar(goldAppleTime, TIME_TOTAL);
-			//image.placeGoldApple(goldapple.get_x(), goldapple.get_y());
 			goldapple.display();
 		}
-		//image.placeApple(apple.get_x(), apple.get_y());
 		apple.display();
 		image.placeBoard(score);
 		placeSnake(snake.coordinate_p());
@@ -302,6 +308,8 @@ int Game()
 GameoverState Gameover()
 {
 	GameoverState state = GameoverState::AGAIN;
+	Button btn_gameover_again(&button_again, &button_again_pressed, UNITX / 2, 10);
+	Button btn_gameover_exit(&button_exit, &button_exit_pressed, UNITX / 2, 13);
 	while (1)
 	{
 		if (keyboard.enter())
@@ -316,8 +324,8 @@ GameoverState Gameover()
 
 		image.flushBegin();
 		image.tempDisplay();
-		image.placeAgain(UNITX / 2, 10, state == GameoverState::AGAIN);
-		image.placeExit(UNITX / 2, 13, state == GameoverState::EXIT);
+		btn_gameover_again.display(state == GameoverState::AGAIN);
+		btn_gameover_exit.display(state == GameoverState::EXIT);
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
 	}

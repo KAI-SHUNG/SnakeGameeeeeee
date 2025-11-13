@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Images.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Coordinate.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Images.h" />

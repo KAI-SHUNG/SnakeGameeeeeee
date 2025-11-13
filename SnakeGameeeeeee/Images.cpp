@@ -154,34 +154,34 @@ void Images::placeGoldApple(int x, int y)
 	putimage_alpha(x, y, &goldApple);
 }
 
-void Images::placeButton(int x, int y, bool state)
-{
-	int h = button.getheight();
-	int w = button.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
-		GetImageHDC(state ? &buttonPressed : &button), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-void Images::placePlay(int x, int y, bool state)
-{
-	int h = buttonPlay.getheight();
-	int w = buttonPlay.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
-		GetImageHDC(state ? &buttonPlayPressed : &buttonPlay), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-void Images::placeAgain(int x, int y, bool state)
-{
-	int h = buttonAgain.getheight();
-	int w = buttonAgain.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
-		GetImageHDC(state ? &buttonAgainPressed : &buttonAgain), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-void Images::placeExit(int x, int y, bool state)
-{
-	int h = buttonExit.getheight();
-	int w = buttonExit.getwidth();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
-		GetImageHDC(state ? &buttonExitPressed : &buttonExit), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
+//void Images::placeButton(int x, int y, bool state)
+//{
+//	int h = button.getheight();
+//	int w = button.getwidth();
+//	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, (BOARD + y) * UNIT - h / 2, w, h,
+//		GetImageHDC(state ? &buttonPressed : &button), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+//}
+//void Images::placePlay(int x, int y, bool state)
+//{
+//	int h = buttonPlay.getheight();
+//	int w = buttonPlay.getwidth();
+//	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
+//		GetImageHDC(state ? &buttonPlayPressed : &buttonPlay), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+//}
+//void Images::placeAgain(int x, int y, bool state)
+//{
+//	int h = buttonAgain.getheight();
+//	int w = buttonAgain.getwidth();
+//	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
+//		GetImageHDC(state ? &buttonAgainPressed : &buttonAgain), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+//}
+//void Images::placeExit(int x, int y, bool state)
+//{
+//	int h = buttonExit.getheight();
+//	int w = buttonExit.getwidth();
+//	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2, y * UNIT - h / 2, w, h,
+//		GetImageHDC(state ? &buttonExitPressed : &buttonExit), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+//}
 //void Images::placeButtonPressed(int x, int y)
 //{
 //	putimage_alpha(x, y, &buttonPressed);

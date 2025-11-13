@@ -4,7 +4,7 @@
 #define UNIT 10
 #define BOARD 2
 Item::Item(int unitx, int unity, IMAGE* img)
-	:i0(img),UNITX(unitx), UNITY(unity), x(-1), y(-1), exist(false), counter(0)
+	:Img(img),UNITX(unitx), UNITY(unity), x(-1), y(-1), exist(false), counter(0)
 {
 	srand((unsigned)time(0));
 }
@@ -39,10 +39,10 @@ void Item::reset()
 }
 void Item::display()
 {
-	int h = i0->getheight();
-	int w = i0->getwidth();
+	int w = Img->getwidth();
+	int h = Img->getheight();
 	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
-		GetImageHDC(i0), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+		GetImageHDC(Img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 const int Item::get_x() const
 {

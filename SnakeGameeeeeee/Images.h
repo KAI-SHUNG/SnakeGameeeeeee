@@ -13,10 +13,10 @@ public:
 	void placeApple(int x, int y);
 	void placeGoldApple(int x, int y);
 
-	void placeButton(int x, int y, bool state);
-	void placePlay(int x, int y, bool state);
-	void placeAgain(int x, int y, bool state);
-	void placeExit(int x, int y, bool state);
+	//void placeButton(int x, int y, bool state);
+	//void placePlay(int x, int y, bool state);
+	//void placeAgain(int x, int y, bool state);
+	//void placeExit(int x, int y, bool state);
 	//void placeButtonPressed(int x, int y);
 	void placeWall(int x, int y);
 	void placeTitle(int clock);

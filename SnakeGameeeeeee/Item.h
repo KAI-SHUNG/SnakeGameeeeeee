@@ -14,7 +14,7 @@ public:
 	bool exist;
 	int counter;
 private:
-	IMAGE* i0;
+	IMAGE* Img;
 	int UNITX;
 	int UNITY;
 	int x;
