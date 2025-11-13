@@ -55,7 +55,6 @@ int loadFont();
 MenuState Menu(MenuState&);
 #define MENUX 24			//菜单界面X共24单元格
 #define MENUY 20			//菜单界面Y共20单元格
-
 void Sound();
 
 int Game();
