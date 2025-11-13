@@ -90,7 +90,7 @@ int main()
 		return 1;
 	}
 	MenuState menuState = MenuState::PLAY;
-	while(1)
+	while(true)
 	{
 		Menu(menuState);
 		switch (menuState)
@@ -172,6 +172,11 @@ MenuState Menu(MenuState& state)
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
 	}
+}
+void Sound()
+{
+	Button btn_menu_play(&button_play, &button_play_pressed, MENUX / 2, 11);
+
 }
 
 int Game()
