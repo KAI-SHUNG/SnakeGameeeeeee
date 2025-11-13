@@ -65,7 +65,7 @@ void Snake::move()
 	coordinate.insert(coordinate.begin(), coord_next);
 	if (!eat_apple)
 	{
-		std::cout << eat_apple;
+		//std::cout << eat_apple;
 		coordinate.erase(coordinate.end() - 1);
 	}
 	eat_apple = false;

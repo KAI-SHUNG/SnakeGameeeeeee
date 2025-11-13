@@ -48,7 +48,6 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Timer.h"
 #include "Snake.h"
 #include "Coordinate.h"
-//#include "Apple.h"
 
 int resourceCheck();
 int loadFont();
@@ -155,17 +154,12 @@ MenuState Menu(MenuState& state)
 int Game()
 {
 	//初始化
-	//Apple apple(UNITX, UNITY);
 	Item apple(UNITX, UNITY);
 	Item goldapple(UNITX, UNITY);
 	Snake snake(UNITX, UNITY);
 	Timer timer;
-	//appleX = appleY = goldAppleX = goldAppleY = -1;
-	int apple_counter = 0;
 	image.gameInit();
 	music.game();
-	bool appleExist = false;
-	bool goldAppleExist = false;
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
 	//游戏主体
@@ -175,6 +169,7 @@ int Game()
 		//莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
 		//给你👻辣，给你上香
 		//好像好久没出现了？ 2025/11/7
+		//知道为什么解决了，因为调试时sleeptime是负数 2025/11/13
 		/* --------------------------------
 						***
 						|||
@@ -238,22 +233,21 @@ int Game()
 		{
 			music.eat();
 			score += POINT_APPLE;
-			apple_counter += 1;
+			apple.counter += 1;
 			apple.reset();
-			//apple.exist = false;
-		}else 
-		if (goldapple.exist && snake.eatGoldApple(goldapple.get_x(), goldapple.get_y()))
-		{
-			music.bell();
-			music.eat();
-			score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
-			if (goldAppleTime / 1000 == 1)
-			{
-				apple_counter += 3;
-			}
-			goldapple.reset();
-			//goldapple.exist = false;
 		}
+		else
+			if (goldapple.exist && snake.eatGoldApple(goldapple.get_x(), goldapple.get_y()))
+			{
+				music.bell();
+				music.eat();
+				score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
+				if (goldAppleTime / 1000 == 1)
+				{
+					apple.counter += 3;
+				}
+				goldapple.reset();
+			}
 		//蛇的移动
 		snake.move();
 		//生成苹果 && 生成金苹果
@@ -261,7 +255,7 @@ int Game()
 		{
 			apple.create(snake.coordinate_p(), goldapple.get_x(), goldapple.get_y());
 			apple.exist = true;
-			if (apple_counter % 6 == 0 && !goldapple.exist && apple_counter != 0)
+			if (apple.counter % 6 == 0 && !goldapple.exist && apple.counter != 0)
 			{
 				goldapple.create(snake.coordinate_p(), apple.get_x(), apple.get_y());
 				goldapple.exist = true;
@@ -270,7 +264,7 @@ int Game()
 		}
 		//图像输出
 		image.flushBegin();
-		if (goldAppleExist)
+		if (goldapple.exist)
 		{
 			image.placeBar(goldAppleTime, TIME_TOTAL);
 			image.placeGoldApple(goldapple.get_x(), goldapple.get_y());
@@ -280,7 +274,10 @@ int Game()
 		placeSnake(snake.coordinate_p());
 		image.flushEnd();
 		//帧率控制
-		Sleep(tick - timer.frameTime());
+		if (tick - timer.frameTime() > 0)
+		{
+			Sleep(tick - timer.frameTime());
+		}
 	}
 }
 GameoverState Gameover()

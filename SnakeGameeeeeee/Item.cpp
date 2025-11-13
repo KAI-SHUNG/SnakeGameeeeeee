@@ -3,7 +3,7 @@
 #include <time.h>
 
 Item::Item(int unitx, int unity)
-	:UNITX(unitx), UNITY(unity), x(-1), y(-1),exist(false)
+	:UNITX(unitx), UNITY(unity), x(-1), y(-1),exist(false),counter(0)
 {
 	srand((unsigned)time(0));
 }

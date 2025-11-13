@@ -10,6 +10,7 @@ public:
 	int get_x();
 	int get_y();
 	bool exist;
+	int counter;
 private:
 	int UNITX;
 	int UNITY;
