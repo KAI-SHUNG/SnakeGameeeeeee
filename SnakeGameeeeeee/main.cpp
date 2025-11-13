@@ -37,18 +37,29 @@ class道具（加速减速，闪现，技能键，护盾……
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
 
+#include <easyx.h>
 #include <Windows.h>
 #include <iostream>
+#include <vector>
+#include "Item.h"
 #include "Images.h"
 #include "Keyboard.h"
 #include "Music.h"
 #include "Timer.h"
 #include "Snake.h"
-#include "Apple.h"
+#include "Coordinate.h"
 
+int resourceCheck();
+int loadFont();
+
+MenuState Menu(MenuState&);
 #define MENUX 24			//菜单界面X共24单元格
 #define MENUY 20			//菜单界面Y共20单元格
 
+void Sound();
+
+int Game();
+GameoverState Gameover();
 #define UNITX 16			//游戏界面X共16单元格
 #define UNITY 20			//游戏界面Y共20单元格
 #define TICK_EASY 250		//简单模式帧时长250ms
@@ -57,17 +68,11 @@ class道具（加速减速，闪现，技能键，护盾……
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
+void placeSnake(std::vector<Coordinate>);
 
-Images image(MENUX, MENUY,UNITX, UNITY);
+Images image(MENUX, MENUY, UNITX, UNITY);
 Keyboard keyboard;
 Music music;
-
-int resourceCheck();
-int loadFont();
-MenuState Menu(MenuState&);
-void Sound();
-int Game();
-GameoverState Gameover();
 
 int main()
 {
@@ -104,6 +109,22 @@ int resourceCheck()
 {
 	return image.loadImages() + loadFont() + music.loadMusic();
 }
+int loadFont()
+{
+	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
+	int addFontResult = AddFontResourceExA(ROG_Fonts_Path, FR_PRIVATE, 0);
+	if (addFontResult > 0)
+	{
+		SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+		return 0;
+	}
+	else
+	{
+		std::cerr << "Font Resource ERROR!\n";
+		return 1;
+	}
+}
+
 MenuState Menu(MenuState& state)
 {
 	image.menuInit();
@@ -129,26 +150,16 @@ MenuState Menu(MenuState& state)
 		Sleep(TICK_NORMAL);
 	}
 }
-void Sound()
-{
-	while (1)
-	{
-		image.flushBegin();
-		//image.placeSound(UNITX / 2 - 2, UNITY / 2 - 2, 1);
-		//image.placeSound(UNITX / 2 - 2, UNITY / 2 - 2, 1);
-		image.flushEnd();
-	}
-}
+
 int Game()
 {
 	//初始化
-	Apple apple(UNITX, UNITY);
+	Item apple(UNITX, UNITY);
+	Item goldapple(UNITX, UNITY);
 	Snake snake(UNITX, UNITY);
 	Timer timer;
 	image.gameInit();
 	music.game();
-	bool appleExist = false;
-	bool goldAppleExist = false;
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
 	//游戏主体
@@ -158,6 +169,7 @@ int Game()
 		//莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
 		//给你👻辣，给你上香
 		//好像好久没出现了？ 2025/11/7
+		//知道为什么解决了，因为调试时sleeptime是负数 2025/11/13
 		/* --------------------------------
 						***
 						|||
@@ -198,7 +210,7 @@ int Game()
 		先定义为上一个dir，有修改就改了，没修改按原来
 		省去了再写一个读取Dir[0]的函数
 		*/
-		char dir = *snake.SnakeDir();
+		char dir = snake.coordinate_p().at(0).Dir;
 		keyboard.move(dir);
 		//更新蛇头下一刻坐标
 		snake.snakeHeadNextTick(dir);
@@ -214,54 +226,58 @@ int Game()
 		int goldAppleTime = timer.goldAppleTime();
 		if (goldAppleTime > TIME_TOTAL)
 		{
-			goldAppleExist = false;
+			goldapple.exist = false;
 		}
 		//判定是否吃到苹果 && 金苹果 && 蛇生长
-		if (snake.eatApple(apple.AppleX(), apple.AppleY()))
+		if (snake.eatApple(apple.get_x(), apple.get_y()))
 		{
 			music.eat();
 			score += POINT_APPLE;
 			apple.counter += 1;
-			appleExist = false;
-		}else 
-		if (goldAppleExist && snake.eatGoldApple(apple.GoldAppleX(), apple.GoldAppleY()))
-		{
-			music.bell();
-			music.eat();
-			score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
-			if (goldAppleTime / 1000 == 1)
-			{
-				apple.counter += 3;
-			}
-			goldAppleExist = false;
+			apple.reset();
 		}
+		else
+			if (goldapple.exist && snake.eatGoldApple(goldapple.get_x(), goldapple.get_y()))
+			{
+				music.bell();
+				music.eat();
+				score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
+				if (goldAppleTime / 1000 == 1)
+				{
+					apple.counter += 3;
+				}
+				goldapple.reset();
+			}
 		//蛇的移动
 		snake.move();
 		//生成苹果 && 生成金苹果
-		if (!appleExist)
+		if (!apple.exist)
 		{
-			apple.createApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
-			appleExist = true;
-			if (apple.counter % 6 == 0 && !goldAppleExist && apple.counter != 0)
+			apple.create(snake.coordinate_p(), goldapple.get_x(), goldapple.get_y());
+			apple.exist = true;
+			if (apple.counter % 6 == 0 && !goldapple.exist && apple.counter != 0)
 			{
-				apple.createGoldApple(snake.SnakeX(), snake.SnakeY(), snake.SnakeLength());
-				goldAppleExist = true;
+				goldapple.create(snake.coordinate_p(), apple.get_x(), apple.get_y());
+				goldapple.exist = true;
 				timer.goldAppleCreate();
 			}
 		}
 		//图像输出
 		image.flushBegin();
-		if (goldAppleExist)
+		if (goldapple.exist)
 		{
 			image.placeBar(goldAppleTime, TIME_TOTAL);
-			image.placeGoldApple(apple.GoldAppleX(), apple.GoldAppleY());
+			image.placeGoldApple(goldapple.get_x(), goldapple.get_y());
 		}
-		image.placeApple(apple.AppleX(), apple.AppleY());
+		image.placeApple(apple.get_x(), apple.get_y());
 		image.placeBoard(score);
-		image.placeSnake(snake.SnakeX(), snake.SnakeY(), snake.SnakeDir(), snake.SnakeLength());
+		placeSnake(snake.coordinate_p());
 		image.flushEnd();
 		//帧率控制
-		Sleep(tick - timer.frameTime());
+		if (tick - timer.frameTime() > 0)
+		{
+			Sleep(tick - timer.frameTime());
+		}
 	}
 }
 GameoverState Gameover()
@@ -287,18 +303,18 @@ GameoverState Gameover()
 		Sleep(TICK_NORMAL);
 	}
 }
-int loadFont()
+
+void placeSnake(std::vector<Coordinate> coord)
 {
-	LPCSTR ROG_Fonts_Path = "./Resource/ROG_Fonts.otf";
-	int addFontResult = AddFontResourceExA(ROG_Fonts_Path, FR_PRIVATE, 0);
-	if (addFontResult > 0)
+	image.snakeHead(coord.at(0).X, coord.at(0).Y, coord.at(0).Dir);
+	for (int i = 1; i < coord.size() - 1; ++i)
 	{
-		SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
-		return 0;
+		image.snakeBody(coord.at(i).X, coord.at(i).Y,
+			coord.at(i).Dir, coord.at(i - 1).Dir);
+		//注意这里反直觉，方向靠近蛇头的为下一个，但是是i - 1
 	}
-	else
-	{
-		std::cerr << "Font Resource ERROR!\n";
-		return 1;
-	}
+	image.snakeTail(coord.at(coord.size() - 1).X,
+		coord.at(coord.size() - 1).Y,
+		coord.at(coord.size() - 2).Dir);
+	//注意这里snakeTial读取的应该是length-2的Dir
 }

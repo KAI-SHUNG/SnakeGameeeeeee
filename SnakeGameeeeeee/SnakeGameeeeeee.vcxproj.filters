@@ -27,13 +27,13 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Apple.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Images.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,13 +47,16 @@
     <ClInclude Include="Keyboard.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Apple.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Images.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Coordinate.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

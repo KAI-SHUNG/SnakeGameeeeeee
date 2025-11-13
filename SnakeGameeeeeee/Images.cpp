@@ -1,5 +1,8 @@
 #include "Images.h"
-
+#include <easyx.h>
+#include <vector>
+#include <iostream>
+#pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
 
 #define BKCOLOR 0xF0FFF0			//背景颜色
 #define BOARDCOLOR 0x66B2FF			//计分板颜色
