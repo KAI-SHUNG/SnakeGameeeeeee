@@ -1,6 +1,5 @@
 #pragma once
-#include "Coordinate.h"
-#include <vector>
+#include "Struct.h"
 #include <easyx.h>
 class Item
 {

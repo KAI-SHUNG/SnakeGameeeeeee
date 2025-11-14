@@ -17,15 +17,11 @@ IMAGE sBodyAD, sBodyWS;//蛇身
 IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇转弯
 IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
 IMAGE apple, goldApple;
-IMAGE buttonPlay, buttonPlayPressed;
-IMAGE buttonAgain, buttonAgainPressed;
-IMAGE buttonExit, buttonExitPressed;
-IMAGE soundOn, soundOff;
 IMAGE wall;
 IMAGE title;
 IMAGE pause;
 IMAGE bar;
-LOGFONT textFont;
+LOGFONT textFont_;
 LOGFONT numberFont;
 IMAGE tempImage;
 
@@ -39,11 +35,11 @@ inline void putimage_alpha(int x, int y, IMAGE* img)
 
 void setTextFont()
 {
-	textFont.lfHeight = 24;
-	textFont.lfWeight = FW_BOLD;
-	textFont.lfItalic = 0;
-	textFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(textFont.lfFaceName, _T("Courier New"));
+	textFont_.lfHeight = 24;
+	textFont_.lfWeight = FW_BOLD;
+	textFont_.lfItalic = 0;
+	textFont_.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(textFont_.lfFaceName, _T("Courier New"));
 	setbkmode(TRANSPARENT);
 	settextcolor(TEXTCOLOR);
 }
@@ -82,16 +78,6 @@ int Images::loadImages()
 		+ loadimage(&sTailA, _T("./Resource/Images/snake_tail_a.png"))
 		+ loadimage(&sTailS, _T("./Resource/Images/snake_tail_s.png"))
 		+ loadimage(&sTailD, _T("./Resource/Images/snake_tail_d.png"))
-		//+ loadimage(&button, _T("./Resource/Images/button.png"))
-		//+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
-		+ loadimage(&buttonPlay, _T("./Resource/Images/button_play.png"))
-		+ loadimage(&buttonPlayPressed, _T("./Resource/Images/button_play_pressed.png"))
-		+ loadimage(&buttonAgain, _T("./Resource/Images/button_again.png"))
-		+ loadimage(&buttonAgainPressed, _T("./Resource/Images/button_again_pressed.png"))
-		+ loadimage(&buttonExit, _T("./Resource/Images/button_exit.png"))
-		+ loadimage(&buttonExitPressed, _T("./Resource/Images/button_exit_pressed.png"))
-		+ loadimage(&soundOn, _T("./Resource/Images/sound_on.png"))
-		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png"))
 		+ loadimage(&wall, _T("./Resource/Images/wall.png"))
 		+ loadimage(&title, _T("./Resource/Images/title.png"))
 		+ loadimage(&pause, _T("./Resource/Images/pause.png"))
@@ -124,7 +110,7 @@ void Images::gameInit()
 	setlinecolor(LINECOLOR);
 	setlinestyle(PS_DASH);
 	//字体样式
-	gettextstyle(&textFont);
+	gettextstyle(&textFont_);
 	gettextstyle(&numberFont);
 	setTextFont();
 	setNumberFont();
@@ -207,7 +193,7 @@ void Images::placeBoard(int score)
 	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
 
 	TCHAR textScore[] = _T("Score:");
-	settextstyle(&textFont);
+	settextstyle(&textFont_);
 	outtextxy(0, 0, textScore);
 
 	TCHAR Score[6];
@@ -222,14 +208,6 @@ void Images::placeBar(int time, int time_total)
 	AlphaBlend(GetImageHDC(NULL), (UnitX * UNIT - w) / 2, BOARD * UNIT, w * (time_total - time) / time_total, h,
 		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
-void Images::placeSound(int x, int y, bool state)
-{
-	putimage_alpha(x, y, state ? &soundOn : &soundOff);
-}
-//void Images::placeSoundOff(int x, int y)
-//{
-//	putimage_alpha(x, y, &soundOff);
-//}
 
 void Images::flushBegin()
 {

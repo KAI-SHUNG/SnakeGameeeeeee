@@ -9,7 +9,6 @@ EasyX
 class道具（加速减速，闪现，技能键，护盾……
 墙壁？随机生成？
 排行榜，记录成绩……
-
 */
 
 //实现功能：
@@ -25,7 +24,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //分离,解耦合!!
 //如果未来客户要换一个图形库,你的代码怎么复用??
 //game游戏逻辑和images图形分离
-//你要写一个道具类，还是苹果类，金苹果类，加速类……？
+//你要写一个道具类 ^^^，还是苹果类，金苹果类，加速类……？
 
 //下一步				计分板 ^^^
 //下下下一步			金苹果的加入：^^^
@@ -48,20 +47,18 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Music.h"
 #include "Timer.h"
 #include "Snake.h"
-#include "Coordinate.h"
+#include "Struct.h"
 
-#define UNIT 10				//UNIT_SIZE每个单元格10x10像素
-#define BOARD 2				//计分板行格数
 IMAGE apple_i, goldapple_i;
 IMAGE button, buttonPressed;
-IMAGE button_again, button_again_pressed;
-IMAGE button_play, button_play_pressed;
-IMAGE button_exit, button_exit_pressed;
+IMAGE soundOn, soundOff;
 int loadImage();
 int loadFont();
 int resourceCheck();
 
+
 MenuState Menu(MenuState&);
+#define UNIT 10				//UNIT_SIZE每个单元格10x10像素
 #define MENUX 24			//菜单界面X共24单元格
 #define MENUY 20			//菜单界面Y共20单元格
 void Sound();
@@ -74,6 +71,7 @@ GameoverState Gameover();
 #define TICK_EASY 250		//简单模式帧时长250ms
 #define TICK_NORMAL 180		//普通模式帧时长180ms
 #define TICK_HARD 100		//困难模式帧时长100ms
+#define TICK_HELL 85		//地狱模式帧时长85ms
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
@@ -83,10 +81,13 @@ Images image(MENUX, MENUY, UNITX, UNITY);
 Keyboard keyboard;
 Music music;
 
+SceneState scene_state = SceneState::MENU;
+
 int main()
 {
 	if (resourceCheck() != 0)
 	{
+		std::cerr << "资源文件错误！ERROR_RESOURCE!\n";
 		system("pause");
 		return 1;
 	}
@@ -118,14 +119,10 @@ int loadImage()
 	return 0
 		+ loadimage(&apple_i, _T("./Resource/Images/apple.png"))
 		+ loadimage(&goldapple_i, _T("./Resource/Images/gold_apple.png"))
-		+ loadimage(&button_play, _T("./Resource/Images/button_play.png"))
-		+ loadimage(&button_play_pressed, _T("./Resource/Images/button_play_pressed.png"))
-		+ loadimage(&button_exit, _T("./Resource/Images/button_exit.png"))
-		+ loadimage(&button_exit_pressed, _T("./Resource/Images/button_exit_pressed.png"))
-		+ loadimage(&button_again, _T("./Resource/Images/button_again.png"))
-		+ loadimage(&button_again_pressed, _T("./Resource/Images/button_again_pressed.png"))
 		+ loadimage(&button, _T("./Resource/Images/button.png"))
-		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"));
+		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
+		+ loadimage(&soundOn, _T("./Resource/Images/sound_on.png"))
+		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png"));
 }
 int loadFont()
 {
@@ -144,17 +141,17 @@ int loadFont()
 }
 int resourceCheck()
 {
-	loadImage();
-	return image.loadImages() + loadFont() + music.loadMusic();
+	return loadImage() + image.loadImages() + loadFont() + music.loadMusic();
 }
 
 
 MenuState Menu(MenuState& state)
 {
-	//Button bttest(&button, &buttonPressed, 0, 0);
-	Button btn_menu_play(&button_play, &button_play_pressed, MENUX / 2, 11);
-	Button btn_menu_exit(&button_exit, &button_exit_pressed, MENUX / 2, 14);
 	image.menuInit();
+	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
+	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
+	TCHAR text_play[] = "PLAY";
+	TCHAR text_exit[] = "EXIT";
 	music.menu();
 	Timer timer;
 	while (1)
@@ -170,10 +167,8 @@ MenuState Menu(MenuState& state)
 		keyboard.menu(state);
 
 		image.flushBegin();
-		//TCHAR s[] = _T("Play");
-		//bttest.display(1, s);
-		btn_menu_play.display(state == MenuState::PLAY);
-		btn_menu_exit.display(state == MenuState::EXIT);
+		btn_menu_play.display(state == MenuState::PLAY,text_play);
+		btn_menu_exit.display(state == MenuState::EXIT,text_exit);
 		image.placeTitle(timer.getTime());
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
@@ -181,18 +176,19 @@ MenuState Menu(MenuState& state)
 }
 void Sound()
 {
-	Button btn_menu_play(&button_play, &button_play_pressed, MENUX / 2, 11);
+	Button btn_sound_music(&soundOn, &soundOff, MENUX / 2, 11);
+	Button btn_sound_effect(&soundOn, &soundOff, MENUX / 2, 11);
 
 }
 
 int Game()
 {
 	//初始化
+	image.gameInit();
 	Item apple(UNITX, UNITY, &apple_i);
 	Item goldapple(UNITX, UNITY, &goldapple_i);
 	Snake snake(UNITX, UNITY);
 	Timer timer;
-	image.gameInit();
 	music.game();
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
@@ -245,7 +241,7 @@ int Game()
 		先定义为上一个dir，有修改就改了，没修改按原来
 		省去了再写一个读取Dir[0]的函数
 		*/
-		char dir = snake.coordinate_p().at(0).Dir;
+		char dir = snake.coord().at(0).Dir;
 		keyboard.move(dir);
 		//更新蛇头下一刻坐标
 		snake.snakeHeadNextTick(dir);
@@ -289,11 +285,11 @@ int Game()
 		//生成苹果 && 生成金苹果
 		if (!apple.exist)
 		{
-			apple.create(snake.coordinate_p(), goldapple.get_x(), goldapple.get_y());
+			apple.create(snake.coord(), goldapple.get_x(), goldapple.get_y());
 			apple.exist = true;
 			if (apple.counter % 6 == 0 && !goldapple.exist && apple.counter != 0)
 			{
-				goldapple.create(snake.coordinate_p(), apple.get_x(), apple.get_y());
+				goldapple.create(snake.coord(), apple.get_x(), apple.get_y());
 				goldapple.exist = true;
 				timer.goldAppleCreate();
 			}
@@ -307,7 +303,7 @@ int Game()
 		}
 		apple.display();
 		image.placeBoard(score);
-		placeSnake(snake.coordinate_p());
+		placeSnake(snake.coord());
 		image.flushEnd();
 		//帧率控制
 		if (tick - timer.frameTime() > 0)
@@ -319,8 +315,10 @@ int Game()
 GameoverState Gameover()
 {
 	GameoverState state = GameoverState::AGAIN;
-	Button btn_gameover_again(&button_again, &button_again_pressed, UNITX / 2, 10);
-	Button btn_gameover_exit(&button_exit, &button_exit_pressed, UNITX / 2, 13);
+	Button btn_over_again(&button, &buttonPressed, UNITX / 2, 10);
+	Button btn_over_exit(&button, &buttonPressed, UNITX / 2, 13);
+	TCHAR text_again[] = "AGAIN";
+	TCHAR text_exit[] = "EXIT";
 	while (1)
 	{
 		if (keyboard.enter())
@@ -335,8 +333,8 @@ GameoverState Gameover()
 
 		image.flushBegin();
 		image.tempDisplay();
-		btn_gameover_again.display(state == GameoverState::AGAIN);
-		btn_gameover_exit.display(state == GameoverState::EXIT);
+		btn_over_again.display(state == GameoverState::AGAIN,text_again);
+		btn_over_exit.display(state == GameoverState::EXIT,text_exit);
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
 	}

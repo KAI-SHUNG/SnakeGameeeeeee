@@ -56,7 +56,7 @@
     <ClInclude Include="Timer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Coordinate.h">
+    <ClInclude Include="Struct.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">

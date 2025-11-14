@@ -53,6 +53,6 @@ void Snake::move()
 	eat_apple = false;
 }
 
-std::vector<Coordinate> Snake::coordinate_p() { return coordinate; }
+std::vector<Coordinate> Snake::coord() { return coordinate; }
 int Snake::molX(int x) { return (x + UNITX) % UNITX; }
 int Snake::molY(int y) { return (y + UNITY) % UNITY; }

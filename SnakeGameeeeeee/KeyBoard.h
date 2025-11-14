@@ -1,8 +1,7 @@
 #pragma once
 #include <windows.h>
+#include "Struct.h"
 
-enum class MenuState { PLAY, EXIT };
-enum class GameoverState { AGAIN, EXIT };
 class Keyboard
 {
 public:
