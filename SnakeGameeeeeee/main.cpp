@@ -56,15 +56,13 @@ int loadImage();
 int loadFont();
 int resourceCheck();
 
-
-MenuState Menu(MenuState&);
+void Menu();
 #define UNIT 10				//UNIT_SIZE每个单元格10x10像素
 #define MENUX 24			//菜单界面X共24单元格
 #define MENUY 20			//菜单界面Y共20单元格
 void Sound();
 
 int Game();
-GameoverState Gameover();
 #define UNITX 16			//游戏界面X共16单元格
 #define UNITY 20			//游戏界面Y共20单元格
 #define BOARD 2				//计分板宽度
@@ -76,13 +74,13 @@ GameoverState Gameover();
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
 void placeSnake(std::vector<Coordinate>);
+void Gameover();
 
 Images image(MENUX, MENUY, UNITX, UNITY);
 Keyboard keyboard;
 Music music;
 
 SceneState scene_state = SceneState::MENU;
-
 int main()
 {
 	if (resourceCheck() != 0)
@@ -91,27 +89,25 @@ int main()
 		system("pause");
 		return 1;
 	}
-	MenuState menuState = MenuState::PLAY;
-	while(true)
+	while (true)
 	{
-		Menu(menuState);
-		switch (menuState)
+		int score = 0;//未来排行榜
+		switch (scene_state)
 		{
-		case(MenuState::PLAY):
-			music.menuStop();
-			do{
-				int score = Game();
-				if (score == -1)
-				{
-					break;
-				}
-				Sleep(500);
-			} while (Gameover() != GameoverState::EXIT);
+		case(SceneState::MENU):
+			Menu(); 
 			break;
-		case(MenuState::EXIT):
+		case(SceneState::MODE_CHOOSE):
+			break;
+		case(SceneState::GAME):
+			score = Game();
+			break;
+		case(SceneState::GAMEOVER):
+			Gameover();
+			break;
+		case(SceneState::EXIT):
 			return 0;
 		}
-		Sleep(TICK_NORMAL);
 	}
 }
 int loadImage()
@@ -144,31 +140,38 @@ int resourceCheck()
 	return loadImage() + image.loadImages() + loadFont() + music.loadMusic();
 }
 
-
-MenuState Menu(MenuState& state)
+void Menu()
 {
+	MenuState menu_state = MenuState::PLAY;
+
 	image.menuInit();
 	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
 	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
 	TCHAR text_play[] = "PLAY";
 	TCHAR text_exit[] = "EXIT";
+
 	music.menu();
 	Timer timer;
-	while (1)
+
+	while (true)
 	{
-		if (keyboard.enter())
+		//未来把点击整合进Button类
+		if (menu_state == MenuState::PLAY && keyboard.enter())
 		{
-			return state;
+			scene_state = SceneState::GAME;
+			return;
 		}
-		if (state == MenuState::EXIT && keyboard.escape())
+		else
+		if (menu_state == MenuState::EXIT && (keyboard.enter() || keyboard.escape()))
 		{
-			return state;
+			scene_state = SceneState::EXIT;
+			return;
 		}
-		keyboard.menu(state);
+		keyboard.menu(menu_state);
 
 		image.flushBegin();
-		btn_menu_play.display(state == MenuState::PLAY,text_play);
-		btn_menu_exit.display(state == MenuState::EXIT,text_exit);
+		btn_menu_play.display(menu_state == MenuState::PLAY,text_play);
+		btn_menu_exit.display(menu_state == MenuState::EXIT,text_exit);
 		image.placeTitle(timer.getTime());
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
@@ -178,22 +181,24 @@ void Sound()
 {
 	Button btn_sound_music(&soundOn, &soundOff, MENUX / 2, 11);
 	Button btn_sound_effect(&soundOn, &soundOff, MENUX / 2, 11);
-
 }
 
 int Game()
 {
+	music.menuStop();
+
 	//初始化
 	image.gameInit();
 	Item apple(UNITX, UNITY, &apple_i);
 	Item goldapple(UNITX, UNITY, &goldapple_i);
+
 	Snake snake(UNITX, UNITY);
-	Timer timer;
 	music.game();
+	Timer timer;
+
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
 	//游戏主体
-
 	while (1)
 	{
 		//不知道哪里有问题，好几次蛇突然不动了 
@@ -228,6 +233,7 @@ int Game()
 				if (keyboard.escape())
 				{
 					music.gameStop();
+					scene_state = SceneState::MENU;
 					return -1;//退出
 				}
 			} while (1);
@@ -251,6 +257,7 @@ int Game()
 			image.temp();
 			music.death();
 			music.gameStop();
+			scene_state = SceneState::GAMEOVER;
 			return score;
 		}
 		//判定金苹果存在是否超时
@@ -312,29 +319,32 @@ int Game()
 		}
 	}
 }
-GameoverState Gameover()
+void Gameover()
 {
-	GameoverState state = GameoverState::AGAIN;
+	GameoverState over_state = GameoverState::AGAIN;
 	Button btn_over_again(&button, &buttonPressed, UNITX / 2, 10);
 	Button btn_over_exit(&button, &buttonPressed, UNITX / 2, 13);
 	TCHAR text_again[] = "AGAIN";
 	TCHAR text_exit[] = "EXIT";
-	while (1)
+
+	while (true)
 	{
-		if (keyboard.enter())
+		if (over_state == GameoverState::AGAIN && keyboard.enter())
 		{
-			return state;
+			scene_state = SceneState::GAME;
+			return ;
 		}
-		if (keyboard.escape() && state == GameoverState::EXIT)
+		if (over_state == GameoverState::BACK && (keyboard.escape() || keyboard.enter()))
 		{
-			return state;
+			scene_state = SceneState::MENU;
+			return ;
 		}
-		keyboard.gameover(state);
+		keyboard.gameover(over_state);
 
 		image.flushBegin();
 		image.tempDisplay();
-		btn_over_again.display(state == GameoverState::AGAIN,text_again);
-		btn_over_exit.display(state == GameoverState::EXIT,text_exit);
+		btn_over_again.display(over_state == GameoverState::AGAIN,text_again);
+		btn_over_exit.display(over_state == GameoverState::BACK,text_exit);
 		image.flushEnd();
 		Sleep(TICK_NORMAL);
 	}

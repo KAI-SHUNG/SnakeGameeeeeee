@@ -10,9 +10,8 @@ public:
 
 	void placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength);
 
-	void placeApple(int x, int y);
-	void placeGoldApple(int x, int y);
-
+	//void placeApple(int x, int y);
+	//void placeGoldApple(int x, int y);
 	//void placeButton(int x, int y, bool state);
 	//void placePlay(int x, int y, bool state);
 	//void placeAgain(int x, int y, bool state);
@@ -23,7 +22,7 @@ public:
 	void placePause(int x, int y);
 	void placeBoard(int score);
 	void placeBar(int time, int time_total);
-	void placeSound(int x, int y, bool state);
+	//void placeSound(int x, int y, bool state);
 	//void placeSoundOff(int x, int y);
 
 	void flushBegin();

@@ -57,7 +57,7 @@ void Keyboard::gameover(GameoverState& state)
     }
     else if (escape())
     {
-        state = GameoverState::EXIT;
+        state = GameoverState::BACK;
     }
     return;
 }

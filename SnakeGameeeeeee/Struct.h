@@ -6,7 +6,7 @@ struct Coordinate {
 	int Y;
 	char Dir;
 };
-enum class SceneState { MENU, GAME, EXIT };
+enum class SceneState { MENU, MODE_CHOOSE, GAME, GAMEOVER, EXIT };
 enum class MenuState { PLAY, EXIT };
-enum class GameoverState { AGAIN, EXIT };
+enum class GameoverState { AGAIN, BACK };
 #endif // !Coordinate_H

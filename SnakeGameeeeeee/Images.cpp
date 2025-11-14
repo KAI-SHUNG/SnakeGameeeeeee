@@ -130,15 +130,14 @@ void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeD
 		snakeDir[snakeLength - 2]);
 	//注意这里snakeTial读取的应该是length-2的Dir
 }
-void Images::placeApple(int x, int y)
-{
-	putimage_alpha(x, y, &apple);
-}
-void Images::placeGoldApple(int x, int y)
-{
-	putimage_alpha(x, y, &goldApple);
-}
-
+//void Images::placeApple(int x, int y)
+//{
+//	putimage_alpha(x, y, &apple);
+//}
+//void Images::placeGoldApple(int x, int y)
+//{
+//	putimage_alpha(x, y, &goldApple);
+//}
 //void Images::placeButton(int x, int y, bool state)
 //{
 //	int h = button.getheight();
