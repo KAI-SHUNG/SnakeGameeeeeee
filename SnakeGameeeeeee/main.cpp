@@ -36,6 +36,24 @@ class道具（加速减速，闪现，技能键，护盾……
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
 
+/*修复了调试后无法移动的bug 2025/11/13
+	不知道哪里有问题，好几次蛇突然不动了 
+	莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
+	给你👻辣，给你上香
+	好像好久没出现了？ 2025/11/7
+	知道为什么解决了，因为调试时sleeptime是负数 2025/11/13*/
+
+/*-------------------------------------------------------------------------------------------------
+				***								***								***
+				|||								|||								|||
+				|||								|||								|||
+				|||								|||								|||
+			———————————						———————————						———————————
+			\		  /						\		  /						\		  /
+			 \_______/						 \_______/						 \_______/
+-------------------------------------------------------------------------------------------------*/
+
+
 #include <easyx.h>
 #include <Windows.h>
 #include <iostream>
@@ -56,10 +74,12 @@ int loadImage();
 int loadFont();
 int resourceCheck();
 
+
 void Menu();
 #define UNIT 10				//UNIT_SIZE每个单元格10x10像素
 #define MENUX 24			//菜单界面X共24单元格
 #define MENUY 20			//菜单界面Y共20单元格
+
 void Sound();
 
 int Game();
@@ -74,6 +94,7 @@ int Game();
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
 void placeSnake(std::vector<Coordinate>);
+
 void Gameover();
 
 Images image(MENUX, MENUY, UNITX, UNITY);
@@ -83,9 +104,9 @@ Music music;
 SceneState scene_state = SceneState::MENU;
 int main()
 {
-	if (resourceCheck() != 0)
+	if (resourceCheck())
 	{
-		std::cerr << "资源文件错误！ERROR_RESOURCE!\n";
+		std::cerr << "资源文件错误！ERROR_RESOURECES!\n";
 		system("pause");
 		return 1;
 	}
@@ -110,15 +131,24 @@ int main()
 		}
 	}
 }
+
+
 int loadImage()
 {
-	return 0
-		+ loadimage(&apple_i, _T("./Resource/Images/apple.png"))
+	if ( loadimage(&apple_i, _T("./Resource/Images/apple.png"))
 		+ loadimage(&goldapple_i, _T("./Resource/Images/gold_apple.png"))
 		+ loadimage(&button, _T("./Resource/Images/button.png"))
 		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
 		+ loadimage(&soundOn, _T("./Resource/Images/sound_on.png"))
-		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png"));
+		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png")) == 0)
+	{
+		return 0;
+	}
+	else
+	{
+		std::cerr << "Image Resources ERROR!\n";
+		return 1;
+	}
 }
 int loadFont()
 {
@@ -140,19 +170,18 @@ int resourceCheck()
 	return loadImage() + image.loadImages() + loadFont() + music.loadMusic();
 }
 
+
 void Menu()
 {
-	MenuState menu_state = MenuState::PLAY;
-
 	image.menuInit();
-	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
-	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
 	TCHAR text_play[] = "PLAY";
+	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
 	TCHAR text_exit[] = "EXIT";
-
+	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
 	music.menu();
 	Timer timer;
 
+	MenuState menu_state = MenuState::PLAY;
 	while (true)
 	{
 		//未来把点击整合进Button类
@@ -177,69 +206,53 @@ void Menu()
 		Sleep(TICK_NORMAL);
 	}
 }
+
+
 void Sound()
 {
 	Button btn_sound_music(&soundOn, &soundOff, MENUX / 2, 11);
 	Button btn_sound_effect(&soundOn, &soundOff, MENUX / 2, 11);
 }
 
+
 int Game()
 {
-	music.menuStop();
-
 	//初始化
 	image.gameInit();
-	Item apple(UNITX, UNITY, &apple_i);
-	Item goldapple(UNITX, UNITY, &goldapple_i);
-
-	Snake snake(UNITX, UNITY);
+	Item apple		(UNITX, UNITY, &apple_i);
+	Item goldapple	(UNITX, UNITY, &goldapple_i);
+	music.menuStop();
 	music.game();
+	Snake snake(UNITX, UNITY);
 	Timer timer;
 
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
-	//游戏主体
-	while (1)
+	while (true)
 	{
-		//不知道哪里有问题，好几次蛇突然不动了 
-		//莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
-		//给你👻辣，给你上香
-		//好像好久没出现了？ 2025/11/7
-		//知道为什么解决了，因为调试时sleeptime是负数 2025/11/13
-		/* --------------------------------
-						***
-						|||
-						|||
-					———————————
-					\		  /
-					 \_______/
-		---------------------------------*/
 		//帧率控制
 		timer.frameStart();
-		// 暂停 && 退出
+		// Pause && Exit
 		if (keyboard.space() || keyboard.escape())
 		{
 			music.click();
 			music.gamePause();
-			// 中间显示暂停界面，之后需要分支，resume或者exit
 			do {
-				image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//显示暂停
+				image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//pause
 				Sleep(TICK_EASY);//这一句好像很关键，删了不行
 				if (keyboard.space())
 				{
 					music.click();
-					break;//继续游戏
-				}//（已解决）为何只有第一次对，bugbugbug(*_*)(*_*)(*_*)(*_*)
+					break;//Resume Game
+				}
 				if (keyboard.escape())
 				{
 					music.gameStop();
 					scene_state = SceneState::MENU;
-					return -1;//退出
+					return -1;//Back to Menu, NO Score
 				}
 			} while (1);
 			music.gameResume();
-			//暂停之后tick - framtime 让Sleep的时间为负数，所以一直停住，刷新start即可解决
-			timer.frameStart();
 		}
 		//wasd控制
 		/*
