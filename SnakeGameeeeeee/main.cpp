@@ -53,7 +53,7 @@ class道具（加速减速，闪现，技能键，护盾……
 			 \_______/						 \_______/						 \_______/
 -------------------------------------------------------------------------------------------------*/
 
-#include <easyx.h>
+#include <graphics.h>
 #include <Windows.h>
 #include <iostream>
 #include <vector>
@@ -188,40 +188,41 @@ void Menu()
 	
 	while (true)
 	{
-		ExMessage* msg = new ExMessage;
-		btn_menu_play.reset();
-		btn_menu_exit.reset();
-		switch (menu_state)
+
+		if (MouseHit())
+		{
+			MOUSEMSG msg = GetMouseMsg();
+			btn_menu_exit.check(&msg);
+			if (btn_menu_play.isPressed)
+			{
+				menu_state = MenuState::PLAY;
+			}
+			if (btn_menu_exit.isPressed)
+			{
+				menu_state = MenuState::EXIT;
+			}
+			std::cout << (int)menu_state<<std::endl;
+		//未来把点击整合进Button类
+		}		
+		switch (menu_state) 
 		{
 		case(MenuState::PLAY):btn_menu_play.isPressed = 1; break;
 		case(MenuState::EXIT):btn_menu_exit.isPressed = 1; break;
 		}
-		if (peekmessage(msg, EX_MOUSE))
-		{
-			std::cout << "1\n";
-		}
-		//未来把点击整合进Button类
-		btn_menu_play.check(msg);
-		if (btn_menu_play.isPressed)
-		{
-			menu_state = MenuState::PLAY;
-		}
+
+
 		if (btn_menu_play.isClicked)
 		{
 			scene_state = SceneState::GAME;
 			return;
 		}
-		//btn_menu_exit.check(msg);
-		//if (btn_menu_exit.isPressed)
-		//{
-		//	menu_state = MenuState::EXIT;
-		//}
-		//if (btn_menu_exit.isClicked)
-		//{
-		//	scene_state = SceneState::EXIT;
-		//	return;
-		//}
-		delete msg;
+		if (btn_menu_exit.isClicked)
+		{
+			scene_state = SceneState::EXIT;
+			return;
+		}
+
+
 		if (menu_state == MenuState::PLAY && keyboard.enter())
 		{
 			scene_state = SceneState::GAME;
@@ -240,8 +241,8 @@ void Menu()
 		btn_menu_exit.display(menu_state == MenuState::EXIT,text_exit);
 		image.placeTitle(timer.getTime());
 		image.flushEnd();
-		Sleep(500);
-		//flushmessage();
+		flushmessage();
+		Sleep(80);
 
 	}
 }

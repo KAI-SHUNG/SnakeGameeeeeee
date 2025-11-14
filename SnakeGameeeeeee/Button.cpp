@@ -27,34 +27,27 @@ void Button::display(bool is_pressed,TCHAR text[])
 	settextstyle(&textFont);
 	outtextxy(x * UNIT - textwidth(text) / 2, y * UNIT - textheight(text) / 2 - 2, text);
 }
-void Button::check(ExMessage* msg)
+void Button::check(MOUSEMSG* msg)
 {
-	std::cout << "Checked.\n"
-		<< msg->x << ' ' << msg->y << std::endl
-		<< x * UNIT * 2.5 << ' ' << y * UNIT * 2.5 <<std::endl;
-	if (msg->lbutton)
+	//std::cout << "Checked.\n"
+	//	<< msg->x << ' ' << msg->y << std::endl
+	//	<< (x * UNIT - width / 2) * 2.5 << ' ' << (y * UNIT - height / 2) * 2.5 << std::endl;
+
+	if (msg->x >= (x * UNIT - width / 2) * 2.5 && msg->x <= (x * UNIT + width / 2) * 2.5  &&
+		msg->y >= (y * UNIT - height / 2) * 2.5 && msg->y <= (y * UNIT + height / 2) * 2.5 )
 	{
-		std::cout << "Clicked\n";
-	}
-	
-	if (msg->x >= x * UNIT  && msg->x <= x * UNIT  + width &&
-		msg->y >= y * UNIT  && msg->y <= y * UNIT  + height)
-	{
-		std::cout << "Enter if4\n";
-		if (msg->message == WM_LBUTTONDOWN)
+		if (msg->uMsg== WM_LBUTTONDOWN)
 		{
+			std::cout << 1;
+			std::cout << isPressed;
 			if (isPressed)
 			{
 				isClicked = true;
 			}
-			else
-			{
-				isPressed = true;
-			}
-		}
-		else
-		{
-			isPressed = false;
+			isPressed = true;
+			
+			std::cout << isPressed;
+
 		}
 	}
 }

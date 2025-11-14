@@ -1,5 +1,5 @@
 #pragma once
-#include <easyx.h>
+#include <graphics.h>
 #include <tchar.h>
 #include "Struct.h"
 class Button
@@ -9,7 +9,7 @@ public:
 	void display(bool state);
 	void display(bool state, TCHAR[]);
 
-	void check(ExMessage* msg);
+	void check(MOUSEMSG* msg);
 	void reset();
 	bool isPressed;
 	bool isClicked;
