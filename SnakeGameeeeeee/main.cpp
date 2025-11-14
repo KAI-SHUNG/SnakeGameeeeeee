@@ -129,6 +129,7 @@ int main()
 		case(SceneState::EXIT):
 			return 0;
 		}
+		Sleep(TICK_NORMAL);//很关键，留下缓冲时间
 	}
 }
 
@@ -253,6 +254,7 @@ int Game()
 				}
 			} while (1);
 			music.gameResume();
+			timer.frameStart();
 		}
 		//wasd控制
 		/*
