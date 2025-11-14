@@ -14,10 +14,8 @@ class道具（加速减速，闪现，技能键，护盾……
 //实现功能：
 //1.最右端传送（简单）^^^
 //2.！！！蛇身蛇头蛇尾，转弯处？画图？？ ^^^
-//3.
 //4.生成道具，护盾
 //5.地图，有不同wall
-//6.
 //7.计时器，指定时间后道具/果实消失 ^^^
 //8.图形界面，排行榜
 
@@ -36,12 +34,14 @@ class道具（加速减速，闪现，技能键，护盾……
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
 
-/*修复了调试后无法移动的bug 2025/11/13
+/*
+	2025/11/13 修复了调试后无法移动的bug 
 	不知道哪里有问题，好几次蛇突然不动了 
 	莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
 	给你👻辣，给你上香
 	好像好久没出现了？ 2025/11/7
-	知道为什么解决了，因为调试时sleeptime是负数 2025/11/13*/
+	知道为什么解决了，因为调试时sleeptime是负数 2025/11/13
+*/
 
 /*-------------------------------------------------------------------------------------------------
 				***								***								***
@@ -52,7 +52,6 @@ class道具（加速减速，闪现，技能键，护盾……
 			\		  /						\		  /						\		  /
 			 \_______/						 \_______/						 \_______/
 -------------------------------------------------------------------------------------------------*/
-
 
 #include <easyx.h>
 #include <Windows.h>
@@ -80,7 +79,9 @@ void Menu();
 #define MENUX 24			//菜单界面X共24单元格
 #define MENUY 20			//菜单界面Y共20单元格
 
+
 void Sound();
+void Mode();
 
 int Game();
 #define UNITX 16			//游戏界面X共16单元格
@@ -95,12 +96,13 @@ int Game();
 #define POINT_GOLDAPPLE 26	//金苹果分值
 void placeSnake(std::vector<Coordinate>);
 
+
 void Gameover();
+
 
 Images image(MENUX, MENUY, UNITX, UNITY);
 Keyboard keyboard;
 Music music;
-
 SceneState scene_state = SceneState::MENU;
 int main()
 {
@@ -118,7 +120,7 @@ int main()
 		case(SceneState::MENU):
 			Menu(); 
 			break;
-		case(SceneState::MODE_CHOOSE):
+		case(SceneState::MODE):
 			break;
 		case(SceneState::GAME):
 			score = Game();
@@ -182,20 +184,54 @@ void Menu()
 	Timer timer;
 
 	MenuState menu_state = MenuState::PLAY;
+	
 	while (true)
 	{
+		ExMessage* msg = new ExMessage;
+		btn_menu_play.reset();
+		btn_menu_exit.reset();
+		switch (menu_state)
+		{
+		case(MenuState::PLAY):btn_menu_play.isPressed = 1; break;
+		case(MenuState::EXIT):btn_menu_exit.isPressed = 1; break;
+		}
+		if (peekmessage(msg, EX_MOUSE))
+		{
+			std::cout << "1\n";
+		}
 		//未来把点击整合进Button类
+		btn_menu_play.check(msg);
+		if (btn_menu_play.isPressed)
+		{
+			menu_state = MenuState::PLAY;
+		}
+		if (btn_menu_play.isClicked)
+		{
+			scene_state = SceneState::GAME;
+			return;
+		}
+		//btn_menu_exit.check(msg);
+		//if (btn_menu_exit.isPressed)
+		//{
+		//	menu_state = MenuState::EXIT;
+		//}
+		//if (btn_menu_exit.isClicked)
+		//{
+		//	scene_state = SceneState::EXIT;
+		//	return;
+		//}
+		delete msg;
 		if (menu_state == MenuState::PLAY && keyboard.enter())
 		{
 			scene_state = SceneState::GAME;
 			return;
 		}
 		else
-		if (menu_state == MenuState::EXIT && (keyboard.enter() || keyboard.escape()))
-		{
-			scene_state = SceneState::EXIT;
-			return;
-		}
+			if (menu_state == MenuState::EXIT && (keyboard.enter() || keyboard.escape()))
+			{
+				scene_state = SceneState::EXIT;
+				return;
+			}
 		keyboard.menu(menu_state);
 
 		image.flushBegin();
@@ -203,7 +239,9 @@ void Menu()
 		btn_menu_exit.display(menu_state == MenuState::EXIT,text_exit);
 		image.placeTitle(timer.getTime());
 		image.flushEnd();
-		Sleep(TICK_NORMAL);
+		Sleep(500);
+		//flushmessage();
+
 	}
 }
 

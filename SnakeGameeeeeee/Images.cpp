@@ -94,7 +94,7 @@ int Images::loadImages()
 }
 void Images::menuInit()
 {
-	initgraph(MenuX * UNIT * RATIO, MenuY * UNIT * RATIO);
+	initgraph(MenuX * UNIT * RATIO, MenuY * UNIT * RATIO, EX_SHOWCONSOLE);
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
 	cleardevice();
