@@ -53,7 +53,7 @@ class道具（加速减速，闪现，技能键，护盾……
 			 \_______/						 \_______/						 \_______/
 -------------------------------------------------------------------------------------------------*/
 
-#include <graphics.h>
+#include <easyx.h>
 #include <Windows.h>
 #include <iostream>
 #include <vector>
@@ -88,7 +88,7 @@ int Game();
 #define UNITY 20			//游戏界面Y共20单元格
 #define BOARD 2				//计分板宽度
 #define TICK_EASY 250		//简单模式帧时长250ms
-#define TICK_NORMAL 180		//普通模式帧时长180ms
+#define TICK_NORMAL 160		//普通模式帧时长160ms
 #define TICK_HARD 100		//困难模式帧时长100ms
 #define TICK_HELL 85		//地狱模式帧时长85ms
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
@@ -188,62 +188,47 @@ void Menu()
 	
 	while (true)
 	{
+		BeginBatchDraw();
+		cleardevice();
 
-		if (MouseHit())
+		ExMessage msg;
+		peekmessage(&msg);
+
+		btn_menu_play.check(&msg);
+		btn_menu_exit.check(&msg);
+		if (menu_state == MenuState::EXIT && msg.vkcode == VK_ESCAPE)
 		{
-			MOUSEMSG msg = GetMouseMsg();
-			btn_menu_exit.check(&msg);
-			if (btn_menu_play.isPressed)
+			btn_menu_exit.isClicked = true;
+		}
+		if (btn_menu_play.isPressed){menu_state = MenuState::PLAY;}
+		if (btn_menu_exit.isPressed){menu_state = MenuState::EXIT;}
+
+		
+		if (msg.vkcode == VK_RETURN)
+		{
+			switch (menu_state)
 			{
-				menu_state = MenuState::PLAY;
+			case(MenuState::PLAY):btn_menu_play.isClicked = true; break;
+			case(MenuState::EXIT):btn_menu_exit.isClicked = true; break;
 			}
-			if (btn_menu_exit.isPressed)
-			{
-				menu_state = MenuState::EXIT;
-			}
-			std::cout << (int)menu_state<<std::endl;
-		//未来把点击整合进Button类
-		}		
+		}
+		if (btn_menu_play.isClicked){scene_state = SceneState::GAME;return;}
+		if (btn_menu_exit.isClicked){scene_state = SceneState::EXIT;return;}
+		keyboard.menu(menu_state);
+		btn_menu_play.isPressed = false;
+		btn_menu_exit.isPressed = false;
 		switch (menu_state) 
 		{
-		case(MenuState::PLAY):btn_menu_play.isPressed = 1; break;
-		case(MenuState::EXIT):btn_menu_exit.isPressed = 1; break;
+		case(MenuState::PLAY):btn_menu_play.isPressed = true; btn_menu_play.isOn= true; break;
+		case(MenuState::EXIT):btn_menu_exit.isPressed = true; btn_menu_exit.isOn= true; break;
 		}
 
-
-		if (btn_menu_play.isClicked)
-		{
-			scene_state = SceneState::GAME;
-			return;
-		}
-		if (btn_menu_exit.isClicked)
-		{
-			scene_state = SceneState::EXIT;
-			return;
-		}
-
-
-		if (menu_state == MenuState::PLAY && keyboard.enter())
-		{
-			scene_state = SceneState::GAME;
-			return;
-		}
-		else
-			if (menu_state == MenuState::EXIT && (keyboard.enter() || keyboard.escape()))
-			{
-				scene_state = SceneState::EXIT;
-				return;
-			}
-		keyboard.menu(menu_state);
-
-		image.flushBegin();
-		btn_menu_play.display(menu_state == MenuState::PLAY,text_play);
-		btn_menu_exit.display(menu_state == MenuState::EXIT,text_exit);
+		btn_menu_play.display(text_play);
+		btn_menu_exit.display(text_exit);
 		image.placeTitle(timer.getTime());
-		image.flushEnd();
+		EndBatchDraw();
 		flushmessage();
-		Sleep(80);
-
+		Sleep(TICK_NORMAL);
 	}
 }
 
@@ -376,31 +361,67 @@ int Game()
 void Gameover()
 {
 	GameoverState over_state = GameoverState::AGAIN;
-	Button btn_over_again(&button, &buttonPressed, UNITX / 2, 10);
-	Button btn_over_exit(&button, &buttonPressed, UNITX / 2, 13);
 	TCHAR text_again[] = "AGAIN";
-	TCHAR text_exit[] = "EXIT";
+	Button btn_over_again(&button, &buttonPressed, UNITX / 2, 10);
+	TCHAR text_exit[] = "BACK";
+	Button btn_over_back(&button, &buttonPressed, UNITX / 2, 13);
 
 	while (true)
 	{
-		if (over_state == GameoverState::AGAIN && keyboard.enter())
+		BeginBatchDraw();
+		cleardevice();
+
+		ExMessage msg;
+		peekmessage(&msg);
+
+		btn_over_again.check(&msg);
+		if (btn_over_again.isPressed)
 		{
-			scene_state = SceneState::GAME;
-			return ;
+			over_state = GameoverState::AGAIN;
 		}
-		if (over_state == GameoverState::BACK && (keyboard.escape() || keyboard.enter()))
+
+		btn_over_back.check(&msg);
+		if (btn_over_back.isPressed)
 		{
+			over_state = GameoverState::BACK;
+		}
+		if (msg.vkcode == VK_ESCAPE)
+		{
+			if (btn_over_back.isPressed)btn_over_back.isClicked = true;
+			else over_state = GameoverState::BACK;
+		}
+
+		if (msg.vkcode == VK_RETURN)
+		{
+			switch (over_state)
+			{
+			case(GameoverState::AGAIN):btn_over_again.isClicked = true; break;
+			case(GameoverState::BACK):btn_over_back.isClicked = true; break;
+			}
+		}
+		if (btn_over_again.isClicked) {
+			scene_state = SceneState::GAME;
+			return;
+		}
+		if (btn_over_back.isClicked) {
 			scene_state = SceneState::MENU;
-			return ;
+			return;
 		}
 		keyboard.gameover(over_state);
+		btn_over_again.isPressed = false;
+		btn_over_back.isPressed = false;
+		switch (over_state)
+		{
+		case(GameoverState::AGAIN):btn_over_again.isPressed = true; break;
+		case(GameoverState::BACK):btn_over_back.isPressed = true; break;
+		}
 
-		image.flushBegin();
 		image.tempDisplay();
-		btn_over_again.display(over_state == GameoverState::AGAIN,text_again);
-		btn_over_exit.display(over_state == GameoverState::BACK,text_exit);
-		image.flushEnd();
-		Sleep(TICK_NORMAL);
+		btn_over_again.display(text_again);
+		btn_over_back.display(text_exit);
+		EndBatchDraw();
+		flushmessage();
+		Sleep(TICK_HARD);
 	}
 }
 

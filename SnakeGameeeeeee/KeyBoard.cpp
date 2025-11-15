@@ -1,5 +1,5 @@
 #include "Keyboard.h"
-
+#include <Windows.h>
 void Keyboard::menu(MenuState& state)
 {
     if (up())
