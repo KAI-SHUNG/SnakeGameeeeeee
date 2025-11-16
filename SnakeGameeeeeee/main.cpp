@@ -200,22 +200,21 @@ void Menu()
 		if (btn_menu_play.isPressed){menu_state = MenuState::PLAY;}
 		if (btn_menu_exit.isPressed){menu_state = MenuState::EXIT;}
 		//Keyboard event
+		if (menu_state == MenuState::EXIT && keyboard.escape()) { btn_menu_exit.isClicked = true; };
 		keyboard.menu(menu_state);
-		//Click event
 		if (keyboard.enter()) {
 			switch (menu_state) {
 			case(MenuState::PLAY):btn_menu_play.isClicked = true; break;
 			case(MenuState::EXIT):btn_menu_exit.isClicked = true; break;
 			}
 		}
-		if (menu_state == MenuState::EXIT && keyboard.escape()) { btn_menu_exit.isClicked = true; };
 		//Clicked
 		if (btn_menu_play.isClicked){scene_state = SceneState::GAME;return;}
 		if (btn_menu_exit.isClicked){scene_state = SceneState::EXIT;return;}
 		switch (menu_state) {
 		case(MenuState::PLAY):btn_menu_play.isPressed = true; btn_menu_play.isOn= true; break;
 		case(MenuState::EXIT):btn_menu_exit.isPressed = true; btn_menu_exit.isOn= true; break;
-		}
+		}//如果没有上述switch语句，按键只受鼠标位置影响，等于可以砍掉键盘，纯鼠标
 		//Image
 		btn_menu_play.display(text_play);
 		btn_menu_exit.display(text_exit);
@@ -236,7 +235,7 @@ void Sound()
 
 int Game()
 {
-	//初始化
+	//Initialize
 	image.gameInit();
 	Item apple		(UNITX, UNITY, &apple_i);
 	Item goldapple	(UNITX, UNITY, &goldapple_i);
@@ -249,9 +248,8 @@ int Game()
 	int tick = TICK_HARD;//未来难度选择
 	while (true)
 	{
-		//帧率控制
+		//Frametime Control
 		timer.frameStart();
-
 		// Pause && Exit
 		if (keyboard.space() || keyboard.escape())
 		{
@@ -259,7 +257,8 @@ int Game()
 			music.click();
 			Sleep(TICK_EASY);
 			music.gamePause();
-			do {
+			while (true)
+			{
 				Sleep(TICK_EASY);
 				if (keyboard.space())
 				{
@@ -274,21 +273,19 @@ int Game()
 					scene_state = SceneState::MENU;
 					return -1;//Back to Menu, NO Score
 				}
-			} while (true);
+			}
 			music.gameResume();
 			timer.frameStart();
 		}
-		//wasd控制
-		/*
-		我真是天才
+		//Snake Movement Control
+		/*我真是天才
 		先定义为上一个dir，有修改就改了，没修改按原来
-		省去了再写一个读取Dir[0]的函数
-		*/
+		省去了再写一个读取Dir[0]的函数*/
 		char dir = snake.coord().at(0).Dir;
 		keyboard.move(dir);
-		//更新蛇头下一刻坐标
+		//Update SnakeHead Coordinate
 		snake.snakeHeadNextTick(dir);
-		//死亡判定
+		//Death Check
 		if (snake.death())
 		{
 			image.temp();
@@ -297,13 +294,13 @@ int Game()
 			scene_state = SceneState::GAMEOVER;
 			return score;
 		}
-		//判定金苹果存在是否超时
+		//Goldapple Timeout Check
 		int goldAppleTime = timer.goldAppleTime();
 		if (goldAppleTime > TIME_TOTAL)
 		{
 			goldapple.exist = false;
 		}
-		//判定是否吃到苹果 && 金苹果 && 蛇生长
+		//Check If Eat Apple and Goldapple && Snake Grow
 		if (snake.eatApple(apple.get_x(), apple.get_y()))
 		{
 			music.eat();
@@ -311,22 +308,21 @@ int Game()
 			apple.counter += 1;
 			apple.reset();
 		}
-		else
-			if (goldapple.exist && snake.eatGoldApple(goldapple.get_x(), goldapple.get_y()))
+		else if (goldapple.exist && snake.eatGoldApple(goldapple.get_x(), goldapple.get_y()))
+		{
+			music.bell();
+			music.eat();
+			score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
+			if (goldAppleTime / 1000 == 1)
 			{
 				music.bell();
-				music.eat();
-				score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
-				if (goldAppleTime / 1000 == 1)
-				{
-					music.bell();
-					apple.counter += 3;
-				}
-				goldapple.reset();
+				apple.counter += 3;
 			}
-		//蛇的移动
+			goldapple.reset();
+		}
+		//Snake Move
 		snake.move();
-		//生成苹果 && 生成金苹果
+		//Create Apple and Goldapple
 		if (!apple.exist)
 		{
 			apple.create(snake.coord(), goldapple.get_x(), goldapple.get_y());
@@ -338,8 +334,7 @@ int Game()
 				timer.goldAppleCreate();
 			}
 		}
-		//图像输出
-
+		//Image
 		BeginBatchDraw();
 		cleardevice(); 
 		if (goldapple.exist)
@@ -350,10 +345,9 @@ int Game()
 		apple.display();
 		image.placeBoard(score);
 		placeSnake(snake.coord());
-
 		EndBatchDraw();
 		flushmessage();
-		//帧率控制
+		//Frametime Control
 		if (tick - timer.frameTime() > 0)
 			Sleep(tick - timer.frameTime());
 	}
@@ -380,15 +374,14 @@ void Gameover()
 		if (btn_over_again.isPressed) { over_state = GameoverState::AGAIN; }
 		if (btn_over_back.isPressed) { over_state = GameoverState::BACK; }
 		//Keyboard event
+		if (over_state == GameoverState::BACK && keyboard.escape()) { btn_over_back.isClicked = true; };
 		keyboard.gameover(over_state);
-		//Click event
 		if (keyboard.enter()) {
 			switch (over_state) {
 			case(GameoverState::AGAIN):btn_over_again.isClicked = true; break;
 			case(GameoverState::BACK):btn_over_back.isClicked = true; break;
 			}
 		}
-		if (over_state == GameoverState::BACK && keyboard.escape()) { btn_over_back.isClicked = true; };
 		//Clicked
 		if (btn_over_again.isClicked) { scene_state = SceneState::GAME; return; }
 		if (btn_over_back.isClicked) { scene_state = SceneState::MENU; return; }
