@@ -6,7 +6,7 @@ class Button
 {
 public:
 	Button(IMAGE* img,IMAGE* img_pressed,int x_in, int y_in);
-	void display(bool state);
+	//void display(bool state);
 	void display(TCHAR[]);
 
 	void check(ExMessage* msg);

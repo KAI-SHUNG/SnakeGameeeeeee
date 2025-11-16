@@ -176,53 +176,47 @@ int resourceCheck()
 
 void Menu()
 {
+	MenuState menu_state = MenuState::PLAY;
+
 	image.menuInit();
+	Timer timer;
+	music.menu();
+
 	TCHAR text_play[] = "PLAY";
 	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
 	TCHAR text_exit[] = "EXIT";
 	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
-	music.menu();
-	Timer timer;
 
-	MenuState menu_state = MenuState::PLAY;
-	
 	while (true)
 	{
 		BeginBatchDraw();
 		cleardevice();
-
+		//Get Mouse event
 		ExMessage msg;
 		peekmessage(&msg);
-
+		//Mouse event
 		btn_menu_play.check(&msg);
 		btn_menu_exit.check(&msg);
-		if (menu_state == MenuState::EXIT && msg.vkcode == VK_ESCAPE)
-		{
-			btn_menu_exit.isClicked = true;
-		}
 		if (btn_menu_play.isPressed){menu_state = MenuState::PLAY;}
 		if (btn_menu_exit.isPressed){menu_state = MenuState::EXIT;}
-
-		
-		if (msg.vkcode == VK_RETURN)
-		{
-			switch (menu_state)
-			{
+		//Keyboard event
+		keyboard.menu(menu_state);
+		//Click event
+		if (keyboard.enter()) {
+			switch (menu_state) {
 			case(MenuState::PLAY):btn_menu_play.isClicked = true; break;
 			case(MenuState::EXIT):btn_menu_exit.isClicked = true; break;
 			}
 		}
+		if (menu_state == MenuState::EXIT && keyboard.escape()) { btn_menu_exit.isClicked = true; };
+		//Clicked
 		if (btn_menu_play.isClicked){scene_state = SceneState::GAME;return;}
 		if (btn_menu_exit.isClicked){scene_state = SceneState::EXIT;return;}
-		keyboard.menu(menu_state);
-		btn_menu_play.isPressed = false;
-		btn_menu_exit.isPressed = false;
-		switch (menu_state) 
-		{
+		switch (menu_state) {
 		case(MenuState::PLAY):btn_menu_play.isPressed = true; btn_menu_play.isOn= true; break;
 		case(MenuState::EXIT):btn_menu_exit.isPressed = true; btn_menu_exit.isOn= true; break;
 		}
-
+		//Image
 		btn_menu_play.display(text_play);
 		btn_menu_exit.display(text_exit);
 		image.placeTitle(timer.getTime());
@@ -367,6 +361,7 @@ int Game()
 void Gameover()
 {
 	GameoverState over_state = GameoverState::AGAIN;
+
 	TCHAR text_again[] = "AGAIN";
 	Button btn_over_again(&button, &buttonPressed, UNITX / 2, 10);
 	TCHAR text_back[] = "BACK";
@@ -376,39 +371,32 @@ void Gameover()
 	{
 		BeginBatchDraw();
 		cleardevice();
-
+		//Get Mouse event
 		ExMessage msg;
 		peekmessage(&msg);
-
+		//Mouse event
 		btn_over_again.check(&msg);
 		btn_over_back.check(&msg);
-		if (over_state == GameoverState:: BACK&& msg.vkcode == VK_ESCAPE)
-		{
-			btn_over_back.isClicked = true;
-		}
 		if (btn_over_again.isPressed) { over_state = GameoverState::AGAIN; }
 		if (btn_over_back.isPressed) { over_state = GameoverState::BACK; }
-
-
-		if (msg.vkcode == VK_RETURN)
-		{
-			switch (over_state)
-			{
+		//Keyboard event
+		keyboard.gameover(over_state);
+		//Click event
+		if (keyboard.enter()) {
+			switch (over_state) {
 			case(GameoverState::AGAIN):btn_over_again.isClicked = true; break;
 			case(GameoverState::BACK):btn_over_back.isClicked = true; break;
 			}
 		}
+		if (over_state == GameoverState::BACK && keyboard.escape()) { btn_over_back.isClicked = true; };
+		//Clicked
 		if (btn_over_again.isClicked) { scene_state = SceneState::GAME; return; }
 		if (btn_over_back.isClicked) { scene_state = SceneState::MENU; return; }
-		keyboard.gameover(over_state);
-		btn_over_again.isPressed = false;
-		btn_over_back.isPressed = false;
-		switch (over_state)
-		{
+		switch (over_state) {
 		case(GameoverState::AGAIN):btn_over_again.isPressed = true; btn_over_again.isOn = true; break;
 		case(GameoverState::BACK):btn_over_back.isPressed = true; btn_over_back.isOn = true; break;
 		}
-
+		//Image
 		image.tempDisplay();
 		btn_over_again.display(text_again);
 		btn_over_back.display(text_back);

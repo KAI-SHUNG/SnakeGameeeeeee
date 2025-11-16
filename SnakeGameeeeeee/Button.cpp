@@ -14,11 +14,11 @@ Button::Button(IMAGE* img, IMAGE* img_pressed, int x_in, int y_in)
 	_tcscpy_s(textFont.lfFaceName, "ROG Fonts");
 	setbkmode(TRANSPARENT);
 }
-void Button::display(bool is_pressed)
-{
-	AlphaBlend(GetImageHDC(NULL), x * UNIT - width / 2, y * UNIT - height / 2, width, height,
-		GetImageHDC(is_pressed ? Img_pressed : Img), 0, 0, width, height, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
+//void Button::display(bool is_pressed)
+//{
+//	AlphaBlend(GetImageHDC(NULL), x * UNIT - width / 2, y * UNIT - height / 2, width, height,
+//		GetImageHDC(is_pressed ? Img_pressed : Img), 0, 0, width, height, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+//}
 void Button::display(TCHAR text[])
 {
 	AlphaBlend(GetImageHDC(NULL), x * UNIT - width / 2, y * UNIT - height / 2, width, height,
