@@ -257,17 +257,21 @@ int Game()
 	{
 		//帧率控制
 		timer.frameStart();
+
 		// Pause && Exit
 		if (keyboard.space() || keyboard.escape())
 		{
+			image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//pause
 			music.click();
+			Sleep(TICK_EASY);
 			music.gamePause();
 			do {
-				image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//pause
-				Sleep(TICK_EASY);//这一句好像很关键，删了不行
+				Sleep(TICK_EASY);
 				if (keyboard.space())
 				{
 					music.click();
+					Sleep(TICK_EASY);
+					flushmessage();
 					break;//Resume Game
 				}
 				if (keyboard.escape())
@@ -276,7 +280,7 @@ int Game()
 					scene_state = SceneState::MENU;
 					return -1;//Back to Menu, NO Score
 				}
-			} while (1);
+			} while (true);
 			music.gameResume();
 			timer.frameStart();
 		}
@@ -341,7 +345,9 @@ int Game()
 			}
 		}
 		//图像输出
-		image.flushBegin();
+
+		BeginBatchDraw();
+		cleardevice(); 
 		if (goldapple.exist)
 		{
 			image.placeBar(goldAppleTime, TIME_TOTAL);
@@ -350,12 +356,12 @@ int Game()
 		apple.display();
 		image.placeBoard(score);
 		placeSnake(snake.coord());
-		image.flushEnd();
+
+		EndBatchDraw();
+		flushmessage();
 		//帧率控制
 		if (tick - timer.frameTime() > 0)
-		{
 			Sleep(tick - timer.frameTime());
-		}
 	}
 }
 void Gameover()
@@ -363,7 +369,7 @@ void Gameover()
 	GameoverState over_state = GameoverState::AGAIN;
 	TCHAR text_again[] = "AGAIN";
 	Button btn_over_again(&button, &buttonPressed, UNITX / 2, 10);
-	TCHAR text_exit[] = "BACK";
+	TCHAR text_back[] = "BACK";
 	Button btn_over_back(&button, &buttonPressed, UNITX / 2, 13);
 
 	while (true)
@@ -375,21 +381,14 @@ void Gameover()
 		peekmessage(&msg);
 
 		btn_over_again.check(&msg);
-		if (btn_over_again.isPressed)
-		{
-			over_state = GameoverState::AGAIN;
-		}
-
 		btn_over_back.check(&msg);
-		if (btn_over_back.isPressed)
+		if (over_state == GameoverState:: BACK&& msg.vkcode == VK_ESCAPE)
 		{
-			over_state = GameoverState::BACK;
+			btn_over_back.isClicked = true;
 		}
-		if (msg.vkcode == VK_ESCAPE)
-		{
-			if (btn_over_back.isPressed)btn_over_back.isClicked = true;
-			else over_state = GameoverState::BACK;
-		}
+		if (btn_over_again.isPressed) { over_state = GameoverState::AGAIN; }
+		if (btn_over_back.isPressed) { over_state = GameoverState::BACK; }
+
 
 		if (msg.vkcode == VK_RETURN)
 		{
@@ -399,29 +398,23 @@ void Gameover()
 			case(GameoverState::BACK):btn_over_back.isClicked = true; break;
 			}
 		}
-		if (btn_over_again.isClicked) {
-			scene_state = SceneState::GAME;
-			return;
-		}
-		if (btn_over_back.isClicked) {
-			scene_state = SceneState::MENU;
-			return;
-		}
+		if (btn_over_again.isClicked) { scene_state = SceneState::GAME; return; }
+		if (btn_over_back.isClicked) { scene_state = SceneState::MENU; return; }
 		keyboard.gameover(over_state);
 		btn_over_again.isPressed = false;
 		btn_over_back.isPressed = false;
 		switch (over_state)
 		{
-		case(GameoverState::AGAIN):btn_over_again.isPressed = true; break;
-		case(GameoverState::BACK):btn_over_back.isPressed = true; break;
+		case(GameoverState::AGAIN):btn_over_again.isPressed = true; btn_over_again.isOn = true; break;
+		case(GameoverState::BACK):btn_over_back.isPressed = true; btn_over_back.isOn = true; break;
 		}
 
 		image.tempDisplay();
 		btn_over_again.display(text_again);
-		btn_over_back.display(text_exit);
+		btn_over_back.display(text_back);
 		EndBatchDraw();
 		flushmessage();
-		Sleep(TICK_HARD);
+		Sleep(TICK_NORMAL);
 	}
 }
 
