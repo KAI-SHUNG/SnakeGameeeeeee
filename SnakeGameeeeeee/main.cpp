@@ -29,7 +29,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //						吃六个苹果生成金苹果 ^^^ ，在sweet moment吃到金苹果下一次变为吃三个苹果就生成金苹果 ^^^
 //							仿照高中诺基亚的逻辑，倒计时6秒，加分递减，sweet moment: 5 ^^^
 //							加一个进度条，可以倒计时 ^^^
-//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ，难度选择 ， 鼠标控制的加入
+//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ， 鼠标控制的加入 ^^^，难度选择 
 //下下下下一步		menu排行榜、存档
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
@@ -80,8 +80,8 @@ void Menu();
 #define MENUY 20			//菜单界面Y共20单元格
 
 
-void Sound();
 void Mode();
+void Sound();
 
 int Game();
 #define UNITX 16			//游戏界面X共16单元格
@@ -179,8 +179,8 @@ void Menu()
 	MenuState menu_state = MenuState::PLAY;
 
 	image.menuInit();
-	Timer timer;
 	music.menu();
+	Timer timer;
 
 	TCHAR text_play[] = "PLAY";
 	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
@@ -223,6 +223,12 @@ void Menu()
 		flushmessage();
 		Sleep(TICK_NORMAL);
 	}
+}
+
+
+void Mode()
+{
+
 }
 
 
