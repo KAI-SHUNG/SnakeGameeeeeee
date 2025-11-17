@@ -25,7 +25,7 @@ void Image::display(int time)
 {
 	int h = Img0->getheight();
 	int w = Img0->getwidth();
-	AlphaBlend(GetImageHDC(NULL), (UNITX * UNIT - w) / 2, BOARD * UNIT, w * (TIME_TOTAL - time) / TIME_TOTAL, h,
+	AlphaBlend(GetImageHDC(NULL), (GAMEX * UNIT - w) / 2, BOARD * UNIT, w * (TIME_TOTAL - time) / TIME_TOTAL, h,
 		GetImageHDC(Img0), 0, 0, w * (TIME_TOTAL - time) / TIME_TOTAL, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 void Image::display(int x, int y)

@@ -12,8 +12,8 @@
 #define RATIO 2.5					//放大比例
 
 
-LOGFONT textFont_;
-LOGFONT numberFont;
+//LOGFONT textFont_;
+//LOGFONT numberFont;
 
 inline void putimage_alpha(int x, int y, IMAGE* img)
 {
@@ -23,27 +23,27 @@ inline void putimage_alpha(int x, int y, IMAGE* img)
 		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
-void setTextFont()
-{
-	textFont_.lfHeight = 24;
-	textFont_.lfWeight = FW_BOLD;
-	textFont_.lfItalic = 0;
-	textFont_.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(textFont_.lfFaceName, _T("Courier New"));
-	setbkmode(TRANSPARENT);
-	settextcolor(TEXTCOLOR);
-}
-void setNumberFont()
-{
-	numberFont.lfHeight = 25;
-	numberFont.lfWeight = FW_BOLD;
-	numberFont.lfItalic = 0;
-	numberFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(numberFont.lfFaceName, _T("ROG Fonts"));
-	setbkmode(TRANSPARENT);
-	settextcolor(TEXTCOLOR);
-	settextstyle(&numberFont);
-}
+//void setTextFont()
+//{
+//	textFont_.lfHeight = 24;
+//	textFont_.lfWeight = FW_BOLD;
+//	textFont_.lfItalic = 0;
+//	textFont_.lfQuality = PROOF_QUALITY;
+//	_tcscpy_s(textFont_.lfFaceName, _T("Courier New"));
+//	setbkmode(TRANSPARENT);
+//	settextcolor(TEXTCOLOR);
+//}
+//void setNumberFont()
+//{
+//	numberFont.lfHeight = 25;
+//	numberFont.lfWeight = FW_BOLD;
+//	numberFont.lfItalic = 0;
+//	numberFont.lfQuality = PROOF_QUALITY;
+//	_tcscpy_s(numberFont.lfFaceName, _T("ROG Fonts"));
+//	setbkmode(TRANSPARENT);
+//	settextcolor(TEXTCOLOR);
+//	settextstyle(&numberFont);
+//}
 
 //输入地图单元格数x，y
 Images::Images(int menux, int menuy, int unitx, int unity)
@@ -96,14 +96,7 @@ void Images::gameInit()
 	setbkcolor(BKCOLOR);
 	cleardevice();
 	//计分板样式
-	setfillcolor(BOARDCOLOR);
-	setlinecolor(LINECOLOR);
-	setlinestyle(PS_DASH);
-	//字体样式
-	gettextstyle(&textFont_);
-	gettextstyle(&numberFont);
-	setTextFont();
-	setNumberFont();
+
 }
 
 //void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength)
@@ -177,19 +170,19 @@ void Images::gameInit()
 //{
 //	putimage_alpha(x, y, &pause);
 //}
-void Images::placeBoard(int score)
-{
-	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
-
-	TCHAR textScore[] = _T("Score:");
-	settextstyle(&textFont_);
-	outtextxy(0, 0, textScore);
-
-	TCHAR Score[6];
-	_stprintf_s(Score, _T("%d"), score);
-	settextstyle(&numberFont);
-	outtextxy(7.5 * UNIT, -3, Score);
-}
+//void Images::placeBoard(int score)
+//{
+//	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
+//
+//	TCHAR textScore[] = _T("Score:");
+//	settextstyle(&textFont_);
+//	outtextxy(0, 0, textScore);
+//
+//	TCHAR Score[6];
+//	_stprintf_s(Score, _T("%d"), score);
+//	settextstyle(&numberFont);
+//	outtextxy(7.5 * UNIT, -3, Score);
+//}
 //void Images::placeBar(int time, int time_total)
 //{
 //	int h = bar.getheight();

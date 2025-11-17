@@ -2,8 +2,8 @@
 Snake::Snake(int unitx, int unity)
 	:coord_next({unitx / 2 + 1, unity / 2, 'd'})
 {
-	coordinate.push_back({ UNITX / 2, UNITY / 2, 'd' });
-	coordinate.push_back({ UNITX / 2 - 1, UNITY / 2, 'd' });
+	coordinate.push_back({ GAMEX / 2, GAMEY / 2, 'd' });
+	coordinate.push_back({ GAMEX / 2 - 1, GAMEY / 2, 'd' });
 }
 
 void Snake::snakeHeadNextTick(char dir)
@@ -54,5 +54,5 @@ void Snake::move()
 }
 
 std::vector<Coordinate> Snake::coord() { return coordinate; }
-int Snake::molX(int x) { return (x + UNITX) % UNITX; }
-int Snake::molY(int y) { return (y + UNITY) % UNITY; }
+int Snake::molX(int x) { return (x + GAMEX) % GAMEX; }
+int Snake::molY(int y) { return (y + GAMEY) % GAMEY; }

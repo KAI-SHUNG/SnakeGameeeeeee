@@ -1,8 +1,6 @@
 #include "Item.h"
 #include <stdlib.h>
 #include <time.h>
-#define UNIT 10
-#define BOARD 2
 Item::Item(int unitx, int unity, IMAGE* img)
 	:Img(img), x(-1), y(-1), exist(false), counter(0)
 {
@@ -14,8 +12,8 @@ void Item::create(std::vector<Coordinate> snake, int not_x, int not_y)
 	do
 	{
 		check = 1;
-		x = rand() % UNITX;
-		y = rand() % UNITY;
+		x = rand() % GAMEX;
+		y = rand() % GAMEY;
 		for (auto it = snake.begin(); it != snake.end(); ++it)
 		{
 			if ((*it).X == x && (*it).Y == y)

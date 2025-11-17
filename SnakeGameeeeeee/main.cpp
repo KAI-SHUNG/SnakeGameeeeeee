@@ -60,7 +60,7 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Button.h"
 #include "Item.h"
 #include "Image.h"
-#include "Images.h"
+//#include "Images.h"
 #include "Keyboard.h"
 #include "Music.h"
 #include "Timer.h"
@@ -75,6 +75,7 @@ IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//蛇头
 IMAGE sBodyAD, sBodyWS;//蛇身
 IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇转弯
 IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
+LOGFONT textFont, numberFont;
 
 Image title(&titleImg), pause(&pauseImg), bar(&barImg), wall(&wallImg);
 //蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
@@ -88,33 +89,31 @@ int loadImage();
 int loadFont();
 int resourceCheck();
 
+void init(int x, int y);
+
 
 void Menu();
-//#define UNIT 10				//UNIT_SIZE每个单元格10x10像素
-//#define MENUX 24			//菜单界面X共24单元格
-//#define MENUY 20			//菜单界面Y共20单元格
 
 
 void Mode();
 void Sound();
 
 int Game();
-//#define UNITX 16			//游戏界面X共16单元格
-//#define UNITY 20			//游戏界面Y共20单元格
-//#define BOARD 2				//计分板宽度
 #define TICK_EASY 250		//简单模式帧时长250ms
 #define TICK_NORMAL 160		//普通模式帧时长160ms
 #define TICK_HARD 100		//困难模式帧时长100ms
 #define TICK_HELL 85		//地狱模式帧时长85ms
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
+void setTextFont();
+void setNumberFont();
 void snakedisplay(std::vector<Coordinate>);
 
 
 void Gameover();
 
 
-Images image(MENUX, MENUY, UNITX, UNITY);
+//Images image(MENUX, MENUY, GAMEX, GAMEY);
 Keyboard keyboard;
 Music music;
 SceneState scene_state = SceneState::MENU;
@@ -203,15 +202,23 @@ int loadFont()
 }
 int resourceCheck()
 {
-	return loadImage() + image.loadImages() + loadFont() + music.loadMusic();
+	return loadImage()  + loadFont() + music.loadMusic();
+}
+
+
+void init(int x, int y)
+{
+	initgraph(x * UNIT * RATIO, y * UNIT * RATIO, EX_NOCLOSE);
+	setaspectratio(RATIO, RATIO);//10x10->25*25
+	setbkcolor(BKCOLOR);
+	cleardevice();
 }
 
 
 void Menu()
 {
-	MenuState menu_state = MenuState::PLAY;
-
-	image.menuInit();
+	//Initialize
+	init(MENUX, MENUY);
 	music.menu();
 	Timer timer;
 
@@ -219,7 +226,8 @@ void Menu()
 	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
 	TCHAR text_exit[] = "EXIT";
 	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
-	Image title(&titleImg);
+	MenuState menu_state = MenuState::PLAY;
+
 	while (true)
 	{
 		BeginBatchDraw();
@@ -267,20 +275,28 @@ void Mode()
 
 void Sound()
 {
-	Button btn_sound_music(&soundOn, &soundOff, MENUX / 2, 11);
-	Button btn_sound_effect(&soundOn, &soundOff, MENUX / 2, 11);
+	//Button btn_sound_music(&soundOn, &soundOff, MENUX / 2, 11);
+	//Button btn_sound_effect(&soundOn, &soundOff, MENUX / 2, 11);
 }
 
 
 int Game()
 {
 	//Initialize
-	image.gameInit();
-	Item apple		(UNITX, UNITY, &appleImg);
-	Item goldapple	(UNITX, UNITY, &goldappleImg);
+	init(GAMEX, GAMEY + BOARD);	
+	setfillcolor(BOARDCOLOR);
+	setlinecolor(LINECOLOR);
+	setlinestyle(PS_DASH);
+	//字体样式
+	gettextstyle(&textFont);
+	gettextstyle(&numberFont);
+	setTextFont();
+	setNumberFont();
+	Item apple		(GAMEX, GAMEY, &appleImg);
+	Item goldapple	(GAMEX, GAMEY, &goldappleImg);
 	music.menuStop();
 	music.game();
-	Snake snake(UNITX, UNITY);
+	Snake snake(GAMEX, GAMEY);
 	Timer timer;
 
 	int score = 0;
@@ -292,7 +308,7 @@ int Game()
 		// Pause && Exit
 		if (keyboard.space() || keyboard.escape())
 		{
-			pause.display(UNITX / 2 - 2, UNITY / 2 - 3);
+			pause.display(GAMEX / 2 - 2, GAMEY / 2 - 3);
 			music.click();
 			Sleep(TICK_EASY);
 			music.gamePause();
@@ -327,7 +343,7 @@ int Game()
 		//Death Check
 		if (snake.death())
 		{
-			getimage(&tempImg, 0, 0, UNITX * UNIT, (BOARD + UNITY) * UNIT);
+			getimage(&tempImg, 0, 0, GAMEX * UNIT, (BOARD + GAMEY) * UNIT);
 			music.death();
 			music.gameStop();
 			scene_state = SceneState::GAMEOVER;
@@ -376,13 +392,26 @@ int Game()
 		//Image
 		BeginBatchDraw();
 		cleardevice(); 
+		//board
+		fillrectangle(0, 0, GAMEX * UNIT, BOARD * UNIT);
+		//text
+		TCHAR textScore[] = _T("Score:");
+		settextstyle(&textFont);
+		outtextxy(0, 0, textScore);
+		//score
+		TCHAR Score[4];
+		_stprintf_s(Score, _T("%d"), score);
+		settextstyle(&numberFont);
+		outtextxy(7.5 * UNIT, -3, Score);
+		//goldapple
 		if (goldapple.exist)
 		{
 			bar.display(timer.goldAppleTime());
 			goldapple.display();
 		}
+		//apple
 		apple.display();
-		image.placeBoard(score);
+		//snake
 		snakedisplay(snake.coord());
 		EndBatchDraw();
 		flushmessage();
@@ -391,14 +420,53 @@ int Game()
 			Sleep(tick - timer.frameTime());
 	}
 }
+
+
+void setTextFont()
+{
+	textFont.lfHeight = 24;
+	textFont.lfWeight = FW_BOLD;
+	textFont.lfItalic = 0;
+	textFont.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(textFont.lfFaceName, _T("Courier New"));
+	setbkmode(TRANSPARENT);
+	settextcolor(TEXTCOLOR);
+}
+void setNumberFont()
+{
+	numberFont.lfHeight = 25;
+	numberFont.lfWeight = FW_BOLD;
+	numberFont.lfItalic = 0;
+	numberFont.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(numberFont.lfFaceName, _T("ROG Fonts"));
+	setbkmode(TRANSPARENT);
+	settextcolor(TEXTCOLOR);
+}
+void snakedisplay(std::vector<Coordinate> coord)
+{
+	head.display(coord.begin()->X, coord.begin()->Y, coord.begin()->Dir);
+	for (auto it = coord.begin(); it != coord.end() - 1; ++it)
+	{
+		switch (it->Dir)
+		{
+		case('w'):bodyW.display(it->X, it->Y, (it - 1)->Dir); break;
+		case('a'):bodyA.display(it->X, it->Y, (it - 1)->Dir); break;
+		case('s'):bodyS.display(it->X, it->Y, (it - 1)->Dir); break;
+		case('d'):bodyD.display(it->X, it->Y, (it - 1)->Dir); break;
+		}
+	}
+	tail.display((coord.end() - 1)->X, (coord.end() - 1)->Y, (coord.end() - 2)->Dir);
+}
+
+
 void Gameover()
 {
 	GameoverState over_state = GameoverState::AGAIN;
 
 	TCHAR text_again[] = "AGAIN";
-	Button btn_over_again(&button, &buttonPressed, UNITX / 2, 10);
+	Button btn_over_again(&button, &buttonPressed, GAMEX / 2, 10);
 	TCHAR text_back[] = "BACK";
-	Button btn_over_back(&button, &buttonPressed, UNITX / 2, 13);
+	Button btn_over_back(&button, &buttonPressed, GAMEX / 2, 13);
 
 	while (true)
 	{
@@ -436,21 +504,4 @@ void Gameover()
 		flushmessage();
 		Sleep(TICK_NORMAL);
 	}
-}
-
-
-void snakedisplay(std::vector<Coordinate> coord)
-{
-	head.display(coord.begin()->X, coord.begin()->Y, coord.begin()->Dir);
-	for (auto it = coord.begin(); it != coord.end() - 1; ++it)
-	{
-		switch (it->Dir)
-		{
-		case('w'):bodyW.display(it->X, it->Y, (it - 1)->Dir); break;
-		case('a'):bodyA.display(it->X, it->Y, (it - 1)->Dir); break;
-		case('s'):bodyS.display(it->X, it->Y, (it - 1)->Dir); break;
-		case('d'):bodyD.display(it->X, it->Y, (it - 1)->Dir); break;
-		}
-	}
-	tail.display((coord.end() - 1)->X, (coord.end() - 1)->Y, (coord.end() - 2)->Dir);
 }
