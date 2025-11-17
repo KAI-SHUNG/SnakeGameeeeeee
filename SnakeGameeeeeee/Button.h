@@ -1,7 +1,7 @@
 #pragma once
 #include <easyx.h>
 #include <tchar.h>
-#include "Struct.h"
+#include "Tools.h"
 class Button
 {
 public:

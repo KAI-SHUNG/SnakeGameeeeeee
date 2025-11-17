@@ -37,10 +37,7 @@ void Item::reset()
 }
 void Item::display()
 {
-	int w = Img->getwidth();
-	int h = Img->getheight();
-	AlphaBlend(GetImageHDC(NULL), x * UNIT, (BOARD + y) * UNIT, w, h,
-		GetImageHDC(Img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+	putimage_alpha(x, y + BOARD, Img);
 }
 const int Item::get_x() const
 {

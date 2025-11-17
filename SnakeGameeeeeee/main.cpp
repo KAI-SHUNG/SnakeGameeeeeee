@@ -60,14 +60,14 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Button.h"
 #include "Item.h"
 #include "Image.h"
-//#include "Images.h"
 #include "Keyboard.h"
 #include "Music.h"
 #include "Timer.h"
 #include "Snake.h"
-#include "Struct.h"
+#include "Tools.h"
 
 IMAGE titleImg, button, buttonPressed;
+IMAGE lbutton, lbuttonPressed, rbutton, rbuttonPressed;
 IMAGE soundOn, soundOff;
 IMAGE appleImg, goldappleImg;
 IMAGE pauseImg, barImg, wallImg, tempImg;
@@ -75,7 +75,6 @@ IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//蛇头
 IMAGE sBodyAD, sBodyWS;//蛇身
 IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇转弯
 IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
-LOGFONT textFont, numberFont;
 
 Image title(&titleImg), pause(&pauseImg), bar(&barImg), wall(&wallImg);
 //蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
@@ -89,11 +88,10 @@ int loadImage();
 int loadFont();
 int resourceCheck();
 
+LOGFONT textFont, numberFont;
 void init(int x, int y);
 
-
 void Menu();
-
 
 void Mode();
 void Sound();
@@ -107,13 +105,11 @@ int Game();
 #define POINT_GOLDAPPLE 26	//金苹果分值
 void setTextFont();
 void setNumberFont();
-void snakedisplay(std::vector<Coordinate>);
-
+void snakedisplay(const std::vector<Coordinate>);
 
 void Gameover();
 
 
-//Images image(MENUX, MENUY, GAMEX, GAMEY);
 Keyboard keyboard;
 Music music;
 SceneState scene_state = SceneState::MENU;
@@ -155,6 +151,10 @@ int loadImage()
 		+ loadimage(&titleImg, _T("./Resource/Images/title.png"))
 		+ loadimage(&button, _T("./Resource/Images/button.png"))
 		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
+		+ loadimage(&lbutton, _T("./Resource/Images/button_left.png"))
+		+ loadimage(&lbuttonPressed, _T("./Resource/Images/button_left_pressed.png"))
+		+ loadimage(&rbutton, _T("./Resource/Images/button_right.png"))
+		+ loadimage(&rbuttonPressed, _T("./Resource/Images/button_right_pressed.png"))
 		+ loadimage(&soundOn, _T("./Resource/Images/sound_on.png"))
 		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png"))
 		+ loadimage(&appleImg, _T("./Resource/Images/apple.png"))
@@ -222,11 +222,12 @@ void Menu()
 	music.menu();
 	Timer timer;
 
+	MenuState menu_state = MenuState::PLAY;
+
 	TCHAR text_play[] = "PLAY";
 	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
 	TCHAR text_exit[] = "EXIT";
 	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
-	MenuState menu_state = MenuState::PLAY;
 
 	while (true)
 	{
@@ -259,7 +260,10 @@ void Menu()
 		//Image
 		btn_menu_play.display(text_play);
 		btn_menu_exit.display(text_exit);
-		title.display_t(timer.getTime());
+		//title
+		double deltaY = timer.getTime() / 300 % 10;//?
+		deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
+		putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, &titleImg);
 		EndBatchDraw();
 		flushmessage();
 		Sleep(TICK_NORMAL);
@@ -284,12 +288,11 @@ int Game()
 {
 	//Initialize
 	init(GAMEX, GAMEY + BOARD);	
+	//积分板设置
 	setfillcolor(BOARDCOLOR);
 	setlinecolor(LINECOLOR);
 	setlinestyle(PS_DASH);
 	//字体样式
-	gettextstyle(&textFont);
-	gettextstyle(&numberFont);
 	setTextFont();
 	setNumberFont();
 	Item apple		(GAMEX, GAMEY, &appleImg);
@@ -305,10 +308,10 @@ int Game()
 	{
 		//Frametime Control
 		timer.frameStart();
-		// Pause && Exit
+		//Pause && Exit
 		if (keyboard.space() || keyboard.escape())
 		{
-			pause.display(GAMEX / 2 - 2, GAMEY / 2 - 3);
+			putimage_alpha_c(GAMEX / 2, (GAMEY + BOARD) / 2, &pauseImg);
 			music.click();
 			Sleep(TICK_EASY);
 			music.gamePause();
@@ -442,17 +445,20 @@ void setNumberFont()
 	setbkmode(TRANSPARENT);
 	settextcolor(TEXTCOLOR);
 }
-void snakedisplay(std::vector<Coordinate> coord)
+void snakedisplay(const std::vector<Coordinate> coord)
 {
 	head.display(coord.begin()->X, coord.begin()->Y, coord.begin()->Dir);
-	for (auto it = coord.begin(); it != coord.end() - 1; ++it)
+	if (coord.size() > 2)
 	{
-		switch (it->Dir)
+		for (auto it = coord.begin() + 1; it != coord.end() - 1; ++it)
 		{
-		case('w'):bodyW.display(it->X, it->Y, (it - 1)->Dir); break;
-		case('a'):bodyA.display(it->X, it->Y, (it - 1)->Dir); break;
-		case('s'):bodyS.display(it->X, it->Y, (it - 1)->Dir); break;
-		case('d'):bodyD.display(it->X, it->Y, (it - 1)->Dir); break;
+			switch (it->Dir)
+			{
+			case('w'):bodyW.display(it->X, it->Y, (it - 1)->Dir); break;
+			case('a'):bodyA.display(it->X, it->Y, (it - 1)->Dir); break;
+			case('s'):bodyS.display(it->X, it->Y, (it - 1)->Dir); break;
+			case('d'):bodyD.display(it->X, it->Y, (it - 1)->Dir); break;
+			}
 		}
 	}
 	tail.display((coord.end() - 1)->X, (coord.end() - 1)->Y, (coord.end() - 2)->Dir);

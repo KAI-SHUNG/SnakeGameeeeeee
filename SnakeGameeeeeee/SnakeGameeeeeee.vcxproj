@@ -133,7 +133,6 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Item.cpp" />
-    <ClCompile Include="Images.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Music.cpp" />
@@ -143,9 +142,8 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Image.h" />
-    <ClInclude Include="Struct.h" />
+    <ClInclude Include="Tools.h" />
     <ClInclude Include="Item.h" />
-    <ClInclude Include="Images.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Music.h" />
     <ClInclude Include="Snake.h" />

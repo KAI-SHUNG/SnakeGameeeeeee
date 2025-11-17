@@ -27,9 +27,6 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Images.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -53,13 +50,10 @@
     <ClInclude Include="Keyboard.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Images.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Struct.h">
+    <ClInclude Include="Tools.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">

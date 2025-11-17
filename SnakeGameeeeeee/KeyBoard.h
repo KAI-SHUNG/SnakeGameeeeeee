@@ -1,6 +1,6 @@
 #pragma once
 #include <windows.h>
-#include "Struct.h"
+#include "Tools.h"
 
 class Keyboard
 {

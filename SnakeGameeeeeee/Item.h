@@ -1,5 +1,5 @@
 #pragma once
-#include "Struct.h"
+#include "Tools.h"
 #include <easyx.h>
 class Item
 {
