@@ -1,5 +1,14 @@
 #ifndef Struct_H
 #define Struct_H
+
+#define UNIT 10				//UNIT_SIZE每个单元格10x10像素
+#define MENUX 24			//菜单界面X共24单元格
+#define MENUY 20			//菜单界面Y共20单元格
+#define UNITX 16			//游戏界面X共16单元格
+#define UNITY 20			//游戏界面Y共20单元格
+#define BOARD 2				//计分板宽度
+#define TIME_TOTAL 6000		//金苹果存在时间6000ms
+
 #include <vector>
 struct Coordinate {
 	int X;

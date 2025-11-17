@@ -59,6 +59,7 @@ class道具（加速减速，闪现，技能键，护盾……
 #include <vector>
 #include "Button.h"
 #include "Item.h"
+#include "Image.h"
 #include "Images.h"
 #include "Keyboard.h"
 #include "Music.h"
@@ -66,35 +67,48 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Snake.h"
 #include "Struct.h"
 
-IMAGE apple_i, goldapple_i;
-IMAGE button, buttonPressed;
+IMAGE titleImg, button, buttonPressed;
 IMAGE soundOn, soundOff;
+IMAGE appleImg, goldappleImg;
+IMAGE pauseImg, barImg, wallImg, tempImg;
+IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//蛇头
+IMAGE sBodyAD, sBodyWS;//蛇身
+IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇转弯
+IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
+
+Image title(&titleImg), pause(&pauseImg), bar(&barImg), wall(&wallImg);
+//蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
+Image head(&sHeadW, &sHeadA, &sHeadS, &sHeadD);
+Image bodyW(&sBodyWS, &sTurnDL, nullptr, &sTurnDR);
+Image bodyA(&sTurnUR, &sBodyAD, &sTurnDR, nullptr);
+Image bodyS(nullptr, &sTurnUL, &sBodyWS, &sTurnUR);
+Image bodyD(&sTurnUL, nullptr, &sTurnDL, &sBodyAD);
+Image tail(&sTailW, &sTailA, &sTailS, &sTailD);
 int loadImage();
 int loadFont();
 int resourceCheck();
 
 
 void Menu();
-#define UNIT 10				//UNIT_SIZE每个单元格10x10像素
-#define MENUX 24			//菜单界面X共24单元格
-#define MENUY 20			//菜单界面Y共20单元格
+//#define UNIT 10				//UNIT_SIZE每个单元格10x10像素
+//#define MENUX 24			//菜单界面X共24单元格
+//#define MENUY 20			//菜单界面Y共20单元格
 
 
 void Mode();
 void Sound();
 
 int Game();
-#define UNITX 16			//游戏界面X共16单元格
-#define UNITY 20			//游戏界面Y共20单元格
-#define BOARD 2				//计分板宽度
+//#define UNITX 16			//游戏界面X共16单元格
+//#define UNITY 20			//游戏界面Y共20单元格
+//#define BOARD 2				//计分板宽度
 #define TICK_EASY 250		//简单模式帧时长250ms
 #define TICK_NORMAL 160		//普通模式帧时长160ms
 #define TICK_HARD 100		//困难模式帧时长100ms
 #define TICK_HELL 85		//地狱模式帧时长85ms
-#define TIME_TOTAL 6000		//金苹果存在时间6000ms
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
-void placeSnake(std::vector<Coordinate>);
+void snakedisplay(std::vector<Coordinate>);
 
 
 void Gameover();
@@ -138,12 +152,31 @@ int main()
 
 int loadImage()
 {
-	if ( loadimage(&apple_i, _T("./Resource/Images/apple.png"))
-		+ loadimage(&goldapple_i, _T("./Resource/Images/gold_apple.png"))
+	if (0
+		+ loadimage(&titleImg, _T("./Resource/Images/title.png"))
 		+ loadimage(&button, _T("./Resource/Images/button.png"))
 		+ loadimage(&buttonPressed, _T("./Resource/Images/button_pressed.png"))
 		+ loadimage(&soundOn, _T("./Resource/Images/sound_on.png"))
-		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png")) == 0)
+		+ loadimage(&soundOff, _T("./Resource/Images/sound_off.png"))
+		+ loadimage(&appleImg, _T("./Resource/Images/apple.png"))
+		+ loadimage(&goldappleImg, _T("./Resource/Images/goldapple.png"))
+		+ loadimage(&pauseImg, _T("./Resource/Images/pause.png"))
+		+ loadimage(&barImg, _T("./Resource/Images/bar.png"))
+		+ loadimage(&wallImg, _T("./Resource/Images/wall.png"))
+		+ loadimage(&sHeadW, _T("./Resource/Images/snake_head_w.png"))
+		+ loadimage(&sHeadA, _T("./Resource/Images/snake_head_a.png"))
+		+ loadimage(&sHeadS, _T("./Resource/Images/snake_head_s.png"))
+		+ loadimage(&sHeadD, _T("./Resource/Images/snake_head_d.png"))
+		+ loadimage(&sBodyAD, _T("./Resource/Images/snake_body_ad.png"))
+		+ loadimage(&sBodyWS, _T("./Resource/Images/snake_body_ws.png"))
+		+ loadimage(&sTurnUL, _T("./Resource/Images/snake_turn_ul.png"))
+		+ loadimage(&sTurnDR, _T("./Resource/Images/snake_turn_dr.png"))
+		+ loadimage(&sTurnDL, _T("./Resource/Images/snake_turn_dl.png"))
+		+ loadimage(&sTurnUR, _T("./Resource/Images/snake_turn_ur.png"))
+		+ loadimage(&sTailW, _T("./Resource/Images/snake_tail_w.png"))
+		+ loadimage(&sTailA, _T("./Resource/Images/snake_tail_a.png"))
+		+ loadimage(&sTailS, _T("./Resource/Images/snake_tail_s.png"))
+		+ loadimage(&sTailD, _T("./Resource/Images/snake_tail_d.png")) == 0)
 	{
 		return 0;
 	}
@@ -186,7 +219,7 @@ void Menu()
 	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
 	TCHAR text_exit[] = "EXIT";
 	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
-
+	Image title(&titleImg);
 	while (true)
 	{
 		BeginBatchDraw();
@@ -218,7 +251,7 @@ void Menu()
 		//Image
 		btn_menu_play.display(text_play);
 		btn_menu_exit.display(text_exit);
-		image.placeTitle(timer.getTime());
+		title.display_t(timer.getTime());
 		EndBatchDraw();
 		flushmessage();
 		Sleep(TICK_NORMAL);
@@ -243,8 +276,8 @@ int Game()
 {
 	//Initialize
 	image.gameInit();
-	Item apple		(UNITX, UNITY, &apple_i);
-	Item goldapple	(UNITX, UNITY, &goldapple_i);
+	Item apple		(UNITX, UNITY, &appleImg);
+	Item goldapple	(UNITX, UNITY, &goldappleImg);
 	music.menuStop();
 	music.game();
 	Snake snake(UNITX, UNITY);
@@ -259,7 +292,7 @@ int Game()
 		// Pause && Exit
 		if (keyboard.space() || keyboard.escape())
 		{
-			image.placePause(UNITX / 2 - 2, UNITY / 2 - 3);//pause
+			pause.display(UNITX / 2 - 2, UNITY / 2 - 3);
 			music.click();
 			Sleep(TICK_EASY);
 			music.gamePause();
@@ -294,7 +327,7 @@ int Game()
 		//Death Check
 		if (snake.death())
 		{
-			image.temp();
+			getimage(&tempImg, 0, 0, UNITX * UNIT, (BOARD + UNITY) * UNIT);
 			music.death();
 			music.gameStop();
 			scene_state = SceneState::GAMEOVER;
@@ -345,12 +378,12 @@ int Game()
 		cleardevice(); 
 		if (goldapple.exist)
 		{
-			image.placeBar(goldAppleTime, TIME_TOTAL);
+			bar.display(timer.goldAppleTime());
 			goldapple.display();
 		}
 		apple.display();
 		image.placeBoard(score);
-		placeSnake(snake.coord());
+		snakedisplay(snake.coord());
 		EndBatchDraw();
 		flushmessage();
 		//Frametime Control
@@ -396,7 +429,7 @@ void Gameover()
 		case(GameoverState::BACK):btn_over_back.isPressed = true; btn_over_back.isOn = true; break;
 		}
 		//Image
-		image.tempDisplay();
+		putimage(0, 0, &tempImg);
 		btn_over_again.display(text_again);
 		btn_over_back.display(text_back);
 		EndBatchDraw();
@@ -405,17 +438,19 @@ void Gameover()
 	}
 }
 
-void placeSnake(std::vector<Coordinate> coord)
+
+void snakedisplay(std::vector<Coordinate> coord)
 {
-	image.snakeHead(coord.at(0).X, coord.at(0).Y, coord.at(0).Dir);
-	for (int i = 1; i < coord.size() - 1; ++i)
+	head.display(coord.begin()->X, coord.begin()->Y, coord.begin()->Dir);
+	for (auto it = coord.begin(); it != coord.end() - 1; ++it)
 	{
-		image.snakeBody(coord.at(i).X, coord.at(i).Y,
-			coord.at(i).Dir, coord.at(i - 1).Dir);
-		//注意这里反直觉，方向靠近蛇头的为下一个，但是是i - 1
+		switch (it->Dir)
+		{
+		case('w'):bodyW.display(it->X, it->Y, (it - 1)->Dir); break;
+		case('a'):bodyA.display(it->X, it->Y, (it - 1)->Dir); break;
+		case('s'):bodyS.display(it->X, it->Y, (it - 1)->Dir); break;
+		case('d'):bodyD.display(it->X, it->Y, (it - 1)->Dir); break;
+		}
 	}
-	image.snakeTail(coord.at(coord.size() - 1).X,
-		coord.at(coord.size() - 1).Y,
-		coord.at(coord.size() - 2).Dir);
-	//注意这里snakeTial读取的应该是length-2的Dir
+	tail.display((coord.end() - 1)->X, (coord.end() - 1)->Y, (coord.end() - 2)->Dir);
 }

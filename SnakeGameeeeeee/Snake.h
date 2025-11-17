@@ -15,8 +15,6 @@ public:
 	std::vector<Coordinate> coord();//返回蛇坐标in vector
 
 private:
-	int UNITX;
-	int UNITY;
 	bool eat_apple = false;
 	Coordinate coord_next;//下一刻坐标
 	std::vector<Coordinate> coordinate;//坐标

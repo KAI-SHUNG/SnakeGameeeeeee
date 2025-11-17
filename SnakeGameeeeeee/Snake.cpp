@@ -1,6 +1,6 @@
 #include "Snake.h"
 Snake::Snake(int unitx, int unity)
-	:UNITX(unitx), UNITY(unity),coord_next({unitx / 2 + 1, unity / 2, 'd'})
+	:coord_next({unitx / 2 + 1, unity / 2, 'd'})
 {
 	coordinate.push_back({ UNITX / 2, UNITY / 2, 'd' });
 	coordinate.push_back({ UNITX / 2 - 1, UNITY / 2, 'd' });

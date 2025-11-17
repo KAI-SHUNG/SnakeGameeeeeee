@@ -1,5 +1,5 @@
 #pragma once
-
+#include <easyx.h>
 class Images
 {
 public:
@@ -8,7 +8,7 @@ public:
 	void menuInit();
 	void gameInit();
 
-	void placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength);
+	//void placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength);
 
 	//void placeApple(int x, int y);
 	//void placeGoldApple(int x, int y);
@@ -17,24 +17,34 @@ public:
 	//void placeAgain(int x, int y, bool state);
 	//void placeExit(int x, int y, bool state);
 	//void placeButtonPressed(int x, int y);
-	void placeWall(int x, int y);
-	void placeTitle(int clock);
-	void placePause(int x, int y);
+	//void placeWall(int x, int y);
+	//void placeTitle(int clock);
+	//void placePause(int x, int y);
 	void placeBoard(int score);
-	void placeBar(int time, int time_total);
+	//void placeBar(int time, int time_total);
 	//void placeSound(int x, int y, bool state);
 	//void placeSoundOff(int x, int y);
 
-	void flushBegin();
-	void flushEnd();
-	void temp();
-	void tempDisplay();
+	//void flushBegin();
+	//void flushEnd();
+	//void temp();
+	//void tempDisplay();
 	//void test();
 
-	void snakeHead(int x, int y, char dir);
-	void snakeBody(int x, int y, char dir0, char dir1);
-	void snakeTail(int x, int y, char dir);
+	//void snakeHead(int x, int y, char dir);
+	//void snakeBody(int x, int y, char dir0, char dir1);
+	//void snakeTail(int x, int y, char dir);
 private:
+	IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//ÉßÍ·
+	IMAGE sBodyAD, sBodyWS;//ÉßÉí
+	IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//Éß×ªÍä
+	IMAGE sTailW, sTailA, sTailS, sTailD;//ÉßÎ²
+	IMAGE apple, goldApple;
+	IMAGE wall;
+	IMAGE title;
+	IMAGE pause;
+	IMAGE bar;
+	IMAGE tempImage;
 	const int MenuX;
 	const int MenuY;
 	const int UnitX;

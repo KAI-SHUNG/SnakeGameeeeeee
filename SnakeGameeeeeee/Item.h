@@ -14,8 +14,6 @@ public:
 	int counter;
 private:
 	IMAGE* Img;
-	int UNITX;
-	int UNITY;
 	int x;
 	int y;
 };

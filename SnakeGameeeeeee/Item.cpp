@@ -4,7 +4,7 @@
 #define UNIT 10
 #define BOARD 2
 Item::Item(int unitx, int unity, IMAGE* img)
-	:Img(img),UNITX(unitx), UNITY(unity), x(-1), y(-1), exist(false), counter(0)
+	:Img(img), x(-1), y(-1), exist(false), counter(0)
 {
 	srand((unsigned)time(0));
 }

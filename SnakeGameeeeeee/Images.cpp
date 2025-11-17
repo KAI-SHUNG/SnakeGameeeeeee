@@ -1,5 +1,4 @@
 #include "Images.h"
-#include <easyx.h>
 #include <vector>
 #include <iostream>
 #pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
@@ -12,18 +11,9 @@
 #define BOARD 2						//计分板行格数
 #define RATIO 2.5					//放大比例
 
-IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//蛇头
-IMAGE sBodyAD, sBodyWS;//蛇身
-IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇转弯
-IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
-IMAGE apple, goldApple;
-IMAGE wall;
-IMAGE title;
-IMAGE pause;
-IMAGE bar;
+
 LOGFONT textFont_;
 LOGFONT numberFont;
-IMAGE tempImage;
 
 inline void putimage_alpha(int x, int y, IMAGE* img)
 {
@@ -63,7 +53,7 @@ Images::Images(int menux, int menuy, int unitx, int unity)
 int Images::loadImages()
 {
 	if (loadimage(&apple, _T("./Resource/Images/apple.png"))
-		+ loadimage(&goldApple, _T("./Resource/Images/gold_apple.png"))
+		+ loadimage(&goldApple, _T("./Resource/Images/goldapple.png"))
 		+ loadimage(&sHeadW, _T("./Resource/Images/snake_head_w.png"))
 		+ loadimage(&sHeadA, _T("./Resource/Images/snake_head_a.png"))
 		+ loadimage(&sHeadS, _T("./Resource/Images/snake_head_s.png"))
@@ -116,20 +106,20 @@ void Images::gameInit()
 	setNumberFont();
 }
 
-void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength)
-{
-	snakeHead(snakeX[0], snakeY[0], snakeDir[0]);
-	for (int i = 1; i < snakeLength - 1; ++i)
-	{
-		snakeBody(snakeX[i], snakeY[i],
-			snakeDir[i], snakeDir[i - 1]);
-		//注意这里反直觉，方向靠近蛇头的为下一个，但是是i - 1
-	}
-	snakeTail(snakeX[snakeLength - 1],
-		snakeY[snakeLength - 1],
-		snakeDir[snakeLength - 2]);
-	//注意这里snakeTial读取的应该是length-2的Dir
-}
+//void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeDir, int snakeLength)
+//{
+//	snakeHead(snakeX[0], snakeY[0], snakeDir[0]);
+//	for (int i = 1; i < snakeLength - 1; ++i)
+//	{
+//		snakeBody(snakeX[i], snakeY[i],
+//			snakeDir[i], snakeDir[i - 1]);
+//		//注意这里反直觉，方向靠近蛇头的为下一个，但是是i - 1
+//	}
+//	snakeTail(snakeX[snakeLength - 1],
+//		snakeY[snakeLength - 1],
+//		snakeDir[snakeLength - 2]);
+//	//注意这里snakeTial读取的应该是length-2的Dir
+//}
 //void Images::placeApple(int x, int y)
 //{
 //	putimage_alpha(x, y, &apple);
@@ -170,23 +160,23 @@ void Images::placeSnake(const int* snakeX, const int* snakeY, const char* snakeD
 //{
 //	putimage_alpha(x, y, &buttonPressed);
 //}
-void Images::placeWall(int x, int y)
-{
-	putimage_alpha(x, y, &wall);
-}
-void Images::placeTitle(int clock)
-{
-	int deltaY = clock / 300 % 8 ;
-	deltaY < 4 ? deltaY = deltaY - 2 : deltaY = 6 - deltaY;
-	int h = title.getheight();
-	int w = title.getwidth();
-	AlphaBlend(GetImageHDC(NULL), (MenuX * UNIT - w) / 2, UNIT + deltaY, w, h,
-		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
-void Images::placePause(int x, int y)
-{
-	putimage_alpha(x, y, &pause);
-}
+//void Images::placeWall(int x, int y)
+//{
+//	putimage_alpha(x, y, &wall);
+//}
+//void Images::placeTitle(int clock)
+//{
+//	int deltaY = clock / 300 % 8 ;
+//	deltaY < 4 ? deltaY = deltaY - 2 : deltaY = 6 - deltaY;
+//	int h = title.getheight();
+//	int w = title.getwidth();
+//	AlphaBlend(GetImageHDC(NULL), (MenuX * UNIT - w) / 2, UNIT + deltaY, w, h,
+//		GetImageHDC(&title), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+//}
+//void Images::placePause(int x, int y)
+//{
+//	putimage_alpha(x, y, &pause);
+//}
 void Images::placeBoard(int score)
 {
 	fillrectangle(0, 0, UnitX * UNIT, BOARD * UNIT);
@@ -200,88 +190,88 @@ void Images::placeBoard(int score)
 	settextstyle(&numberFont);
 	outtextxy(7.5 * UNIT, -3, Score);
 }
-void Images::placeBar(int time, int time_total)
-{
-	int h = bar.getheight();
-	int w = bar.getwidth();
-	AlphaBlend(GetImageHDC(NULL), (UnitX * UNIT - w) / 2, BOARD * UNIT, w * (time_total - time) / time_total, h,
-		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
-}
+//void Images::placeBar(int time, int time_total)
+//{
+//	int h = bar.getheight();
+//	int w = bar.getwidth();
+//	AlphaBlend(GetImageHDC(NULL), (UnitX * UNIT - w) / 2, BOARD * UNIT, w * (time_total - time) / time_total, h,
+//		GetImageHDC(&bar), 0, 0, w * (time_total - time) / time_total, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+//}
 
-void Images::flushBegin()
-{
-	BeginBatchDraw();
-	cleardevice();
-}
-void Images::flushEnd()
-{
-	EndBatchDraw();
-}
-void Images::temp()
-{
-	getimage(&tempImage, 0, 0, UnitX * UNIT, (BOARD + UnitY) * UNIT);
-}
-void Images::tempDisplay()
-{
-	putimage(0, 0, &tempImage);
-}
+//void Images::flushBegin()
+//{
+//	BeginBatchDraw();
+//	cleardevice();
+//}
+//void Images::flushEnd()
+//{
+//	EndBatchDraw();
+//}
+//void Images::temp()
+//{
+//	getimage(&tempImage, 0, 0, UnitX * UNIT, (BOARD + UnitY) * UNIT);
+//}
+//void Images::tempDisplay()
+//{
+//	putimage(0, 0, &tempImage);
+//}
 
-void Images::snakeHead(int x, int y, char dir)
-{
-	switch (dir) {
-	case 'w':putimage_alpha(x, y, &sHeadW); break;
-	case 'a':putimage_alpha(x, y, &sHeadA); break;
-	case 's':putimage_alpha(x, y, &sHeadS); break;
-	case 'd':putimage_alpha(x, y, &sHeadD); break;
-	}
-}
-//snakebody&snaketurn大一统!!
-void Images::snakeBody(int x, int y, char dir0, char dir1)
-{
-	switch (dir0)
-	{
-	case 'w':
-		switch (dir1)
-		{
-		case('a'):putimage_alpha(x, y, &sTurnDL); break;
-		case('w'):putimage_alpha(x, y, &sBodyWS); break;
-		case('d'):putimage_alpha(x, y, &sTurnDR); break;
-		}break;
-
-	case 'a':
-		switch (dir1)
-		{
-		case('w'):putimage_alpha(x, y, &sTurnUR); break;
-		case('a'):putimage_alpha(x, y, &sBodyAD); break;
-		case('s'):putimage_alpha(x, y, &sTurnDR); break;
-		}break;
-
-	case 's':
-		switch (dir1)
-		{
-		case('a'):putimage_alpha(x, y, &sTurnUL); break;
-		case('s'):putimage_alpha(x, y, &sBodyWS); break;
-		case('d'):putimage_alpha(x, y, &sTurnUR); break;
-		}break;
-
-	case 'd':
-		switch (dir1)
-		{
-		case('w'):putimage_alpha(x, y, &sTurnUL); break;
-		case('s'):putimage_alpha(x, y, &sTurnDL); break;
-		case('d'):putimage_alpha(x, y, &sBodyAD); break;
-		}break;
-	}
-}
-void Images::snakeTail(int x, int y, char dir)
-{
-	switch (dir) {
-	case 'w':putimage_alpha(x, y, &sTailW); break;
-	case 'a':putimage_alpha(x, y, &sTailA); break;
-	case 's':putimage_alpha(x, y, &sTailS); break;
-	case 'd':putimage_alpha(x, y, &sTailD); break;
-	}
-}
+//void Images::snakeHead(int x, int y, char dir)
+//{
+//	switch (dir) {
+//	case 'w':putimage_alpha(x, y, &sHeadW); break;
+//	case 'a':putimage_alpha(x, y, &sHeadA); break;
+//	case 's':putimage_alpha(x, y, &sHeadS); break;
+//	case 'd':putimage_alpha(x, y, &sHeadD); break;
+//	}
+//}
+////snakebody&snaketurn大一统!!
+//void Images::snakeBody(int x, int y, char dir0, char dir1)
+//{
+//	switch (dir0)
+//	{
+//	case 'w':
+//		switch (dir1)
+//		{
+//		case('a'):putimage_alpha(x, y, &sTurnDL); break;
+//		case('w'):putimage_alpha(x, y, &sBodyWS); break;
+//		case('d'):putimage_alpha(x, y, &sTurnDR); break;
+//		}break;
+//
+//	case 'a':
+//		switch (dir1)
+//		{
+//		case('w'):putimage_alpha(x, y, &sTurnUR); break;
+//		case('a'):putimage_alpha(x, y, &sBodyAD); break;
+//		case('s'):putimage_alpha(x, y, &sTurnDR); break;
+//		}break;
+//
+//	case 's':
+//		switch (dir1)
+//		{
+//		case('a'):putimage_alpha(x, y, &sTurnUL); break;
+//		case('s'):putimage_alpha(x, y, &sBodyWS); break;
+//		case('d'):putimage_alpha(x, y, &sTurnUR); break;
+//		}break;
+//
+//	case 'd':
+//		switch (dir1)
+//		{
+//		case('w'):putimage_alpha(x, y, &sTurnUL); break;
+//		case('s'):putimage_alpha(x, y, &sTurnDL); break;
+//		case('d'):putimage_alpha(x, y, &sBodyAD); break;
+//		}break;
+//	}
+//}
+//void Images::snakeTail(int x, int y, char dir)
+//{
+//	switch (dir) {
+//	case 'w':putimage_alpha(x, y, &sTailW); break;
+//	case 'a':putimage_alpha(x, y, &sTailA); break;
+//	case 's':putimage_alpha(x, y, &sTailS); break;
+//	case 'd':putimage_alpha(x, y, &sTailD); break;
+//	}
+//}
 //void Images::test()
 //{
 //	placeApple(1, 0);
