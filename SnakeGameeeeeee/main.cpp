@@ -336,10 +336,10 @@ int Game()
 			timer.frameStart();
 		}
 		//Snake Movement Control
+		char dir = snake.coord().at(0).Dir;	
 		/*我真是天才
 		先定义为上一个dir，有修改就改了，没修改按原来
 		省去了再写一个读取Dir[0]的函数*/
-		char dir = snake.coord().at(0).Dir;
 		keyboard.move(dir);
 		//Update SnakeHead Coordinate
 		snake.snakeHeadNextTick(dir);
@@ -406,6 +406,8 @@ int Game()
 		_stprintf_s(Score, _T("%d"), score);
 		settextstyle(&numberFont);
 		outtextxy(7.5 * UNIT, -3, Score);
+		//snake
+		snakedisplay(snake.coord());
 		//goldapple
 		if (goldapple.exist)
 		{
@@ -414,8 +416,6 @@ int Game()
 		}
 		//apple
 		apple.display();
-		//snake
-		snakedisplay(snake.coord());
 		EndBatchDraw();
 		flushmessage();
 		//Frametime Control
