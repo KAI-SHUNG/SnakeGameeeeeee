@@ -130,6 +130,7 @@ int main()
 			Menu(); 
 			break;
 		case(SceneState::MODE):
+			std::cout << "Enter Mode.\n";
 			break;
 		case(SceneState::GAME):
 			score = Game();
@@ -225,9 +226,11 @@ void Menu()
 	MenuState menu_state = MenuState::PLAY;
 
 	TCHAR text_play[] = "PLAY";
-	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, 12);
+	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 2);
+	TCHAR text_mode[] = "M0DE";//这个字体MODE的O好难看
+	Button btn_menu_mode(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 4.5);
 	TCHAR text_exit[] = "EXIT";
-	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, 15);
+	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 7);
 
 	while (true)
 	{
@@ -238,8 +241,10 @@ void Menu()
 		peekmessage(&msg);
 		//Mouse event
 		btn_menu_play.check(&msg);
+		btn_menu_mode.check(&msg);
 		btn_menu_exit.check(&msg);
 		if (btn_menu_play.isPressed){menu_state = MenuState::PLAY;}
+		if (btn_menu_mode.isPressed){menu_state = MenuState::MODE;}
 		if (btn_menu_exit.isPressed){menu_state = MenuState::EXIT;}
 		//Keyboard event
 		if (menu_state == MenuState::EXIT && keyboard.escape()) { btn_menu_exit.isClicked = true; };
@@ -247,18 +252,22 @@ void Menu()
 		if (keyboard.enter()) {
 			switch (menu_state) {
 			case(MenuState::PLAY):btn_menu_play.isClicked = true; break;
+			case(MenuState::MODE):btn_menu_mode.isClicked = true; break;
 			case(MenuState::EXIT):btn_menu_exit.isClicked = true; break;
 			}
 		}
 		//Clicked
 		if (btn_menu_play.isClicked){scene_state = SceneState::GAME;return;}
+		if (btn_menu_mode.isClicked){scene_state = SceneState::MODE;return;}
 		if (btn_menu_exit.isClicked){scene_state = SceneState::EXIT;return;}
 		switch (menu_state) {
 		case(MenuState::PLAY):btn_menu_play.isPressed = true; btn_menu_play.isOn= true; break;
+		case(MenuState::MODE):btn_menu_mode.isPressed = true; btn_menu_mode.isOn= true; break;
 		case(MenuState::EXIT):btn_menu_exit.isPressed = true; btn_menu_exit.isOn= true; break;
 		}//如果没有上述switch语句，按键只受鼠标位置影响，等于可以砍掉键盘，纯鼠标
 		//Image
 		btn_menu_play.display(text_play);
+		btn_menu_mode.display(text_mode);
 		btn_menu_exit.display(text_exit);
 		//title
 		double deltaY = timer.getTime() / 300 % 10;//?
@@ -270,9 +279,19 @@ void Menu()
 	}
 }
 
-
+//先来构建一下功能
+//左右键操控
+//<  [当前难度]  > 
+//上下切换
+//<   【地图】   >
 void Mode()
 {
+	TCHAR text_easy[] = "EASY";
+	TCHAR text_norm[] = "NORM";
+	TCHAR text_hard[] = "HARD";
+	TCHAR text_hell[] = "HELL";
+	Button btn_mode_diff(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 2);
+
 
 }
 
@@ -408,14 +427,14 @@ int Game()
 		outtextxy(7.5 * UNIT, -3, Score);
 		//snake
 		snakedisplay(snake.coord());
+		//apple
+		apple.display();
 		//goldapple
 		if (goldapple.exist)
 		{
 			bar.display(timer.goldAppleTime());
 			goldapple.display();
 		}
-		//apple
-		apple.display();
 		EndBatchDraw();
 		flushmessage();
 		//Frametime Control
@@ -467,7 +486,7 @@ void snakedisplay(const std::vector<Coordinate> coord)
 
 void Gameover()
 {
-	GameoverState over_state = GameoverState::AGAIN;
+	OverState over_state = OverState::AGAIN;
 
 	TCHAR text_again[] = "AGAIN";
 	Button btn_over_again(&button, &buttonPressed, GAMEX / 2, 10);
@@ -484,23 +503,23 @@ void Gameover()
 		//Mouse event
 		btn_over_again.check(&msg);
 		btn_over_back.check(&msg);
-		if (btn_over_again.isPressed) { over_state = GameoverState::AGAIN; }
-		if (btn_over_back.isPressed) { over_state = GameoverState::BACK; }
+		if (btn_over_again.isPressed) { over_state = OverState::AGAIN; }
+		if (btn_over_back.isPressed) { over_state = OverState::BACK; }
 		//Keyboard event
-		if (over_state == GameoverState::BACK && keyboard.escape()) { btn_over_back.isClicked = true; };
+		if (over_state == OverState::BACK && keyboard.escape()) { btn_over_back.isClicked = true; };
 		keyboard.gameover(over_state);
 		if (keyboard.enter()) {
 			switch (over_state) {
-			case(GameoverState::AGAIN):btn_over_again.isClicked = true; break;
-			case(GameoverState::BACK):btn_over_back.isClicked = true; break;
+			case(OverState::AGAIN):btn_over_again.isClicked = true; break;
+			case(OverState::BACK):btn_over_back.isClicked = true; break;
 			}
 		}
 		//Clicked
 		if (btn_over_again.isClicked) { scene_state = SceneState::GAME; return; }
 		if (btn_over_back.isClicked) { scene_state = SceneState::MENU; return; }
 		switch (over_state) {
-		case(GameoverState::AGAIN):btn_over_again.isPressed = true; btn_over_again.isOn = true; break;
-		case(GameoverState::BACK):btn_over_back.isPressed = true; btn_over_back.isOn = true; break;
+		case(OverState::AGAIN):btn_over_again.isPressed = true; btn_over_again.isOn = true; break;
+		case(OverState::BACK):btn_over_back.isPressed = true; btn_over_back.isOn = true; break;
 		}
 		//Image
 		putimage(0, 0, &tempImg);

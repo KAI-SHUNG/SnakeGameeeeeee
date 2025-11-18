@@ -5,7 +5,7 @@
 class Button
 {
 public:
-	Button(IMAGE* img,IMAGE* img_pressed,int x_in, int y_in);
+	Button(IMAGE* img,IMAGE* img_pressed,double x_in, double y_in);
 	//void display(bool state);
 	void display(TCHAR[]);
 
@@ -15,8 +15,8 @@ public:
 	bool isClicked;
 private:
 	LOGFONT textFont;
-	int x;
-	int y;
+	double x;
+	double y;
 	IMAGE* Img;
 	IMAGE* Img_pressed;
 	int width;

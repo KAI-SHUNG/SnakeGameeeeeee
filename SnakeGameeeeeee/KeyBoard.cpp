@@ -4,17 +4,31 @@ void Keyboard::menu(MenuState& state)
 {
     if (up())
     {
-        state = MenuState(((int)state - 1 + 2) % 2);
+        state = MenuState((int(state) - 1 + int(MenuState::COUNTER)) % int(MenuState::COUNTER));
         return;
     }
     else if (down())
     {
-        state = MenuState(((int)state + 1) % 2);
+        state = MenuState((int(state) + 1) % int(MenuState::COUNTER));
         return;
     }
     else if (escape())
     {
         state = MenuState::EXIT;
+        return;
+    }
+    return;
+}
+void Keyboard::diff(DiffState& state)
+{
+    if (up())
+    {
+        state = DiffState((int(state) - 1 + int(DiffState::COUNTER)) % int(DiffState::COUNTER));
+        return;
+    }
+    else if (down())
+    {
+        state = DiffState((int(state) + 1) % int(DiffState::COUNTER));
         return;
     }
     return;
@@ -43,21 +57,21 @@ void Keyboard::move(char& dir)
     }
     return;
 }
-void Keyboard::gameover(GameoverState& state)
+void Keyboard::gameover(OverState& state)
 {
     if (up())
     {
-        state = GameoverState(((int)state - 1 + 2) % 2);
+        state = OverState((int(state )- 1 + int(OverState::COUNTER)) % int(OverState::COUNTER));
         return;
     }
     else if (down())
     {
-        state = GameoverState(((int)state + 1) % 2);
+        state = OverState((int(state )+ 1) % int(OverState::COUNTER));
         return;
     }
     else if (escape())
     {
-        state = GameoverState::BACK;
+        state = OverState::BACK;
     }
     return;
 }

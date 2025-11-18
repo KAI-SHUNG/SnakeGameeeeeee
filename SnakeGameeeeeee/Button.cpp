@@ -1,7 +1,7 @@
 #include "Button.h"
 #define UNIT 10
 #include <iostream>
-Button::Button(IMAGE* img, IMAGE* img_pressed, int x_in, int y_in)
+Button::Button(IMAGE* img, IMAGE* img_pressed, double x_in, double y_in)
 	:Img(img), Img_pressed(img_pressed), x(x_in), y(y_in), isOn(0),isPressed(0), isClicked(0)
 {
 	width = Img->getwidth();

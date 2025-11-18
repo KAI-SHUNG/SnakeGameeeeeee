@@ -7,10 +7,12 @@ class Keyboard
 public:
 	//ÐÞ¸ÄMenu×´Ì¬
 	void menu(MenuState& state);
+	//ÐÞ¸ÄMode×´Ì¬
+	void diff(DiffState& state);
 	//ÐÞ¸Ädir
 	void move(char& dir);
 	//ÐÞ¸ÄGameoverºó×´Ì¬
-	void gameover(GameoverState& state);
+	void gameover(OverState& state);
 	bool up();
 	bool left();
 	bool down();
