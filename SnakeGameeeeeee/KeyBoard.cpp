@@ -19,16 +19,16 @@ void Keyboard::menu(MenuState& state)
     }
     return;
 }
-void Keyboard::diff(DiffState& state)
+void Keyboard::level(LevelState& state)
 {
     if (up())
     {
-        state = DiffState((int(state) - 1 + int(DiffState::COUNTER)) % int(DiffState::COUNTER));
+        state = LevelState((int(state) - 1 + int(LevelState::COUNTER)) % int(LevelState::COUNTER));
         return;
     }
     else if (down())
     {
-        state = DiffState((int(state) + 1) % int(DiffState::COUNTER));
+        state = LevelState((int(state) + 1) % int(LevelState::COUNTER));
         return;
     }
     return;

@@ -7,8 +7,8 @@ class Keyboard
 public:
 	//ÐÞ¸ÄMenu×´Ì¬
 	void menu(MenuState& state);
-	//ÐÞ¸ÄMode×´Ì¬
-	void diff(DiffState& state);
+	//ÐÞ¸ÄLevel×´Ì¬
+	void level(LevelState& state);
 	//ÐÞ¸Ädir
 	void move(char& dir);
 	//ÐÞ¸ÄGameoverºó×´Ì¬
