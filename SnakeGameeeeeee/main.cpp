@@ -133,7 +133,6 @@ int main()
 			break;
 		case(SceneState::LEVEL):
 			Level(level_state);
-			std::cout << "Enter Level.\n";
 			break;
 		case(SceneState::GAME):
 			score = Game(level_state);
@@ -228,10 +227,13 @@ void Menu()
 
 	TCHAR text_play[] = "PLAY";
 	Button btn_menu_play(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 2);
-	TCHAR text_level[] = "LEVEL";//这个字体LEVEL的O好难看
+	//Button btn_menu_play(&button, &buttonPressed, MENUX / 2 - 6, MENUY / 2 + 1);
+	TCHAR text_level[] = "LEVEL";
 	Button btn_menu_level(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 4.5);
+	//Button btn_menu_level(&button, &buttonPressed, MENUX / 2 - 6, MENUY / 2 + 3.5);
 	TCHAR text_exit[] = "EXIT";
 	Button btn_menu_exit(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 7);
+	//Button btn_menu_exit(&button, &buttonPressed, MENUX / 2 - 6, MENUY / 2 + 6);
 
 	while (true)
 	{
@@ -281,9 +283,7 @@ void Menu()
 	}
 }
 
-//先来构建一下功能
-//左右键操控
-//<  [当前难度]  >
+
 void Level(LevelState& out_level_state)
 {
 	Timer timer;
