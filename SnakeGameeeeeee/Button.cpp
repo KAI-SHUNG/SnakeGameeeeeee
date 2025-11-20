@@ -9,7 +9,6 @@ Button::Button(IMAGE* img, IMAGE* img_pressed, double x_in, double y_in)
 
 	textFont.lfHeight = 21;
 	textFont.lfWeight = FW_REGULAR;
-	textFont.lfItalic = 0;
 	textFont.lfQuality = ANTIALIASED_QUALITY;
 	_tcscpy_s(textFont.lfFaceName, "ROG Fonts");
 	setbkmode(TRANSPARENT);

@@ -10,7 +10,7 @@ public:
 	//void display(double x, double y);
 	//void display_c(double x, double y);
 	void display(int x, int y, char dir);
-	//inline void putimage_alpha(double x, double y, IMAGE* img);
+	void display_t(int clock);
 private:
 	IMAGE* Img0;
 	IMAGE* Img1;

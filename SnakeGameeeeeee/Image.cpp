@@ -21,6 +21,12 @@ void Image::display(int time)
 	AlphaBlend(GetImageHDC(NULL), (GAMEX * UNIT - w) / 2, BOARD * UNIT, w * (TIME_TOTAL - time) / TIME_TOTAL, h,
 		GetImageHDC(Img0), 0, 0, w * (TIME_TOTAL - time) / TIME_TOTAL, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
+void Image::display_t(int clock)
+{
+	double deltaY = clock / 300 % 10;//?
+	deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
+	putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, Img0);
+}
 //void Image::display(double x, double y)
 //{
 //	putimage_alpha(x, y, Img0);

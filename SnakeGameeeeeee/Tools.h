@@ -1,8 +1,8 @@
 #ifndef Struct_H
 #define Struct_H
-
+#include <vector>
 #include <easyx.h>
-
+#pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
 #define UNIT 10				//UNIT_SIZE每个单元格10x10像素
 #define RATIO 2.5			//放大比例
 #define MENUX 24			//菜单界面X共24单元格
@@ -12,18 +12,12 @@
 #define BOARD 2				//计分板宽度2单元格
 #define TIME_TOTAL 6000		//金苹果存在时间6000ms
 
-#define BKCOLOR 0xF0FFF0	//背景颜色
-#define BOARDCOLOR 0x66B2FF	//计分板颜色
-#define LINECOLOR 0x0066CC	//计分板边框颜色
-#define TEXTCOLOR 0x003366	//字体颜色
-
-#include <vector>
 struct Coordinate {
 	int X;
 	int Y;
 	char Dir;
 };
-#pragma comment(lib,"MSIMG32.LIB")	//实现png透明通道必需的库
+
 inline void putimage_alpha(double x, double y, IMAGE* img)
 {
 	if (img == nullptr) { return; }
@@ -40,8 +34,9 @@ inline void putimage_alpha_c(double x, double y, IMAGE* img)
 	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2.0, y * UNIT - h / 2.0, w, h,
 		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 }
+
 enum class SceneState { MENU, GAME, GAMEOVER, LEVEL, SOUND, EXIT };
 enum class MenuState { PLAY, LEVEL, EXIT, COUNTER };
-enum class LevelState{ EASY, NORMAL, HARD, HELL,COUNTER };
-enum class OverState { AGAIN, BACK ,COUNTER};
+enum class LevelState { EASY, NORMAL, HARD, HELL, COUNTER };
+enum class OverState { AGAIN, BACK, COUNTER };
 #endif // !Struct_H

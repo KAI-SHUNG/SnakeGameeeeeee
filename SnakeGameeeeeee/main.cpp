@@ -66,6 +66,19 @@ class道具（加速减速，闪现，技能键，护盾……
 #include "Snake.h"
 #include "Tools.h"
 
+#define BKCOLOR 0xF0FFF0	//背景颜色
+#define BOARDCOLOR 0x66B2FF	//计分板颜色
+#define LINECOLOR 0x0066CC	//计分板边框颜色
+#define TEXTCOLOR 0x003366	//字体颜色
+
+#define TICK_EASY 250		//简单模式帧时长250ms
+#define TICK_NORMAL 160		//普通模式帧时长160ms
+#define TICK_HARD 100		//困难模式帧时长100ms
+#define TICK_HELL 85		//地狱模式帧时长85ms
+
+#define POINT_APPLE 1		//苹果分值
+#define POINT_GOLDAPPLE 26	//金苹果分值
+
 IMAGE titleImg, button, buttonPressed;
 IMAGE lbutton, lbuttonPressed, rbutton, rbuttonPressed;
 IMAGE soundOn, soundOff;
@@ -73,38 +86,33 @@ IMAGE appleImg, goldappleImg;
 IMAGE pauseImg, barImg, wallImg, tempImg;
 IMAGE sHeadW, sHeadA, sHeadS, sHeadD;//蛇头
 IMAGE sBodyAD, sBodyWS;//蛇身
-IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇转弯
+IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇弯
 IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
+LOGFONT textFont_menu, textFont_game, scoreFont;
 
 Image title(&titleImg), pause(&pauseImg), bar(&barImg), wall(&wallImg);
-//蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
-Image head(&sHeadW, &sHeadA, &sHeadS, &sHeadD);
+Image head(&sHeadW, &sHeadA, &sHeadS, &sHeadD);		//蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
 Image bodyW(&sBodyWS, &sTurnDL, nullptr, &sTurnDR);
 Image bodyA(&sTurnUR, &sBodyAD, &sTurnDR, nullptr);
 Image bodyS(nullptr, &sTurnUL, &sBodyWS, &sTurnUR);
 Image bodyD(&sTurnUL, nullptr, &sTurnDL, &sBodyAD);
 Image tail(&sTailW, &sTailA, &sTailS, &sTailD);
+
+void init(int x, int y);
 int loadImage();
 int loadFont();
 int resourceCheck();
 
-LOGFONT textFont, numberFont;
-void init(int x, int y);
-
 void Menu();
+void setfont_menu();
 
 void Level(LevelState&);
+
 void Sound();
 
 int Game(LevelState);
-#define TICK_EASY 250		//简单模式帧时长250ms
-#define TICK_NORMAL 160		//普通模式帧时长160ms
-#define TICK_HARD 100		//困难模式帧时长100ms
-#define TICK_HELL 85		//地狱模式帧时长85ms
-#define POINT_APPLE 1		//苹果分值
-#define POINT_GOLDAPPLE 26	//金苹果分值
-void setTextFont();
-void setNumberFont();
+void setfont_game();
+void setfont_score();
 void snakedisplay(const std::vector<Coordinate>);
 
 void Gameover();
@@ -209,9 +217,10 @@ int resourceCheck()
 }
 void init(int x, int y)
 {
-	initgraph(x * UNIT * RATIO, y * UNIT * RATIO, EX_NOCLOSE);
+	initgraph(x * UNIT * RATIO, y * UNIT * RATIO, EX_NOCLOSE );
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
+	setbkmode(TRANSPARENT);
 	cleardevice();
 }
 
@@ -222,6 +231,8 @@ void Menu()
 	init(MENUX, MENUY);
 	music.menu();
 	Timer timer;
+	setfont_menu();
+	TCHAR signature[] = "By ZKaishung.";
 
 	MenuState menu_state = MenuState::PLAY;
 
@@ -264,28 +275,42 @@ void Menu()
 		if (btn_menu_level.isClicked) { scene_state = SceneState::LEVEL; return; }
 		if (btn_menu_exit.isClicked) { scene_state = SceneState::EXIT; return; }
 		switch (menu_state) {
-		case(MenuState::PLAY):btn_menu_play.isPressed = true; btn_menu_play.isOn= true; break;
-		case(MenuState::LEVEL):btn_menu_level.isPressed = true; btn_menu_level.isOn= true; break;
-		case(MenuState::EXIT):btn_menu_exit.isPressed = true; btn_menu_exit.isOn= true; break;
+		case(MenuState::PLAY):btn_menu_play.isPressed = true; btn_menu_play.isOn = true; break;
+		case(MenuState::LEVEL):btn_menu_level.isPressed = true; btn_menu_level.isOn = true; break;
+		case(MenuState::EXIT):btn_menu_exit.isPressed = true; btn_menu_exit.isOn = true; break;
 		}//如果没有上述switch语句，按键只受鼠标位置影响，等于可以砍掉键盘，纯鼠标
 		//Image
+		//signature
+		settextcolor(BLACK);
+		settextstyle(&textFont_menu);
+		outtextxy(MENUX * UNIT- textwidth(signature), MENUY * UNIT - textheight(signature), signature);
 		//button
 		btn_menu_play.display(text_play);
 		btn_menu_level.display(text_level);
 		btn_menu_exit.display(text_exit);
-		//title
-		double deltaY = timer.getTime() / 300 % 10;//?
-		deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
-		putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, &titleImg);
+		////title
+		title.display_t(timer.getTime());
+		//double deltaY = timer.getTime() / 300 % 10;//?
+		//deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
+		//putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, &titleImg);
 		EndBatchDraw();
 		flushmessage();
 		Sleep(TICK_NORMAL);
 	}
 }
+void setfont_menu()
+{
+	textFont_menu.lfHeight = 12;
+	textFont_menu.lfWeight = FW_BOLD;
+	textFont_menu.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(textFont_menu.lfFaceName, _T("Courier New"));
+}
 
 
 void Level(LevelState& out_level_state)
 {
+	init(MENUX, MENUY);
+
 	Timer timer;
 
 	TCHAR text_easy[] = "EASY";
@@ -319,10 +344,10 @@ void Level(LevelState& out_level_state)
 		keyboard.level(level_state);
 		if (keyboard.enter()) {
 			switch (level_state) {
-			case(LevelState::EASY):btn_level_easy.isClicked = true; break;
-			case(LevelState::NORMAL):btn_level_norm.isClicked = true; break;
-			case(LevelState::HARD):btn_level_hard.isClicked = true; break;
-			case(LevelState::HELL):btn_level_hell.isClicked = true; break;
+			case(LevelState::EASY):		btn_level_easy.isClicked = true; break;
+			case(LevelState::NORMAL):	btn_level_norm.isClicked = true; break;
+			case(LevelState::HARD):		btn_level_hard.isClicked = true; break;
+			case(LevelState::HELL):		btn_level_hell.isClicked = true; break;
 			}
 		}
 		//Clicked
@@ -334,16 +359,14 @@ void Level(LevelState& out_level_state)
 			return;
 		}
 		switch (level_state) {
-		case(LevelState::EASY):btn_level_easy.isPressed = true; btn_level_easy.isOn = true; break;
-		case(LevelState::NORMAL):btn_level_norm.isPressed = true; btn_level_norm.isOn = true; break;
-		case(LevelState::HARD):btn_level_hard.isPressed = true; btn_level_hard.isOn = true; break;
-		case(LevelState::HELL):btn_level_hell.isPressed = true; btn_level_hell.isOn = true; break;
+		case(LevelState::EASY):		btn_level_easy.isPressed = true; btn_level_easy.isOn = true; break;
+		case(LevelState::NORMAL):	btn_level_norm.isPressed = true; btn_level_norm.isOn = true; break;
+		case(LevelState::HARD):		btn_level_hard.isPressed = true; btn_level_hard.isOn = true; break;
+		case(LevelState::HELL):		btn_level_hell.isPressed = true; btn_level_hell.isOn = true; break;
 		}//如果没有上述switch语句，按键只受鼠标位置影响，等于可以砍掉键盘，纯鼠标
 		//Image		
 		//title
-		double deltaY = timer.getTime() / 300 % 10;//?
-		deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
-		putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, &titleImg);
+		title.display_t(timer.getTime());
 		//button
 		btn_level_easy.display(text_easy);
 		btn_level_norm.display(text_norm);
@@ -367,13 +390,16 @@ int Game(LevelState level_state)
 {
 	//Initialize
 	init(GAMEX, GAMEY + BOARD);	
-	//积分板设置
+	//Init board
 	setfillcolor(BOARDCOLOR);
 	setlinecolor(LINECOLOR);
 	setlinestyle(PS_DASH);
-	//字体样式
-	setTextFont();
-	setNumberFont();
+	//Init font
+	settextcolor(TEXTCOLOR);
+	setfont_game();
+	setfont_score();
+	TCHAR textScore[] = _T("Score:");
+
 	Item apple		(GAMEX, GAMEY, &appleImg);
 	Item goldapple	(GAMEX, GAMEY, &goldappleImg);
 	music.menuStop();
@@ -482,26 +508,21 @@ int Game(LevelState level_state)
 		//Image
 		BeginBatchDraw();
 		cleardevice(); 
-		//board
-		fillrectangle(0, 0, GAMEX * UNIT, BOARD * UNIT);
+		fillrectangle(0, 0, GAMEX * UNIT, BOARD * UNIT);//board
 		//text
-		TCHAR textScore[] = _T("Score:");
-		settextstyle(&textFont);
+		settextstyle(&textFont_game);
 		outtextxy(0, 0, textScore);
 		//score
 		TCHAR Score[4];
 		_stprintf_s(Score, _T("%d"), score);
-		settextstyle(&numberFont);
+		settextstyle(&scoreFont);
 		outtextxy(7.5 * UNIT, -3, Score);
-		//snake
-		snakedisplay(snake.coord());
-		//apple
-		apple.display();
-		//goldapple
+		snakedisplay(snake.coord());			//snake
+		apple.display();						//apple
 		if (goldapple.exist)
 		{
-			bar.display(timer.goldAppleTime());
-			goldapple.display();
+			bar.display(timer.goldAppleTime());	//bar
+			goldapple.display();				//goldapple
 		}
 		EndBatchDraw();
 		flushmessage();
@@ -512,25 +533,19 @@ int Game(LevelState level_state)
 }
 
 
-void setTextFont()
+void setfont_game()
 {
-	textFont.lfHeight = 24;
-	textFont.lfWeight = FW_BOLD;
-	textFont.lfItalic = 0;
-	textFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(textFont.lfFaceName, _T("Courier New"));
-	setbkmode(TRANSPARENT);
-	settextcolor(TEXTCOLOR);
+	textFont_game.lfHeight = 24;
+	textFont_game.lfWeight = FW_BOLD;
+	textFont_game.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(textFont_game.lfFaceName, _T("Courier New"));
 }
-void setNumberFont()
+void setfont_score()
 {
-	numberFont.lfHeight = 25;
-	numberFont.lfWeight = FW_BOLD;
-	numberFont.lfItalic = 0;
-	numberFont.lfQuality = PROOF_QUALITY;
-	_tcscpy_s(numberFont.lfFaceName, _T("ROG Fonts"));
-	setbkmode(TRANSPARENT);
-	settextcolor(TEXTCOLOR);
+	scoreFont.lfHeight = 25;
+	scoreFont.lfWeight = FW_BOLD;
+	scoreFont.lfQuality = PROOF_QUALITY;
+	_tcscpy_s(scoreFont.lfFaceName, _T("ROG Fonts"));
 }
 void snakedisplay(const std::vector<Coordinate> coord)
 {
@@ -590,9 +605,9 @@ void Gameover()
 		case(OverState::BACK):btn_over_back.isPressed = true; btn_over_back.isOn = true; break;
 		}
 		//Image
+		putimage(0, 0, &tempImg);		//temp background
 		//button
-		putimage(0, 0, &tempImg);
-		btn_over_again.display(text_again);
+		btn_over_again.display(text_again);	
 		btn_over_back.display(text_back);
 		EndBatchDraw();
 		flushmessage();
