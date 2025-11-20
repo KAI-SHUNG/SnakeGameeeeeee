@@ -231,8 +231,8 @@ void Menu()
 	init(MENUX, MENUY);
 	music.menu();
 	Timer timer;
-	setfont_menu();
 	TCHAR signature[] = "By ZKaishung.";
+	setfont_menu();
 
 	MenuState menu_state = MenuState::PLAY;
 
@@ -290,9 +290,6 @@ void Menu()
 		btn_menu_exit.display(text_exit);
 		////title
 		title.display_t(timer.getTime());
-		//double deltaY = timer.getTime() / 300 % 10;//?
-		//deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
-		//putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, &titleImg);
 		EndBatchDraw();
 		flushmessage();
 		Sleep(TICK_NORMAL);
@@ -309,9 +306,11 @@ void setfont_menu()
 
 void Level(LevelState& out_level_state)
 {
+	//不得不重新initgraph
 	init(MENUX, MENUY);
-
 	Timer timer;
+
+	LevelState level_state = out_level_state;
 
 	TCHAR text_easy[] = "EASY";
 	Button btn_level_easy(&button, &buttonPressed, MENUX / 2, MENUY / 2 - 4.5);
@@ -322,7 +321,6 @@ void Level(LevelState& out_level_state)
 	TCHAR text_hell[] = "HELL";
 	Button btn_level_hell(&button, &buttonPressed, MENUX / 2, MENUY / 2 + 4.5);
 
-	LevelState level_state = out_level_state;
 	while (true)
 	{
 		BeginBatchDraw();
@@ -344,10 +342,10 @@ void Level(LevelState& out_level_state)
 		keyboard.level(level_state);
 		if (keyboard.enter()) {
 			switch (level_state) {
-			case(LevelState::EASY):		btn_level_easy.isClicked = true; break;
-			case(LevelState::NORMAL):	btn_level_norm.isClicked = true; break;
-			case(LevelState::HARD):		btn_level_hard.isClicked = true; break;
-			case(LevelState::HELL):		btn_level_hell.isClicked = true; break;
+			case(LevelState::EASY):btn_level_easy.isClicked = true; break;
+			case(LevelState::NORMAL):btn_level_norm.isClicked = true; break;
+			case(LevelState::HARD):	btn_level_hard.isClicked = true; break;
+			case(LevelState::HELL):btn_level_hell.isClicked = true; break;
 			}
 		}
 		//Clicked
@@ -359,10 +357,10 @@ void Level(LevelState& out_level_state)
 			return;
 		}
 		switch (level_state) {
-		case(LevelState::EASY):		btn_level_easy.isPressed = true; btn_level_easy.isOn = true; break;
-		case(LevelState::NORMAL):	btn_level_norm.isPressed = true; btn_level_norm.isOn = true; break;
-		case(LevelState::HARD):		btn_level_hard.isPressed = true; btn_level_hard.isOn = true; break;
-		case(LevelState::HELL):		btn_level_hell.isPressed = true; btn_level_hell.isOn = true; break;
+		case(LevelState::EASY):btn_level_easy.isPressed = true; btn_level_easy.isOn = true; break;
+		case(LevelState::NORMAL):btn_level_norm.isPressed = true; btn_level_norm.isOn = true; break;
+		case(LevelState::HARD):btn_level_hard.isPressed = true; btn_level_hard.isOn = true; break;
+		case(LevelState::HELL):btn_level_hell.isPressed = true; btn_level_hell.isOn = true; break;
 		}//如果没有上述switch语句，按键只受鼠标位置影响，等于可以砍掉键盘，纯鼠标
 		//Image		
 		//title
@@ -408,7 +406,8 @@ int Game(LevelState level_state)
 	Timer timer;
 
 	int score = 0;
-	int tick = TICK_HARD;//未来难度选择
+	//Set tick time by level
+	int tick = TICK_HARD;
 	switch (level_state)
 	{
 	case(LevelState::EASY):tick = TICK_EASY; break;
