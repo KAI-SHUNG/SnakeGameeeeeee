@@ -29,7 +29,7 @@ class道具（加速减速，闪现，技能键，护盾……
 //						吃六个苹果生成金苹果 ^^^ ，在sweet moment吃到金苹果下一次变为吃三个苹果就生成金苹果 ^^^
 //							仿照高中诺基亚的逻辑，倒计时6秒，加分递减，sweet moment: 5 ^^^
 //							加一个进度条，可以倒计时 ^^^
-//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ， 鼠标控制的加入 ^^^，难度选择 
+//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ， 鼠标控制的加入 ^^^，难度选择 ^^^
 //下下下下一步		menu排行榜、存档
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
@@ -53,16 +53,16 @@ class道具（加速减速，闪现，技能键，护盾……
 			 \_______/						 \_______/						 \_______/
 -------------------------------------------------------------------------------------------------*/
 
-#include <easyx.h>
-#include <Windows.h>
 #include <iostream>
+#include <easyx.h>
+#include <time.h>
 #include <vector>
+#include <Windows.h>
 #include "Button.h"
 #include "Item.h"
-#include "Image.h"
+#include "SnakeImg.h"
 #include "Keyboard.h"
 #include "Music.h"
-#include "Timer.h"
 #include "Snake.h"
 #include "Tools.h"
 
@@ -90,13 +90,12 @@ IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇弯
 IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
 LOGFONT textFont_menu, textFont_game, scoreFont;
 
-Image title(&titleImg), pause(&pauseImg), bar(&barImg), wall(&wallImg);
-Image head(&sHeadW, &sHeadA, &sHeadS, &sHeadD);		//蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
-Image bodyW(&sBodyWS, &sTurnDL, nullptr, &sTurnDR);
-Image bodyA(&sTurnUR, &sBodyAD, &sTurnDR, nullptr);
-Image bodyS(nullptr, &sTurnUL, &sBodyWS, &sTurnUR);
-Image bodyD(&sTurnUL, nullptr, &sTurnDL, &sBodyAD);
-Image tail(&sTailW, &sTailA, &sTailS, &sTailD);
+SnakeImg head(&sHeadW, &sHeadA, &sHeadS, &sHeadD);		//蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
+SnakeImg bodyW(&sBodyWS, &sTurnDL, nullptr, &sTurnDR);
+SnakeImg bodyA(&sTurnUR, &sBodyAD, &sTurnDR, nullptr);
+SnakeImg bodyS(nullptr, &sTurnUL, &sBodyWS, &sTurnUR);
+SnakeImg bodyD(&sTurnUL, nullptr, &sTurnDL, &sBodyAD);
+SnakeImg tail(&sTailW, &sTailA, &sTailS, &sTailD);
 
 void init(int x, int y);
 int loadImage();
@@ -104,6 +103,12 @@ int loadFont();
 int resourceCheck();
 
 void Menu();
+void title_dislay()
+{
+	double deltaY = clock() / 300 % 10;//?
+	deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
+	putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, &titleImg);
+}
 void setfont_menu();
 
 void Level(LevelState&);
@@ -113,7 +118,8 @@ void Sound();
 int Game(LevelState);
 void setfont_game();
 void setfont_score();
-void snakedisplay(const std::vector<Coordinate>);
+void snake_display(const std::vector<Coordinate>);
+void bar_display(int t);
 
 void Gameover();
 
@@ -230,7 +236,6 @@ void Menu()
 	//Initialize
 	init(MENUX, MENUY);
 	music.menu();
-	Timer timer;
 	setfont_menu();
 	TCHAR signature[] = "By ZKaishung.";
 
@@ -288,11 +293,8 @@ void Menu()
 		btn_menu_play.display(text_play);
 		btn_menu_level.display(text_level);
 		btn_menu_exit.display(text_exit);
-		////title
-		title.display_t(timer.getTime());
-		//double deltaY = timer.getTime() / 300 % 10;//?
-		//deltaY < 5 ? deltaY = deltaY - 2.5 : deltaY = 7.5 - deltaY;
-		//putimage_alpha_c(MENUX / 2, 6 + deltaY / UNIT, &titleImg);
+		//title
+		title_dislay();
 		EndBatchDraw();
 		flushmessage();
 		Sleep(TICK_NORMAL);
@@ -310,8 +312,6 @@ void setfont_menu()
 void Level(LevelState& out_level_state)
 {
 	init(MENUX, MENUY);
-
-	Timer timer;
 
 	TCHAR text_easy[] = "EASY";
 	Button btn_level_easy(&button, &buttonPressed, MENUX / 2, MENUY / 2 - 4.5);
@@ -366,7 +366,7 @@ void Level(LevelState& out_level_state)
 		}//如果没有上述switch语句，按键只受鼠标位置影响，等于可以砍掉键盘，纯鼠标
 		//Image		
 		//title
-		title.display_t(timer.getTime());
+		title_dislay();
 		//button
 		btn_level_easy.display(text_easy);
 		btn_level_norm.display(text_norm);
@@ -405,10 +405,10 @@ int Game(LevelState level_state)
 	music.menuStop();
 	music.game();
 	Snake snake(GAMEX, GAMEY);
-	Timer timer;
 
 	int score = 0;
 	int tick = TICK_HARD;//未来难度选择
+	int goldapple_start = 0;
 	switch (level_state)
 	{
 	case(LevelState::EASY):tick = TICK_EASY; break;
@@ -420,7 +420,7 @@ int Game(LevelState level_state)
 	while (true)
 	{
 		//Frametime Control
-		timer.frameStart();
+		int frame_start = clock();
 		//Pause && Exit
 		if (keyboard.space() || keyboard.escape())
 		{
@@ -446,7 +446,7 @@ int Game(LevelState level_state)
 				}
 			}
 			music.gameResume();
-			timer.frameStart();
+			frame_start = clock();
 		}
 		//Snake Movement Control
 		char dir = snake.coord().at(0).Dir;	
@@ -466,10 +466,11 @@ int Game(LevelState level_state)
 			return score;
 		}
 		//Goldapple Timeout Check
-		int goldAppleTime = timer.goldAppleTime();
-		if (goldAppleTime > TIME_TOTAL)
+		int goldapple_time = clock() - goldapple_start;
+		if (goldapple_time > TIME_TOTAL)
 		{
 			goldapple.exist = false;
+			goldapple.reset();
 		}
 		//Check If Eat Apple and Goldapple && Snake Grow
 		if (snake.eatApple(apple.get_x(), apple.get_y()))
@@ -483,8 +484,8 @@ int Game(LevelState level_state)
 		{
 			music.bell();
 			music.eat();
-			score += POINT_GOLDAPPLE * (TIME_TOTAL - goldAppleTime) / TIME_TOTAL;
-			if (goldAppleTime / 1000 == 1)
+			score += POINT_GOLDAPPLE * (TIME_TOTAL - goldapple_time) / TIME_TOTAL;
+			if (goldapple_time / 1000 == 1)
 			{
 				music.bell();
 				apple.counter += 3;
@@ -502,7 +503,7 @@ int Game(LevelState level_state)
 			{
 				goldapple.create(snake.coord(), apple.get_x(), apple.get_y());
 				goldapple.exist = true;
-				timer.goldAppleCreate();
+				goldapple_start = clock();
 			}
 		}
 		//Image
@@ -517,18 +518,19 @@ int Game(LevelState level_state)
 		_stprintf_s(Score, _T("%d"), score);
 		settextstyle(&scoreFont);
 		outtextxy(7.5 * UNIT, -3, Score);
-		snakedisplay(snake.coord());			//snake
+		snake_display(snake.coord());			//snake
 		apple.display();						//apple
 		if (goldapple.exist)
 		{
-			bar.display(timer.goldAppleTime());	//bar
+			bar_display(goldapple_time);
 			goldapple.display();				//goldapple
 		}
 		EndBatchDraw();
 		flushmessage();
 		//Frametime Control
-		if (tick - timer.frameTime() > 0)
-			Sleep(tick - timer.frameTime());
+		int frame_time = clock() - frame_start;
+		if (tick - frame_time > 0)
+			Sleep(tick - frame_time);
 	}
 }
 
@@ -547,7 +549,7 @@ void setfont_score()
 	scoreFont.lfQuality = PROOF_QUALITY;
 	_tcscpy_s(scoreFont.lfFaceName, _T("ROG Fonts"));
 }
-void snakedisplay(const std::vector<Coordinate> coord)
+void snake_display(const std::vector<Coordinate> coord)
 {
 	head.display(coord.begin()->X, coord.begin()->Y, coord.begin()->Dir);
 	if (coord.size() > 2)
@@ -564,6 +566,13 @@ void snakedisplay(const std::vector<Coordinate> coord)
 		}
 	}
 	tail.display((coord.end() - 1)->X, (coord.end() - 1)->Y, (coord.end() - 2)->Dir);
+}
+void bar_display(int t)
+{
+	int w = barImg.getwidth();
+	int h = barImg.getheight();
+	AlphaBlend(GetImageHDC(NULL), (GAMEX * UNIT - w) / 2, BOARD * UNIT, w * (TIME_TOTAL - t) / TIME_TOTAL, h,
+		GetImageHDC(&barImg), 0, 0, w * (TIME_TOTAL - t) / TIME_TOTAL, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
 }
 
 
