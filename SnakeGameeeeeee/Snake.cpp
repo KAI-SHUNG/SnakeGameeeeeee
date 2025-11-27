@@ -1,6 +1,6 @@
 #include "Snake.h"
 Snake::Snake(int unitx, int unity)
-	:coord_next({unitx / 2 + 1, unity / 2, 'd'})
+	:eat_apple(false),coord_next({unitx / 2 + 1, unity / 2, 'd'})
 {
 	coordinate.push_back({ GAMEX / 2, GAMEY / 2, 'd' });
 	coordinate.push_back({ GAMEX / 2 - 1, GAMEY / 2, 'd' });
@@ -10,7 +10,7 @@ void Snake::snakeHeadNextTick(char dir)
 {
 	switch (dir)
 	{
-	case('w'):coord_next = {molX(coordinate.at(0).X),		molY(coordinate.at(0).Y - 1),dir };	break;
+	case('w'):coord_next = {molX(coordinate.at(0).X),		molY(coordinate.at(0).Y - 1),dir};	break;
 	case('a'):coord_next = {molX(coordinate.at(0).X - 1),	molY(coordinate.at(0).Y)	,dir};	break;
 	case('s'):coord_next = {molX(coordinate.at(0).X),		molY(coordinate.at(0).Y + 1),dir};	break;
 	case('d'):coord_next = {molX(coordinate.at(0).X + 1),	molY(coordinate.at(0).Y)	,dir};	break;

@@ -29,14 +29,14 @@ class道具（加速减速，闪现，技能键，护盾……
 //						吃六个苹果生成金苹果 ^^^ ，在sweet moment吃到金苹果下一次变为吃三个苹果就生成金苹果 ^^^
 //							仿照高中诺基亚的逻辑，倒计时6秒，加分递减，sweet moment: 5 ^^^
 //							加一个进度条，可以倒计时 ^^^
-//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ， 鼠标控制的加入 ^^^，难度选择 
+//下下一步			menu界面 ^^^ ，再来一局的重置 ^^^ ， 鼠标控制的加入 ^^^，难度选择 ^^^
 //下下下下一步		menu排行榜、存档
 //下下下下下一步		声音控制功能
 //下下下下下下一步	不同地图
 
 /*
-	2025/11/13 修复了调试后无法移动的bug 
-	不知道哪里有问题，好几次蛇突然不动了 
+	2025/11/13 修复了调试后无法移动的bug
+	不知道哪里有问题，好几次蛇突然不动了
 	莫名其妙的bug(*_*)(*_*)(*_*)(*_*)(*_*)(*_*)
 	给你👻辣，给你上香
 	好像好久没出现了？ 2025/11/7
@@ -71,13 +71,53 @@ class道具（加速减速，闪现，技能键，护盾……
 #define LINECOLOR 0x0066CC	//计分板边框颜色
 #define TEXTCOLOR 0x003366	//字体颜色
 
-#define TICK_EASY 250		//简单模式帧时长250ms
-#define TICK_NORMAL 160		//普通模式帧时长160ms
+#define TICK_EASY 200		//简单模式帧时长250ms
+#define TICK_NORMAL 150		//普通模式帧时长160ms
 #define TICK_HARD 100		//困难模式帧时长100ms
 #define TICK_HELL 85		//地狱模式帧时长85ms
 
 #define POINT_APPLE 1		//苹果分值
 #define POINT_GOLDAPPLE 26	//金苹果分值
+std::vector<Coordinate >test = {
+	{7, 6 ,'s'},
+	{7, 5 ,'d'},
+	{6, 5 ,'d'},
+	{6, 4 ,'d'},
+	{5, 4 ,'d'},
+	{4, 4 ,'d'},
+	{4, 5 ,'d'},
+	{3, 5 ,'d'},
+	{3, 6 ,'d'},
+	{3, 7 ,'d'},
+	{3, 8 ,'d'},
+	{4, 8 ,'d'},
+	{4, 9 ,'d'},
+	{5, 9 ,'d'},
+	{5, 10,'d'},
+	{6, 10 ,'s'},
+	{6, 11 ,'d'},
+	{7, 11 ,'d'},
+	{7, 12 ,'d'},
+	{8, 12 ,'d'},
+	{8, 11 ,'d'},
+	{9, 11 ,'d'},
+	{9, 10,'d'},
+	{10, 10 ,'d'},
+	{10, 9 ,'d'},
+	{11, 9 ,'d'},
+	{11, 8 ,'d'},
+	{12, 8 ,'d'},
+	{12, 7 ,'d'},
+	{12, 6 ,'d'},
+	{12, 5 ,'d'},
+	{11, 5 ,'d'},
+	{11, 4 ,'d'},
+	{10, 4 ,'d'},
+	{9, 4, 'd'} ,
+	{9, 5 ,'d'},
+	{8, 5 ,'d'},
+	{8, 6 ,'d'}
+};
 
 IMAGE titleImg, button, buttonPressed;
 IMAGE lbutton, lbuttonPressed, rbutton, rbuttonPressed;
@@ -90,7 +130,7 @@ IMAGE sTurnUL, sTurnDR, sTurnDL, sTurnUR;//蛇弯
 IMAGE sTailW, sTailA, sTailS, sTailD;//蛇尾
 LOGFONT textFont_menu, textFont_game, scoreFont;
 
-Image title(&titleImg), pause(&pauseImg), bar(&barImg), wall(&wallImg);
+Image title(&titleImg), bar(&barImg);
 Image head(&sHeadW, &sHeadA, &sHeadS, &sHeadD);		//蛇头蛇身蛇弯蛇尾全部大一统！！！ 2025/11/17
 Image bodyW(&sBodyWS, &sTurnDL, nullptr, &sTurnDR);
 Image bodyA(&sTurnUR, &sBodyAD, &sTurnDR, nullptr);
@@ -137,7 +177,7 @@ int main()
 		switch (scene_state)
 		{
 		case(SceneState::MENU):
-			Menu(); 
+			Menu();
 			break;
 		case(SceneState::LEVEL):
 			Level(level_state);
@@ -213,11 +253,11 @@ int loadFont()
 }
 int resourceCheck()
 {
-	return loadImage()  + loadFont() + music.loadMusic();
+	return loadImage() + loadFont() + music.loadMusic();
 }
 void init(int x, int y)
 {
-	initgraph(x * UNIT * RATIO, y * UNIT * RATIO, EX_NOCLOSE );
+	initgraph(x * UNIT * RATIO, y * UNIT * RATIO, EX_NOCLOSE);
 	setaspectratio(RATIO, RATIO);//10x10->25*25
 	setbkcolor(BKCOLOR);
 	setbkmode(TRANSPARENT);
@@ -283,7 +323,7 @@ void Menu()
 		//signature
 		settextcolor(BLACK);
 		settextstyle(&textFont_menu);
-		outtextxy(MENUX * UNIT- textwidth(signature), MENUY * UNIT - textheight(signature), signature);
+		outtextxy(MENUX * UNIT - textwidth(signature), MENUY * UNIT - textheight(signature), signature);
 		//button
 		btn_menu_play.display(text_play);
 		btn_menu_level.display(text_level);
@@ -353,7 +393,7 @@ void Level(LevelState& out_level_state)
 			btn_level_hard.isClicked || btn_level_hell.isClicked)
 		{
 			out_level_state = level_state;
-			scene_state = SceneState::MENU; 
+			scene_state = SceneState::MENU;
 			return;
 		}
 		switch (level_state) {
@@ -387,7 +427,7 @@ void Sound()
 int Game(LevelState level_state)
 {
 	//Initialize
-	init(GAMEX, GAMEY + BOARD);	
+	init(GAMEX, GAMEY + BOARD);
 	//Init board
 	setfillcolor(BOARDCOLOR);
 	setlinecolor(LINECOLOR);
@@ -398,8 +438,8 @@ int Game(LevelState level_state)
 	setfont_score();
 	TCHAR textScore[] = _T("Score:");
 
-	Item apple		(GAMEX, GAMEY, &appleImg);
-	Item goldapple	(GAMEX, GAMEY, &goldappleImg);
+	Item apple(GAMEX, GAMEY, &appleImg);
+	Item goldapple(GAMEX, GAMEY, &goldappleImg);
 	music.menuStop();
 	music.game();
 	Snake snake(GAMEX, GAMEY);
@@ -448,7 +488,7 @@ int Game(LevelState level_state)
 			timer.frameStart();
 		}
 		//Snake Movement Control
-		char dir = snake.coord().at(0).Dir;	
+		char dir = snake.coord().at(0).Dir;
 		/*我真是天才
 		先定义为上一个dir，有修改就改了，没修改按原来
 		省去了再写一个读取Dir[0]的函数*/
@@ -506,7 +546,7 @@ int Game(LevelState level_state)
 		}
 		//Image
 		BeginBatchDraw();
-		cleardevice(); 
+		cleardevice();
 		fillrectangle(0, 0, GAMEX * UNIT, BOARD * UNIT);//board
 		//text
 		settextstyle(&textFont_game);
@@ -553,12 +593,12 @@ void snakedisplay(const std::vector<Coordinate> coord)
 	{
 		for (auto it = coord.begin() + 1; it != coord.end() - 1; ++it)
 		{
-			switch (it->Dir)
+			switch (it->Dir)//当前方向
 			{
-			case('w'):bodyW.display(it->X, it->Y, (it - 1)->Dir); break;
-			case('a'):bodyA.display(it->X, it->Y, (it - 1)->Dir); break;
-			case('s'):bodyS.display(it->X, it->Y, (it - 1)->Dir); break;
-			case('d'):bodyD.display(it->X, it->Y, (it - 1)->Dir); break;
+			case('w'):bodyW.display(it->X, it->Y, (it - 1)->Dir); break;//靠近蛇头的下一个方向
+			case('a'):bodyA.display(it->X, it->Y, (it - 1)->Dir); break;//靠近蛇头的下一个方向
+			case('s'):bodyS.display(it->X, it->Y, (it - 1)->Dir); break;//靠近蛇头的下一个方向
+			case('d'):bodyD.display(it->X, it->Y, (it - 1)->Dir); break;//靠近蛇头的下一个方向
 			}
 		}
 	}
@@ -606,7 +646,7 @@ void Gameover()
 		//Image
 		putimage(0, 0, &tempImg);		//temp background
 		//button
-		btn_over_again.display(text_again);	
+		btn_over_again.display(text_again);
 		btn_over_back.display(text_back);
 		EndBatchDraw();
 		flushmessage();
