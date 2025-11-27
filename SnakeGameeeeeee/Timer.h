@@ -11,4 +11,5 @@ public:
 	void goldAppleCreate();
 	int goldAppleTime();
 	int getTime();
+
 };

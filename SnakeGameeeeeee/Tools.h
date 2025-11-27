@@ -34,6 +34,7 @@ inline void putimage_alpha_c(double x, double y, IMAGE* img)
 	AlphaBlend(GetImageHDC(NULL), x * UNIT - w / 2.0, y * UNIT - h / 2.0, w, h,
 		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 }
+
 enum class SceneState { MENU, GAME, GAMEOVER, LEVEL, SOUND, EXIT };
 enum class MenuState { PLAY, LEVEL, EXIT, COUNTER };
 enum class LevelState { EASY, NORMAL, HARD, HELL, COUNTER };
